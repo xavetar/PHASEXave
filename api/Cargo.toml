@@ -1,0 +1,42 @@
+# Package
+[package]
+name = "PHASEXave"
+authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
+publish = true
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+description = "Fast, clear and simple interface for calculating date, week day and time in Solar, Julian, Gregorian calendar."
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+include.workspace = true
+exclude.workspace = true
+
+# Library
+[lib]
+crate-type = ["lib"]
+path = "src/lib.rs"
+
+# Features
+[features]
+default = []
+
+platform_specific_functions_unix = ["dep:libc"]
+platform_specific_functions_darwin = ["dep:mach", "dep:core-foundation"]
+platform_specific_functions_windows = ["dep:winapi"]
+
+# Dependencies
+[dependencies]
+
+[target.'cfg(target_vendor = "apple")'.dependencies]
+mach = { version = "0.3.2", optional = true, default-features = false }
+core-foundation = { version = "0.9.4", optional = true, default-features = false, features = ["link"] }
+
+[target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
+libc = { version = "0.2.151", optional = true, default-features = false }
+
+[target.'cfg(target_family = "windows")'.dependencies]
+winapi = { version = "0.3.9", features = ["profileapi", "ntdef", "winnt", "timezoneapi"], optional = true, default-features = false }
