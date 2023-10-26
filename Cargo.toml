@@ -1,0 +1,49 @@
+# Workspace
+[workspace]
+
+members = [
+    "api",
+    "tools/calendar-cli", "tools/date-cli",
+]
+
+default-members = [
+    "api",
+    "tools/calendar-cli", "tools/date-cli",
+]
+
+resolver="2"
+
+# Package
+[workspace.package]
+authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
+edition = "2021"
+version = "1.8.0"
+rust-version = "1.67.0"
+license = "MIT AND Apache-2.0"
+license-file = "LICENSE-Anti-Virus"
+repository = "https://github.com/xavetar/PHASEXave"
+description = "Date and time library"
+keywords = ["date-and-time", "calendar", "solar", "julian", "gregorian"]
+categories = ["date-and-time"]
+include = ["src/", "Cross.toml", "Cargo.toml", "LICENSE-Anti-Virus", "LICENSE-MIT", "LICENSE-Apache"]
+exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
+    "Icon", "._*", ".DocumentRevisions-V100", ".fseventsd", ".Spotlight-V100", ".TemporaryItems", ".Trashes",
+    ".VolumeIcon.icns", ".com.apple.timemachine.donotpresent", ".AppleDB", ".AppleDesktop", "Network Trash Folder",
+    "Temporary Items", ".apdisk", ".env", ".gitignore", ".git", ".idea", ".vscode"]
+
+# Dependencies
+[workspace.dependencies]
+PHASEXave = { version = "=1.8.0", path = "api/", default-features = false }
+
+# Profiles
+[profile.dev]
+lto = "off"
+opt-level = 0
+panic = "abort"
+strip = false
+
+[profile.release]
+lto = "fat"
+opt-level = 3
+panic = "abort"
+strip = true

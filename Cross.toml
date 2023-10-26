@@ -1,0 +1,255 @@
+# Aarch64
+
+# Android
+[target.aarch64-linux-android]
+image = "ghcr.io/cross-rs/aarch64-linux-android"
+
+# FreeBSD
+[target.aarch64-unknown-freebsd]
+build-std = true
+image = "ghcr.io/cross-rs/aarch64-unknown-freebsd"
+
+# Linux
+[target.aarch64-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/aarch64-unknown-linux-gnu"
+
+[target.aarch64-unknown-linux-musl]
+image = "ghcr.io/cross-rs/aarch64-unknown-linux-musl"
+
+# ARM
+
+# Android
+[target.arm-linux-androideabi]
+image = "ghcr.io/cross-rs/arm-linux-androideabi"
+
+# Linux
+[target.arm-unknown-linux-gnueabi]
+image = "ghcr.io/cross-rs/arm-unknown-linux-gnueabi"
+
+[target.arm-unknown-linux-gnueabihf]
+image = "ghcr.io/cross-rs/arm-unknown-linux-gnueabihf"
+
+[target.arm-unknown-linux-musleabi]
+image = "ghcr.io/cross-rs/arm-unknown-linux-musleabi"
+
+[target.arm-unknown-linux-musleabihf]
+image = "ghcr.io/cross-rs/arm-unknown-linux-musleabihf"
+
+# ARMv5TE
+
+# Linux
+[target.armv5te-unknown-linux-gnueabi]
+image = "ghcr.io/cross-rs/armv5te-unknown-linux-gnueabi"
+
+[target.armv5te-unknown-linux-musleabi]
+image = "ghcr.io/cross-rs/armv5te-unknown-linux-musleabi"
+
+# ARMv7
+
+# Android
+[target.armv7-linux-androideabi]
+image = "ghcr.io/cross-rs/armv7-linux-androideabi"
+
+# Linux
+[target.armv7-unknown-linux-gnueabi]
+image = "ghcr.io/cross-rs/armv7-unknown-linux-gnueabi"
+
+[target.armv7-unknown-linux-gnueabihf]
+image = "ghcr.io/cross-rs/armv7-unknown-linux-gnueabihf"
+
+[target.armv7-unknown-linux-musleabi]
+image = "ghcr.io/cross-rs/armv7-unknown-linux-musleabi"
+
+[target.armv7-unknown-linux-musleabihf]
+image = "ghcr.io/cross-rs/armv7-unknown-linux-musleabihf"
+
+# x86_64
+
+# Android
+[target.x86_64-linux-android]
+image = "ghcr.io/cross-rs/x86_64-linux-android"
+
+# Windows
+[target.x86_64-pc-windows-gnu]
+image = "ghcr.io/cross-rs/x86_64-pc-windows-gnu"
+
+# Solaris
+[target.x86_64-sun-solaris]
+image = "ghcr.io/cross-rs/x86_64-sun-solaris"
+
+# Dragonfly
+[target.x86_64-unknown-dragonfly]
+image = "ghcr.io/cross-rs/x86_64-unknown-dragonfly"
+
+# FreeBSD
+[target.x86_64-unknown-freebsd]
+build-std = true
+image = "ghcr.io/cross-rs/x86_64-unknown-freebsd"
+
+# Illumos
+[target.x86_64-unknown-illumos]
+image = "ghcr.io/cross-rs/x86_64-unknown-illumos"
+
+# Linux
+[target.x86_64-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/x86_64-unknown-linux-gnu"
+
+[target.x86_64-unknown-linux-musl]
+image = "ghcr.io/cross-rs/x86_64-unknown-linux-musl"
+
+# NetBSD
+[target.x86_64-unknown-netbsd]
+image = "ghcr.io/cross-rs/x86_64-unknown-netbsd"
+
+# i586
+
+# Linux
+[target.i586-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/i586-unknown-linux-gnu"
+
+[target.i586-unknown-linux-musl]
+image = "ghcr.io/cross-rs/i586-unknown-linux-musl"
+
+# i686
+
+# Android
+[target.i686-linux-android]
+image = "ghcr.io/cross-rs/i686-linux-android"
+
+# Windows
+[target.i686-pc-windows-gnu]
+image = "ghcr.io/cross-rs/i686-pc-windows-gnu"
+
+# FreeBSD
+[target.i686-unknown-freebsd]
+build-std = true
+image = "ghcr.io/cross-rs/i686-unknown-freebsd"
+
+# Linux
+[target.i686-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/i686-unknown-linux-gnu"
+
+[target.i686-unknown-linux-musl]
+image = "ghcr.io/cross-rs/i686-unknown-linux-musl"
+
+# MIPS
+
+# Linux
+[target.mips-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/mips-unknown-linux-gnu"
+
+[target.mips-unknown-linux-musl]
+image = "ghcr.io/cross-rs/mips-unknown-linux-musl"
+
+# MIPS64
+
+# Linux
+[target.mips64-unknown-linux-gnuabi64]
+image = "ghcr.io/cross-rs/mips64-unknown-linux-gnuabi64"
+
+[target.mips64-unknown-linux-muslabi64]
+image = "ghcr.io/cross-rs/mips64-unknown-linux-muslabi64"
+
+# MIPS64-EL
+
+# Linux
+[target.mips64el-unknown-linux-gnuabi64]
+image = "ghcr.io/cross-rs/mips64el-unknown-linux-gnuabi64"
+
+[target.mips64el-unknown-linux-muslabi64]
+image = "ghcr.io/cross-rs/mips64el-unknown-linux-muslabi64"
+
+# MIPS-EL
+
+# Linux
+[target.mipsel-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/mipsel-unknown-linux-gnu"
+
+[target.mipsel-unknown-linux-musl]
+image = "ghcr.io/cross-rs/mipsel-unknown-linux-musl"
+
+# PowerPC
+
+# Linux
+[target.powerpc-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/powerpc-unknown-linux-gnu"
+
+# PowerPC64
+
+# Linux
+[target.powerpc64-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/powerpc64-unknown-linux-gnu"
+
+# PowerPC64-LE
+
+# Linux
+[target.powerpc64le-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/powerpc64le-unknown-linux-gnu"
+
+# RISC-V64-GC
+
+# Linux
+[target.riscv64gc-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/riscv64gc-unknown-linux-gnu"
+
+# IBM System/390
+
+# Linux
+[target.s390x-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/s390x-unknown-linux-gnu"
+
+# SPARC64
+
+# Linux
+[target.sparc64-unknown-linux-gnu]
+image = "ghcr.io/cross-rs/sparc64-unknown-linux-gnu"
+
+# SPARC-V9
+
+# Solaris
+[target.sparcv9-sun-solaris]
+image = "ghcr.io/cross-rs/sparcv9-sun-solaris"
+
+# ARMv6
+
+[target.thumbv6m-none-eabi]
+image = "ghcr.io/cross-rs/thumbv6m-none-eabi"
+
+# ARMv7-EM
+
+[target.thumbv7em-none-eabi]
+image = "ghcr.io/cross-rs/thumbv7em-none-eabi"
+
+[target.thumbv7em-none-eabihf]
+image = "ghcr.io/cross-rs/thumbv7em-none-eabihf"
+
+# ARMv7-M
+
+[target.thumbv7m-none-eabi]
+image = "ghcr.io/cross-rs/thumbv7m-none-eabi"
+
+# ARMv7-NEON
+
+# Android
+[target.thumbv7neon-linux-androideabi]
+image = "ghcr.io/cross-rs/thumbv7neon-linux-androideabi"
+
+# Linux
+[target.thumbv7neon-unknown-linux-gnueabihf]
+image = "ghcr.io/cross-rs/thumbv7neon-unknown-linux-gnueabihf"
+
+# ARMv8-M
+
+[target.thumbv8m.base-none-eabi]
+image = "ghcr.io/cross-rs/thumbv8m.base-none-eabi"
+
+[target.thumbv8m.main-none-eabi]
+image = "ghcr.io/cross-rs/thumbv8m.main-none-eabi"
+
+[target.thumbv8m.main-none-eabihf]
+image = "ghcr.io/cross-rs/thumbv8m.main-none-eabihf"
+
+# WebAssembly
+
+[target.wasm32-unknown-emscripten]
+image = "ghcr.io/cross-rs/wasm32-unknown-emscripten"

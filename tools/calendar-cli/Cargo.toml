@@ -1,0 +1,37 @@
+# Package
+[package]
+name = "calendar-cli"
+authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
+publish = false
+version = "1.0.0"
+edition.workspace = true
+license.workspace = true
+license-file.workspace = true
+rust-version.workspace = true
+description = "Fast, clear and simple interface for view calendar from CLI for Solar, Julian, Gregorian calendar."
+repository.workspace = true
+keywords = ["calendar", "cli", "solar", "julian", "gregorian"]
+categories.workspace = true
+include.workspace = true
+exclude.workspace = true
+
+# Binary
+[[bin]]
+name = "calendar-cli"
+path = "src/main.rs"
+
+# Features
+[features]
+default = []
+
+# Dependencies
+[dependencies]
+
+[target.'cfg(target_vendor = "apple")'.dependencies]
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_darwin"] }
+
+[target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_unix"] }
+
+[target.'cfg(target_family = "windows")'.dependencies]
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_windows"] }
