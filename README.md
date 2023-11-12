@@ -19,6 +19,21 @@ PHASEXave = "*"
 
 ### Time
 
+#### UTC
+
+Get UTC time:
+
+```rust
+use PHASEXave::{Time};
+
+fn main() {
+    let time: Time = Time::utc();
+    println!("{hours}:{minutes}:{seconds}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
+}
+```
+
+#### Now
+
 Get current time with timezone:
 
 ```rust
@@ -69,10 +84,25 @@ fn main() {
 
 ### Date
 
-#### Now
+#### UTC
+
+Get UTC date:
 
 ```rust
-use PHASEXave::{Date, Sign, Zone};
+use PHASEXave::{Date};
+
+fn main() {
+    let date: Date = Date::utc();
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+}
+```
+
+#### Now
+
+Get current date with timezone:
+
+```rust
+use PHASEXave::{Date};
 
 fn main() {
     let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
@@ -88,19 +118,52 @@ fn main() {
 Convert any Gregorian date to Julian date:
 
 ```rust
-use PHASEXave::{Date, Julian, Sign, Zone};
+use PHASEXave::{Date, Sign, Zone, Julian, CalendarView};
 
 fn main() {
-    let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 3, minutes: 0, seconds: 0 };
-    let mut date: Date = Date::now(timezone);
-    <Date as Julian>::to_julian(&mut date);
+    let mut date: Date = Date {
+        day: 12,
+        month: 11,
+        year: 2023,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Gregorian
+    };
+    <Date as Julian>::to_julian(&mut date, false);
     println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
 }
 ```
 
 ##### Julian to Gregorian
 
-Convert any Julian date to Gregorian date:
+Convert *any Julian date to Gregorian date:
+
+```rust
+use PHASEXave::{Date, Sign, Zone, Gregorian, CalendarView};
+
+fn main() {
+    let mut date: Date = Date {
+        day: 30,
+        month: 10,
+        year: 2023,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Julian
+    };
+    <Date as Gregorian>::to_gregorian(&mut date, false);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+}
+```
+
+\* - any, but except first two days, that missing in Gregorian calendar
+
+##### Between
+
+Convert any Gregorian to Julian and Julian to Gregorian:
 
 ```rust
 use PHASEXave::{Date, Julian, Gregorian, Sign, Zone};
@@ -108,13 +171,11 @@ use PHASEXave::{Date, Julian, Gregorian, Sign, Zone};
 fn main() {
     let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 3, minutes: 0, seconds: 0 };
     let mut date: Date = Date::now(timezone);
-    <Date as Julian>::to_julian(&mut date);
-    <Date as Gregorian>::to_gregorian(&mut date);
+    <Date as Julian>::to_julian(&mut date, true);
+    <Date as Gregorian>::to_gregorian(&mut date, true);
     println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
-
-* any, but except first two days, that missing in Gregorian calendar
 
 #### Day of Week
 

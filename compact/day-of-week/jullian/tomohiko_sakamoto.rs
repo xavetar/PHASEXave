@@ -61,6 +61,13 @@
 // Для оптимизации кода данная формула, оптимизируется до формата:
 // ((year + (year / 4)) + (days_by_month_mod[(month - 1) as usize] + day as u16)) % REPEAT_WEAK_DAY_CYCLE as u16
 
+// * Ссылки (Gregorian Calendar):
+
+// https://www.quora.com/How-does-Tomohiko-Sakamotos-Algorithm-work
+// https://iq.opengenus.org/tomohiko-sakamoto-algorithm/
+// https://leetcode.com/problems/day-of-the-week/solutions/381894/JavaC++Python3-Sakamoto-Algorithm/comments/343457/
+// https://www.tutorialspoint.com/tomohiko-sakamoto-rsquo-s-algorithm-finding-the-day-of-the-week
+
 // Запоздалое дополнение (после написания своего алгоритма):
 
 // По факту получается, оптимизированный алгоритм Сакамото, в случае, если месяц > 3, вычисляет смещение для Января в следующем году
@@ -69,13 +76,6 @@
 // Фактически переменная: "shift_week_day_in_jan", должна называться: "shift_week_day_in_next_jan", когда месяц >= 3.
 // Для понимания этого алгоритма, пришлось потратить несколько дней, т.к некачественные ответы по ссылкам выше и на других ресурсах,
 // хорошего не делают, а только разжижают мозги, лучше никакой ответ, чем неправильный, думайте сами!
-
-// * Ссылки (Gregorian Calendar):
-
-// https://www.quora.com/How-does-Tomohiko-Sakamotos-Algorithm-work
-// https://iq.opengenus.org/tomohiko-sakamoto-algorithm/
-// https://leetcode.com/problems/day-of-the-week/solutions/381894/JavaC++Python3-Sakamoto-Algorithm/comments/343457/
-// https://www.tutorialspoint.com/tomohiko-sakamoto-rsquo-s-algorithm-finding-the-day-of-the-week
 
 const MONTHS_IN_YEAR: u8 = 12;
 const REPEAT_WEAK_DAY_CYCLE: u8 = 7;

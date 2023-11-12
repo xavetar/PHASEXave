@@ -45,6 +45,22 @@ use crate::types::{
 use crate::platform::time::{uptime};
 
 impl Time {
+    pub fn utc() -> Time {
+        let unix_time: u128 = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
+
+        return Self::to_time(
+            unix_time,
+            Zone {
+                sign: Sign::Unsigned,
+                hours: 0, minutes: 0,
+                seconds: 0
+            },
+                true
+            );
+    }
+
     pub fn now(timezone: Zone) -> Time {
         let unix_time: u128 = SystemTime::now()
             .duration_since(UNIX_EPOCH)

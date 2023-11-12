@@ -1,12 +1,12 @@
 [package]
 name = "PHASEXave"
-version = "1.5.3"
+version = "1.5.7"
 edition = "2021"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 build = "build.rs"
 license = "MIT AND Apache-2.0"
 license-file = "LICENSE-Anti-Virus"
-description = "Fast, clear and simple interface for calculating time."
+description = "Fast, clear and simple interface for calculating date and time."
 repository = "https://github.com/xavetar/PHASEXave"
 keywords = ["date", "time"]
 categories = ["date-and-time"]

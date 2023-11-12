@@ -26,8 +26,11 @@
  * THE SOFTWARE.
  */
 
- use crate::types::{
-    data::date::{Date},
+use crate::types::{
+    data::{
+        date::{Date},
+        zone::{Sign}
+    },
     planets::earth::calendar::{
         view::{CalendarView},
         constants::{
@@ -36,21 +39,21 @@
         }
     },
     it::unix_time::{
-        constants::{
-            days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
-        },
-        functions::{
-            year_from_days, month_from_days, era_days_from_date
-        }
+    constants::{
+        days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
+    },
+    functions::{
+        year_from_days, month_from_days, era_days_from_date
     }
+}
 };
 
 pub trait Gregorian {
-    fn to_gregorian(&mut self);
+    fn to_gregorian(&mut self, tz_in_unixtime: bool);
 }
 
 impl Gregorian for Date {
-    fn to_gregorian(&mut self) {
+    fn to_gregorian(&mut self, tz_in_unixtime: bool) {
         match self.view {
             CalendarView::Julian => {
                 let mut days: u128;
@@ -73,6 +76,16 @@ impl Gregorian for Date {
 
                 if self.era_days > UNIX_DAYS_BEFORE_EPOCH_GREGORIAN {
                     self.unix_time = ((self.era_days - (UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1)) * SECONDS_IN_DAY) + (self.unix_time % SECONDS_IN_DAY);
+
+                    // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
+                    // с учётом секунд внутри дня + часовой пояс.
+                    if !tz_in_unixtime {
+                        if self.timezone.sign == Sign::Signed {
+                            panic!("[NOT BE IMPLEMENTED]: Time zone cannot be a signed number, this day starts at 00:00 UTC! (to_gregorian)!")
+                        } else if self.timezone.sign == Sign::Unsigned {
+                            self.unix_time += self.timezone.to_seconds()
+                        }
+                    }
                 } else {
                     self.unix_time = 0;
                 }
@@ -82,7 +95,7 @@ impl Gregorian for Date {
                 self.view = CalendarView::Gregorian;
             },
             CalendarView::Gregorian => (),
-            _ => panic!("[ERROR]: Unknown CalendarView (to_julian)")
+            _ => panic!("[ERROR]: Unknown CalendarView (to_gregorian)")
         }
     }
 }

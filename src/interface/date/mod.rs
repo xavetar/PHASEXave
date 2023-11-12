@@ -51,6 +51,22 @@ use crate::types::{
 };
  
 impl Date {
+    pub fn utc() -> Date {
+        let unix_time: u128 = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
+
+        return Self::to_date(
+            unix_time,
+            Zone {
+                sign: Sign::Unsigned,
+                hours: 0, minutes: 0,
+                seconds: 0
+            },
+                true
+            );
+    }
+
     pub fn now(timezone: Zone) -> Date {
         let unix_time: u128 = SystemTime::now()
             .duration_since(UNIX_EPOCH)
