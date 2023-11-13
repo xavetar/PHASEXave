@@ -48,6 +48,37 @@ use crate::types::{
 }
 };
 
+/*
+    Signed Timezone:
+
+    1. Если временная зона отрицательна и количество секунд в последнем дне (по UTC - unix time) больше или равно,
+    чем во временной зоне, то отнимается количество секунд временной зоны, и прибавляется количество секунд за текущий день,
+    при этом количество дней не изменяется! era_days: [0, 0].
+
+    2. Если временная зона содержит больше (отрицательных по отношению к UTC) секунд и количество секунд в последнем дне (day_seconds)
+    меньше, чем во временной зоне (т.е это всегда от [-1, -N] дней к секундам по UTC - unix time), то вычисляется разница, между
+    временной зоной и секундами в текущем дне - разница потому-что эти секунды всегда идут вперёд, тем самым откусывая часть времени
+    от временной зоны вперёд, в результате разницы, получается значение/сумма секунд, на которое текущий день по UTC отходит назад по
+    unix time. Минимальное значение этой разницы 1 секунда (23:59:59) или 1 день назад. Деление с округлением вверх - это трюк и
+    попытка получить, абсолютную сумму дней отходящих назад. Причём это выражение всегда находится в пределе от [-1, -N] дней, по
+    отношению к дням эры/секундам от/по UTC, вне зависимости от временной зоны! era_days: [-1, -N].
+    После этого отнимается количество секунд временной зоны, и прибавляется количество секунд за текущий день.
+
+    Unsigned Timezone:
+
+    1. Если временная зона положительна (по отношению к UTC) и общая сумма секунд временной зоны (tz_sec) и последнем дне (day_seconds),
+    строго меньше/не превышает, максимальное количество секунд, требуемое для смены дня (SECONDS_IN_DAY) - день остаётся прежним,
+    при этом количество дней не изменяется! era_days: [0, 0].
+
+    2. Если временная зона положительна (по отношению к UTC) и общая сумма секунд временной зоны (tz_sec) и последнем дне (day_seconds),
+    больше/превышает или равна, минимальному значению требуемому для смены дня (SECONDS_IN_DAY), выполняется Евклидово деление
+    целочисленное/с округлением вниз - суммы секунд временной зоны (tz_sec) и последнем дне (day_seconds) на SECONDS_IN_DAY, с целью
+    узнать сумму дней превышения (т.е это всегда от [+1, +N] дней к секундам по UTC - unix time) и увеличивается количество дней эпохи
+    на это значение. Причём это выражение всегда находится в пределе от [+1, +N] дней, по отношению к дням эры/секундам от/по UTC, вне
+    зависимости от временной зоны! era_days: [+1, +N].
+    После этого прибавляется количество секунд временной зоны, и количество секунд за текущий день.
+*/
+
 pub trait Gregorian {
     fn to_gregorian(&mut self, tz_in_unixtime: bool);
 }
@@ -68,27 +99,51 @@ impl Gregorian for Date {
                     panic!("[IMPOSSIBLE]: This days is missing in Gregorian Calendar!")
                 }
 
-                // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
-                // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
-                (self.year, days) = year_from_days(CalendarView::Gregorian, self.era_days);
-
-                self.month = month_from_days(CalendarView::Gregorian, self.year, &mut days).index();
-
                 if self.era_days > UNIX_DAYS_BEFORE_EPOCH_GREGORIAN {
+                    let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
+
                     self.unix_time = ((self.era_days - (UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1)) * SECONDS_IN_DAY) + (self.unix_time % SECONDS_IN_DAY);
 
                     // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
-                    // с учётом секунд внутри дня + часовой пояс.
+                    // с учётом секунд внутри дня ± часовой пояс.
                     if !tz_in_unixtime {
-                        if self.timezone.sign == Sign::Signed {
-                            panic!("[NOT BE IMPLEMENTED]: Time zone cannot be a signed number, this day starts at 00:00 UTC! (to_gregorian)!")
-                        } else if self.timezone.sign == Sign::Unsigned {
-                            self.unix_time += self.timezone.to_seconds()
+                        let tz_sec: u128 = self.timezone.to_seconds();
+                        if self.timezone.sign == Sign::Signed && self.unix_time < tz_sec {
+                            panic!("[ERROR]: Overflow, signed timezone override self.unix_time (to_julian)!")
+                        } else {
+                            if self.timezone.sign == Sign::Signed && tz_sec > 0 {
+                                // Если секунд в последнем дне больше или равно, чем во временной зоне
+                                if day_seconds >= tz_sec {
+                                    self.unix_time -= tz_sec;
+                                    self.unix_time += day_seconds;
+                                } else if day_seconds < tz_sec {
+                                    self.era_days -= (tz_sec - day_seconds).div_ceil(SECONDS_IN_DAY);
+                                    self.unix_time -= tz_sec;
+                                    self.unix_time += day_seconds;
+                                }
+                            } else if self.timezone.sign == Sign::Unsigned {
+                                let total_secs: u128 = tz_sec + day_seconds;
+                                if total_secs < SECONDS_IN_DAY {
+                                    self.unix_time += tz_sec;
+                                    self.unix_time += day_seconds;
+                                } else if total_secs >= SECONDS_IN_DAY {
+                                    // Округление в меньшую сторону, если даже была указана отсутствующая временная зона [-12, +14]
+                                    self.era_days += total_secs.div_euclid(SECONDS_IN_DAY);
+                                    self.unix_time += tz_sec;
+                                    self.unix_time += day_seconds;
+                                }
+                            }
                         }
                     }
                 } else {
                     self.unix_time = 0;
                 }
+
+                // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
+                // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
+                (self.year, days) = year_from_days(CalendarView::Gregorian, self.era_days);
+
+                self.month = month_from_days(CalendarView::Gregorian, self.year, &mut days).index();
 
                 self.day = days as u8;
 

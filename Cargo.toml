@@ -1,14 +1,14 @@
 [package]
 name = "PHASEXave"
-version = "1.5.7"
+version = "1.5.8"
 edition = "2021"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 build = "build.rs"
 license = "MIT AND Apache-2.0"
 license-file = "LICENSE-Anti-Virus"
-description = "Fast, clear and simple interface for calculating date and time."
+description = "Fast, clear and simple interface for calculating date, week day and time in Julian, Gregorian calendar."
 repository = "https://github.com/xavetar/PHASEXave"
-keywords = ["date", "time"]
+keywords = ["date", "time", "calendar", "julian", "gregorian", "rata-die", "sakamoto", "xavetar", "week", "day"]
 categories = ["date-and-time"]
 include = ["*.rs", "src/", "LICENSE", "Cargo.toml"]
 exclude = ["res/", "compact", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
