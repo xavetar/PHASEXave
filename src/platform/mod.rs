@@ -43,6 +43,7 @@ mod windows;
 macro_rules! import_functions {
     ($platform:ident) => {
         pub use self::$platform::{time};
+        pub use self::$platform::{tz};
     };
 }
 

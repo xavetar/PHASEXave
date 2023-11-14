@@ -42,7 +42,10 @@ use crate::types::{
     feature = "platform_specific_functions_unix",
     feature = "platform_specific_functions_windows"
 ))]
-use crate::platform::time::{uptime};
+use crate::platform::{
+    time::{uptime},
+    tz::{local_timezone},
+};
 
 impl Time {
     pub fn utc() -> Time {
@@ -57,7 +60,7 @@ impl Time {
                 hours: 0, minutes: 0,
                 seconds: 0
             },
-                true
+            true
             );
     }
 
@@ -67,6 +70,19 @@ impl Time {
             .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
 
         return Self::to_time(unix_time, timezone, false);
+    }
+
+    #[cfg(any(
+        feature = "platform_specific_functions_darwin",
+        feature = "platform_specific_functions_unix",
+        feature = "platform_specific_functions_windows"
+    ))]
+    pub fn local() -> Time {
+        let unix_time: u128 = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
+
+        return Self::to_time(unix_time, local_timezone(), false);
     }
 
     pub fn from(unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Time {

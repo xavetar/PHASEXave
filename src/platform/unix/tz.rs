@@ -26,5 +26,44 @@
  * THE SOFTWARE.
  */
 
-pub mod time;
-pub mod tz;
+use crate::types::{
+    data::zone::{Sign, Zone},
+    planets::earth::calendar::{
+        constants::{
+            seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR},
+        },
+    }
+};
+
+use libc::{time_t, time, PT_NULL, tm, localtime_r};
+
+pub fn local_timezone() -> Zone {
+    let mut zone: Zone = Zone::default();
+
+    let mut epoch_seconds: time_t = unsafe { time(std::ptr::null_mut()) };
+    let mut time_struct: tm = unsafe { std::mem::zeroed::<tm>() };
+
+    if unsafe { localtime_r(&epoch_seconds, &mut time_struct) } == std::ptr::null_mut() {
+        panic!("[ERROR]: Pointer is NULL (timezone)!")
+    }
+
+    if time_struct.tm_gmtoff < 0 {
+        zone.sign = Sign::Signed;
+    } else {
+        zone.sign = Sign::Unsigned;
+    }
+
+    let tz_seconds: u32 = time_struct.tm_gmtoff.unsigned_abs() as u32;
+
+    (
+        zone.hours,
+        zone.minutes,
+        zone.seconds
+    ) = (
+        (tz_seconds / (SECONDS_IN_HOUR as u32)) as u8,
+        ((tz_seconds % (SECONDS_IN_HOUR  as u32)) / (SECONDS_IN_MINUTE as u32)) as u8,
+        (tz_seconds % (SECONDS_IN_MINUTE as u32)) as u8
+    );
+
+    return zone;
+}

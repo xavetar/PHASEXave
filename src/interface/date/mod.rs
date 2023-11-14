@@ -40,6 +40,7 @@ use crate::types::{
     it::unix_time::{
         constants::{
             days::{
+                UNIX_DAYS_BEFORE_EPOCH_JULIAN,
                 UNIX_DAYS_BEFORE_EPOCH_GREGORIAN
             }
         },
@@ -49,37 +50,58 @@ use crate::types::{
         }
     },
 };
+
+#[cfg(any(
+    feature = "platform_specific_functions_darwin",
+    feature = "platform_specific_functions_unix",
+    feature = "platform_specific_functions_windows"
+))]
+use crate::platform::tz::{local_timezone};
  
 impl Date {
-    pub fn utc() -> Date {
+    pub fn utc(view: CalendarView) -> Date {
         let unix_time: u128 = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
 
         return Self::to_date(
+            view,
             unix_time,
             Zone {
                 sign: Sign::Unsigned,
                 hours: 0, minutes: 0,
                 seconds: 0
             },
-                true
+            true
             );
     }
 
-    pub fn now(timezone: Zone) -> Date {
+    pub fn now(view: CalendarView, timezone: Zone) -> Date {
         let unix_time: u128 = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
 
-        return Self::to_date(unix_time, timezone, false);
+        return Self::to_date(view, unix_time, timezone, false);
     }
 
-    pub fn from(unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Date {
-        return Self::to_date(unix_time, timezone, tz_in_unixtime);
+    #[cfg(any(
+        feature = "platform_specific_functions_darwin",
+        feature = "platform_specific_functions_unix",
+        feature = "platform_specific_functions_windows"
+    ))]
+    pub fn local(view: CalendarView) -> Date {
+        let unix_time: u128 = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
+
+        return Self::to_date(view, unix_time, local_timezone(), false);
     }
 
-    fn to_date(mut unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Date {
+    pub fn from(view: CalendarView, unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Date {
+        return Self::to_date(view, unix_time, timezone, tz_in_unixtime);
+    }
+
+    fn to_date(view: CalendarView, mut unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Date {
         if !tz_in_unixtime {
             let timezone_seconds: u128 = timezone.to_seconds();
 
@@ -94,25 +116,27 @@ impl Date {
             }
         }
 
-        let (mut era_days, _): (u128, u128) = epoch_days_from_seconds(unix_time);
+        let mut days: u128;
+        let mut date: Date = Date::default();
+
+        (date.era_days, _) = epoch_days_from_seconds(unix_time);
+
+        if view == CalendarView::Julian {
+            date.era_days += UNIX_DAYS_BEFORE_EPOCH_JULIAN;
+        } else if view == CalendarView::Gregorian {
+            date.era_days += UNIX_DAYS_BEFORE_EPOCH_GREGORIAN;
+        } else {
+            panic!("[ERROR]: Unknown CalendarView (to_date)!")
+        }
 
         // Текущий день, который идёт, фактически не является днём эры, он ещё не закончился, но визуально это +1
-        era_days += UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1;
+        date.era_days += 1;
 
-        let day: u128 = era_days;
+        (date.year, days) = year_from_days(view, date.era_days);
+        date.month = month_from_days(view, date.year, &mut days).index();
+        (date.day, date.timezone, date.unix_time, date.view) = (days as u8, timezone, unix_time, view);
 
-        let (year, mut day): (u128, u128) = year_from_days(CalendarView::Gregorian, day);
-        let month: u8 = month_from_days(CalendarView::Gregorian, year, &mut day).index();
-
-        return Date {
-            day: day as u8,
-            month: month,
-            year: year,
-            timezone: timezone,
-            unix_time: unix_time,
-            era_days: era_days,
-            view: CalendarView::Gregorian
-        };
+        return date;
     }
 
     pub fn month(&self) -> Months {
