@@ -48,10 +48,6 @@ pub fn local_timezone() -> Zone {
         panic!("[ERROR]: Could not get time zone information or this result code was not in the documentation on the compilation date!");
     }
 
-    // Microsoft this is your alternative-logic:
-    //  1) Timezone <= 0 is Unsigned timezone [+1, +14].
-    //  2) Timezone > 0 is Signed/Negative timezone [-1, -12].
-    // This is perfect alternative-logic. Yeah, some like a shit! "Thank you" for spent my time.
     if tz_info.Bias > 0 {
         zone.sign = Sign::Signed;
     } else {

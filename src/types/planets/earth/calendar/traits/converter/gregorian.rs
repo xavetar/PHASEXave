@@ -102,7 +102,7 @@ impl Gregorian for Date {
                 if self.era_days > UNIX_DAYS_BEFORE_EPOCH_GREGORIAN {
                     let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
 
-                    self.unix_time = ((self.era_days - (UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1)) * SECONDS_IN_DAY) + (self.unix_time % SECONDS_IN_DAY);
+                    self.unix_time = (self.era_days - (UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1)) * SECONDS_IN_DAY;
 
                     // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
                     // с учётом секунд внутри дня ± часовой пояс.
@@ -134,6 +134,8 @@ impl Gregorian for Date {
                                 }
                             }
                         }
+                    } else {
+                        self.unix_time += day_seconds;
                     }
                 } else {
                     self.unix_time = 0;
