@@ -35,7 +35,7 @@ use crate::types::{
     }
 };
 
-use libc::{time_t, time, PT_NULL, tm, localtime_r};
+use libc::{time_t, time, tm, localtime_r};
 
 pub fn local_timezone() -> Zone {
     let mut zone: Zone = Zone::default();
