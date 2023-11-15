@@ -40,8 +40,7 @@ use libc::{time_t, time, tm, localtime_r};
 pub fn local_timezone() -> Zone {
     let mut zone: Zone = Zone::default();
 
-    let mut epoch_seconds: time_t = unsafe { time(std::ptr::null_mut()) };
-    let mut time_struct: tm = unsafe { std::mem::zeroed::<tm>() };
+    let (epoch_seconds, mut time_struct): (time_t, tm) = unsafe { (time(std::ptr::null_mut()), std::mem::zeroed::<tm>()) };
 
     if unsafe { localtime_r(&epoch_seconds, &mut time_struct) } == std::ptr::null_mut() {
         panic!("[ERROR]: Pointer is NULL (timezone)!")

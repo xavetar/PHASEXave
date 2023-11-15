@@ -30,8 +30,7 @@ use winapi::um::winnt::LARGE_INTEGER;
 use winapi::um::profileapi::{QueryPerformanceCounter, QueryPerformanceFrequency};
 
 pub fn uptime() -> u64 {
-    let mut frequency: LARGE_INTEGER = unsafe { std::mem::zeroed::<LARGE_INTEGER>() };
-    let mut counter: LARGE_INTEGER = unsafe { std::mem::zeroed::<LARGE_INTEGER>() };
+    let (mut counter, mut frequency): (LARGE_INTEGER, LARGE_INTEGER) = unsafe { (std::mem::zeroed::<LARGE_INTEGER>(), std::mem::zeroed::<LARGE_INTEGER>()) };
 
     if unsafe { QueryPerformanceFrequency(&mut frequency) } == 0 {
         panic!("Failed to get performance counter frequency!");
