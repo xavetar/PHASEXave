@@ -16,6 +16,12 @@ The library is hosted on [crates.io](https://crates.io/crates/PHASEXave/).
 PHASEXave = "*"
 ```
 
+## Validity
+
+Correct date, week day and time, even after three hundred sixteen billion eight hundred eighty seven million three hundred eighty seven thousand thirty eight years*.🤪
+
+\* - The processor was not enough for more. (Nine-ten quintillion seconds). It took about 5~10 minutes (on M1).
+
 ## Features
 
 Add feature to Cargo.toml:
