@@ -38,6 +38,8 @@ use crate::types::{
 use winapi::um::timezoneapi::{GetTimeZoneInformation, TIME_ZONE_INFORMATION};
 
 pub fn local_timezone() -> Zone {
+    let mut zone: Zone = Zone::default();
+
     let mut tz_info: TIME_ZONE_INFORMATION = unsafe { std::mem::zeroed::<TIME_ZONE_INFORMATION>() };
 
     let result: u32 = unsafe { GetTimeZoneInformation(&mut tz_info) };
@@ -56,7 +58,6 @@ pub fn local_timezone() -> Zone {
         zone.sign = Sign::Unsigned;
     }
 
-    let mut zone: Zone = Zone::default();
     let tz_seconds: u32 = tz_info.Bias.unsigned_abs() * SECONDS_IN_MINUTE as u32;
 
     (

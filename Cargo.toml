@@ -1,6 +1,6 @@
 [package]
 name = "PHASEXave"
-version = "1.7.0"
+version = "1.7.1"
 edition = "2021"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 build = "build.rs"
