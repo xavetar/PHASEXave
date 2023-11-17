@@ -52,3 +52,14 @@ pub use crate::types::{
         }
     },
 };
+
+pub mod functions {
+    pub use crate::types::{
+        planets::earth::calendar::{
+            functions::{
+                is_leap_year_julian,
+                is_leap_year_gregorian
+            }
+        }
+    };
+}
