@@ -28,25 +28,16 @@
 
 use crate::types::planets::earth::calendar::{
     view::{CalendarView},
-    functions::{
-        is_leap_year_julian,
-        is_leap_year_gregorian
-    },
+    functions::{is_leap_year},
     constants::months::{
         Months, BASE_MONTH_DAYS, LEAP_MONTH_DAYS
     }
 };
 
 pub fn month_from_days(view: CalendarView, year: u128, days: &mut u128) -> Months {
-    let is_leap_year: fn(u128) -> bool = match view {
-        CalendarView::Julian => is_leap_year_julian,
-        CalendarView::Gregorian => is_leap_year_gregorian,
-        _ => panic!("[ERROR]: Unknown CalendarView (month_from_days)!")
-    };
-
     let months: &[u8; 12];
 
-    if !is_leap_year(year) {
+    if !is_leap_year(view, year) {
         months = &BASE_MONTH_DAYS
     } else {
         months = &LEAP_MONTH_DAYS

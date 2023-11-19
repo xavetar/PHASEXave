@@ -26,20 +26,26 @@
  * THE SOFTWARE.
  */
 
-pub const fn is_leap_year_gregorian(year: u128) -> bool {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+use crate::types::{
+    planets::earth::calendar::{
+        view::{CalendarView},
+    }
+};
+
+pub const fn is_leap_year(view: CalendarView, year: u128) -> bool {
+    match view {
+        CalendarView::Julian => return year % 4 == 0,
+        CalendarView::Gregorian => return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0),
+        _ => panic!("[ERROR]: Unknown CalendarView (is_leap_year)!")
+    }
 }
 
-pub const fn is_leap_year_julian(year: u128) -> bool {
-    return year % 4 == 0;
-}
-
-pub const fn sum_leap_years_gregorian(year: u128) -> u128 {
-    return year / 4 - year / 100 + year / 400;
-}
-
-pub const fn sum_leap_years_julian(year: u128) -> u128 {
-    return year / 4;
+pub const fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
+    match view {
+        CalendarView::Julian => return year / 4,
+        CalendarView::Gregorian => return year / 4 - year / 100 + year / 400,
+        _ => panic!("[ERROR]: Unknown CalendarView (sum_leap_years)!")
+    }
 }
 
 pub const fn excess_leap_years(year: u128) -> u128 {

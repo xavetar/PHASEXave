@@ -30,27 +30,19 @@ use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
         constants::year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR},
-        functions::{
-            is_leap_year_julian, is_leap_year_gregorian
-        }
+        functions::{is_leap_year}
     }
 };
 
 const START_YEAR: u16 = 1;
 
 pub fn year_from_days(view: CalendarView, days: u128) -> (u128, u128) {
-    let is_leap_year: fn(u128) -> bool = match view {
-        CalendarView::Julian => is_leap_year_julian,
-        CalendarView::Gregorian => is_leap_year_gregorian,
-        _ => panic!("[ERROR]: Unknown CalendarView (year_from_days)!")
-    };
-
     let mut day: u128 = days;
     let mut year: u128 = START_YEAR as u128;
 
     loop {
         if (day >= (BASE_DAYS_YEAR as u128)) && (day != 0) {
-            if is_leap_year(year) {
+            if is_leap_year(view, year) {
                 if day > LEAP_DAYS_YEAR as u128 {
                     day -= LEAP_DAYS_YEAR as u128;
                     year += 1;

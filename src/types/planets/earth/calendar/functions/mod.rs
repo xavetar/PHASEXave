@@ -28,7 +28,4 @@
 
 mod leap_year;
 
-pub use leap_year::{
-    is_leap_year_gregorian, sum_leap_years_gregorian,
-    is_leap_year_julian, sum_leap_years_julian
-};
+pub use leap_year::{is_leap_year, sum_leap_years};

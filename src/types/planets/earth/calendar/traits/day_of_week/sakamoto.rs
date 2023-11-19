@@ -38,7 +38,7 @@ use crate::types::{
             shifts::{JULIAN_BASE_SAKAMOTO, GREGORIAN_BASE_SAKAMOTO}
         },
         functions::{
-            sum_leap_years_gregorian, sum_leap_years_julian
+            sum_leap_years
         }
     }
 };
@@ -54,9 +54,9 @@ impl Sakamoto for Date {
     }
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
-        let (sum_leap_years, BASE_YEAR_SHIFTS): (fn(u128) -> u128, &[u8; MONTHS_IN_YEAR as usize]) = match view {
-            CalendarView::Gregorian => (sum_leap_years_gregorian, &GREGORIAN_BASE_SAKAMOTO),
-            CalendarView::Julian => (sum_leap_years_julian, &JULIAN_BASE_SAKAMOTO),
+        let BASE_YEAR_SHIFTS: &[u8; MONTHS_IN_YEAR as usize] = match view {
+            CalendarView::Gregorian => &GREGORIAN_BASE_SAKAMOTO,
+            CalendarView::Julian => &JULIAN_BASE_SAKAMOTO,
             _ => panic!("[ERROR]: Unknown CalendarView (Sakamoto).")
         };
 
@@ -64,6 +64,6 @@ impl Sakamoto for Date {
 
         if month < 3 { local_year -= 1; }
 
-        return Week::from(((local_year + sum_leap_years(local_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+        return Week::from(((local_year + sum_leap_years(view, local_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
     }
 }

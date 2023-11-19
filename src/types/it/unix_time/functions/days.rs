@@ -35,8 +35,7 @@ use crate::types::{
             year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR}
         },
         functions::{
-            is_leap_year_gregorian, is_leap_year_julian,
-            sum_leap_years_gregorian, sum_leap_years_julian
+            is_leap_year, sum_leap_years
         }
     }
 };
@@ -56,16 +55,10 @@ pub fn epoch_days_from_seconds(mut seconds: u128) -> (u128, u128) {
 }
 
 pub fn era_days_from_date(view: CalendarView, year: u128, month: u8, day: u8) -> u128 {
-    let (is_leap_year, sum_leap_years): (fn(u128) -> bool, fn(u128) -> u128) = match view {
-        CalendarView::Julian => (is_leap_year_julian, sum_leap_years_julian),
-        CalendarView::Gregorian => (is_leap_year_gregorian, sum_leap_years_gregorian),
-        _ => panic!("[ERROR]: Unknown CalendarView (era_days_from_date).")
-    };
-
     let mut days: u128 = day as u128;
 
-    let leap_year: bool = is_leap_year(year);
-    let leap_years: u128 = sum_leap_years(year);
+    let leap_year: bool = is_leap_year(view, year);
+    let leap_years: u128 = sum_leap_years(view, year);
 
     if !leap_year {
         days += (leap_years * LEAP_DAYS_YEAR as u128) + (((year - 1) - leap_years) as u128 * BASE_DAYS_YEAR as u128);

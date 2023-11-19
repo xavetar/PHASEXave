@@ -39,8 +39,7 @@ use crate::types::{
             }
         },
         functions::{
-            is_leap_year_gregorian, sum_leap_years_gregorian,
-            is_leap_year_julian, sum_leap_years_julian
+            is_leap_year, sum_leap_years
         }
     }
 };
@@ -56,18 +55,18 @@ impl Xavetar for Date {
     }
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
-        let ((is_leap_year, sum_leap_years), (BASE_YEAR_SHIFTS, LEAP_YEAR_SHIFTS)): ((fn(u128) -> bool, fn(u128) -> u128), (&[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize])) = match view {
-            CalendarView::Gregorian => ((is_leap_year_gregorian, sum_leap_years_gregorian), (&GREGORIAN_BASE_XAVETAR, &GREGORIAN_LEAP_XAVETAR)),
-            CalendarView::Julian => ((is_leap_year_julian, sum_leap_years_julian), (&JULIAN_BASE_XAVETAR, &JULIAN_LEAP_XAVETAR)),
+        let (BASE_YEAR_SHIFTS, LEAP_YEAR_SHIFTS): (&[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize]) = match view {
+            CalendarView::Gregorian => (&GREGORIAN_BASE_XAVETAR, &GREGORIAN_LEAP_XAVETAR),
+            CalendarView::Julian => (&JULIAN_BASE_XAVETAR, &JULIAN_LEAP_XAVETAR),
             _ => panic!("[ERROR]: Unknown CalendarView (Xavetar).")
         };
 
         let last_year: u128 = year - 1;
 
-        if !is_leap_year(year) {
-            return Week::from(((last_year + sum_leap_years(last_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+        if !is_leap_year(view, year) {
+            return Week::from(((last_year + sum_leap_years(view, last_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
         } else {
-            return Week::from(((last_year + sum_leap_years(last_year) + LEAP_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            return Week::from(((last_year + sum_leap_years(view, last_year) + LEAP_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
         }
     }
 }
