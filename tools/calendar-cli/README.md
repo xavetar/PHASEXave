@@ -5,7 +5,7 @@
 
 # Calendar-CLI
 
-![Calendar-CLI Logo](res/calendar-cli.svg)
+![Calendar-CLI Logo](../../tools/calendar-cli/res/calendar-cli.svg)
 
 ## Command-Line Options
 

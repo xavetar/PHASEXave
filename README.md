@@ -6,7 +6,7 @@
 
 # PHASEXave
 
-![PHASEXave Logo](res/logo-header.png)
+![PHASEXave Logo](api/res/phasexave-header.png)
 
 ## Installation
 The library is hosted on [crates.io](https://crates.io/crates/PHASEXave/).
