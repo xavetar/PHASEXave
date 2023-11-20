@@ -1,47 +1,45 @@
-[package]
-name = "PHASEXave"
-version = "1.7.3"
-edition = "2021"
+[workspace]
+
+members = [
+    "api",
+    "examples/calendar-cli",
+]
+
+default-members = [
+    "api",
+    "examples/calendar-cli",
+]
+
+resolver="2"
+
+
+[workspace.package]
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
-build = "build.rs"
+edition = "2021"
+version = "1.7.3"
+rust-version = "1.70"
 license = "MIT AND Apache-2.0"
 license-file = "LICENSE-Anti-Virus"
-description = "Fast, clear and simple interface for calculating date, week day and time in Julian, Gregorian calendar."
 repository = "https://github.com/xavetar/PHASEXave"
+description = "Date and time toolkit"
 keywords = ["date", "time", "calendar", "julian", "gregorian"]
 categories = ["date-and-time"]
-include = ["*.rs", "src/", "LICENSE", "Cargo.toml"]
-exclude = ["res/", "compact", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
+include = ["src/", "Cargo.toml", "LICENSE-Anti-Virus", "LICENSE-MIT", "LICENSE-Apache"]
+exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
     "Icon", "._*", ".DocumentRevisions-V100", ".fseventsd", ".Spotlight-V100", ".TemporaryItems", ".Trashes",
     ".VolumeIcon.icns", ".com.apple.timemachine.donotpresent", ".AppleDB", ".AppleDesktop", "Network Trash Folder",
-    "Temporary Items", ".apdisk", ".env", ".gitignore", ".git", ".idea"]
+    "Temporary Items", ".apdisk", ".env", ".gitignore", ".git", ".idea", ".vscode"]
 
-# Features
-[features]
-default = []
-
-platform_specific_functions_unix = ["dep:libc"]
-platform_specific_functions_darwin = ["dep:mach", "dep:core-foundation"]
-platform_specific_functions_windows = ["dep:winapi"]
-
-# Dependencies
-[dependencies]
-
-[target.'cfg(target_vendor = "apple")'.dependencies]
-mach = { version = "0.3.2", optional = true, default-features = false }
-core-foundation = { version = "0.9.3", optional = true, default-features = false }
-
-[target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
-libc = { version = "0.2.149", optional = true, default-features = false }
-
-[target.'cfg(target_family = "windows")'.dependencies]
-winapi = { version = "0.3.9", features = ["profileapi", "ntdef", "winnt", "timezoneapi"], optional = true, default-features = false }
+[workspace.dependencies]
+PHASEXave = { version = "=1.7.3", path = "api", default-features = false }
 
 # Profiles
 [profile.dev]
 lto = "off"
 opt-level = 0
+panic = "abort"
 
 [profile.release]
 lto = "fat"
 opt-level = 3
+panic = "abort"
