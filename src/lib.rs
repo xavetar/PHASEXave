@@ -53,6 +53,17 @@ pub use crate::types::{
     },
 };
 
+pub mod constants {
+    pub use crate::types::{
+        planets::earth::calendar::{
+            constants::{
+                week::{DAYS_IN_WEEK},
+                months::{MONTHS_IN_YEAR},
+            }
+        }
+    };
+}
+
 pub mod functions {
     pub use crate::types::{
         planets::earth::calendar::{
