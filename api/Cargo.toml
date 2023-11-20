@@ -1,3 +1,4 @@
+# Package
 [package]
 name = "PHASEXave"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
@@ -15,6 +16,7 @@ categories.workspace = true
 include.workspace = true
 exclude.workspace = true
 
+# Library
 [lib]
 path = "src/lib.rs"
 

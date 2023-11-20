@@ -1,3 +1,4 @@
+# Package
 [package]
 name = "calendar-cli"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
@@ -8,12 +9,13 @@ license.workspace = true
 license-file.workspace = true
 rust-version.workspace = true
 description = "Fast, clear and simple interface for view calendar from CLI for Julian, Gregorian calendar."
-repository = "https://github.com/xavetar/PHASEXave/examples/calendar-cli"
+repository.workspace = true
 keywords = ["cli", "calendar", "julian", "gregorian"]
 categories.workspace = true
 include.workspace = true
 exclude.workspace = true
 
+# Binary
 [[bin]]
 name = "calendar-cli"
 path = "src/main.rs"
