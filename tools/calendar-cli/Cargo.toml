@@ -28,10 +28,10 @@ default = []
 [dependencies]
 
 [target.'cfg(target_vendor = "apple")'.dependencies]
-PHASEXave = { path = "../../../PHASEXave/api", features = ["platform_specific_functions_darwin"] }
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_darwin"] }
 
 [target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
-PHASEXave = { path = "../../../PHASEXave/api", features = ["platform_specific_functions_unix"] }
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_unix"] }
 
 [target.'cfg(target_family = "windows")'.dependencies]
-PHASEXave = { path = "../../../PHASEXave/api", features = ["platform_specific_functions_windows"] }
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_windows"] }

@@ -25,7 +25,7 @@ repository = "https://github.com/xavetar/PHASEXave"
 description = "Date and time toolkit"
 keywords = ["date", "time", "calendar", "julian", "gregorian"]
 categories = ["date-and-time"]
-include = ["src/", "Cargo.toml", "LICENSE-Anti-Virus", "LICENSE-MIT", "LICENSE-Apache"]
+include = ["src/", "Cross.toml", "Cargo.toml", "LICENSE-Anti-Virus", "LICENSE-MIT", "LICENSE-Apache"]
 exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
     "Icon", "._*", ".DocumentRevisions-V100", ".fseventsd", ".Spotlight-V100", ".TemporaryItems", ".Trashes",
     ".VolumeIcon.icns", ".com.apple.timemachine.donotpresent", ".AppleDB", ".AppleDesktop", "Network Trash Folder",
@@ -33,7 +33,7 @@ exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lo
 
 # Dependencies
 [workspace.dependencies]
-PHASEXave = { version = "=1.7.3", path = "api", default-features = false }
+PHASEXave = { version = "=1.7.3", path = "api/", default-features = false }
 
 # Profiles
 [profile.dev]
