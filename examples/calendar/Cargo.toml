@@ -1,0 +1,32 @@
+[package]
+name = "calendar-cli"
+version = "1.0.0"
+edition = "2021"
+authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
+license = "MIT AND Apache-2.0"
+license-file = "LICENSE-Anti-Virus"
+description = "Fast, clear and simple interface for creating calendar from CLI for Julian, Gregorian calendar."
+repository = "https://github.com/xavetar/PHASEXave"
+keywords = ["cli", "calendar", "julian", "gregorian"]
+categories = ["date-and-time"]
+include = ["*.rs", "src/", "LICENSE", "Cargo.toml"]
+exclude = ["res/", "compact", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
+    "Icon", "._*", ".DocumentRevisions-V100", ".fseventsd", ".Spotlight-V100", ".TemporaryItems", ".Trashes",
+    ".VolumeIcon.icns", ".com.apple.timemachine.donotpresent", ".AppleDB", ".AppleDesktop", "Network Trash Folder",
+    "Temporary Items", ".apdisk", ".env", ".gitignore", ".git", ".idea"]
+
+# Features
+[features]
+default = []
+
+# Dependencies
+[dependencies]
+
+[target.'cfg(target_vendor = "apple")'.dependencies]
+PHASEXave = { path = "../../../PHASEXave", features = ["platform_specific_functions_darwin"] }
+
+[target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
+PHASEXave = { path = "../../../PHASEXave", features = ["platform_specific_functions_unix"] }
+
+[target.'cfg(target_family = "windows")'.dependencies]
+PHASEXave = { path = "../../../PHASEXave", features = ["platform_specific_functions_windows"] }
