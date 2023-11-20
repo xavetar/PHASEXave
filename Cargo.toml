@@ -17,7 +17,7 @@ resolver="2"
 [workspace.package]
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 edition = "2021"
-version = "1.7.3"
+version = "1.7.4"
 rust-version = "1.70"
 license = "MIT AND Apache-2.0"
 license-file = "LICENSE-Anti-Virus"
