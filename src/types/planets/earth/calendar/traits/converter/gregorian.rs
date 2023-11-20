@@ -36,16 +36,17 @@ use crate::types::{
         constants::{
             seconds::{SECONDS_IN_DAY},
             days::{ALIGN_JULIAN_TO_GREGORIAN_DAYS}
+        },
+        functions::{era_days_from_date}
+    },
+    counter::unix_time::{
+        constants::{
+            days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
+        },
+        functions::{
+            year_from_days, month_from_days
         }
-    },
-    it::unix_time::{
-    constants::{
-        days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
-    },
-    functions::{
-        year_from_days, month_from_days, era_days_from_date
     }
-}
 };
 
 /*

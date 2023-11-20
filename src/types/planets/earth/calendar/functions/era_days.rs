@@ -26,12 +26,37 @@
  * THE SOFTWARE.
  */
 
-mod days;
-mod month;
-mod year;
+use super::{is_leap_year, sum_leap_years};
 
-pub(crate) use days::{
-    epoch_days_from_seconds, era_days_from_date
+use crate::types::{
+    planets::earth::calendar::{
+        view::{CalendarView},
+        constants::{
+            days::{BASE_MONTH_SUM_DAYS, LEAP_MONTH_SUM_DAYS},
+            year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR}
+        },
+    }
 };
-pub(crate) use month::{month_from_days};
-pub(crate) use year::{year_from_days};
+
+pub fn era_days_from_date(view: CalendarView, year: u128, month: u8, day: u8) -> u128 {
+    let mut days: u128 = day as u128;
+
+    let leap_year: bool = is_leap_year(view, year);
+    let leap_years: u128 = sum_leap_years(view, year);
+
+    if !leap_year {
+        days += (leap_years * LEAP_DAYS_YEAR as u128) + (((year - 1) - leap_years) as u128 * BASE_DAYS_YEAR as u128);
+    } else {
+        days += ((leap_years - 1) * LEAP_DAYS_YEAR as u128) + ((year - leap_years) as u128 * BASE_DAYS_YEAR as u128);
+    }
+
+    if month >= 2 {
+        if !leap_year {
+            days += BASE_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+        } else {
+            days += LEAP_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+        }
+    }
+
+    return days;
+}

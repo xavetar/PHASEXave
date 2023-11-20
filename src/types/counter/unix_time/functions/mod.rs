@@ -26,40 +26,10 @@
  * THE SOFTWARE.
  */
 
-use crate::types::{
-    data::date::{Date},
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            week::{
-                SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN,
-                SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN,
-                REPEAT_WEAK_DAY_CYCLE, Week,
-            },
-        },
-        functions::{era_days_from_date}
-    }
-};
+mod epoch;
+mod month;
+mod year;
 
-pub trait RataDie {
-    fn week_day(&self) -> Week;
-    fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week;
-}
-
-impl RataDie for Date {
-    fn week_day(&self) -> Week {
-        return <Date as RataDie>::from(self.view.clone(), self.year, self.month, self.day);
-    }
-
-    fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
-        let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match view {
-            CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
-            CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
-            _ => panic!("[ERROR]: Unknown CalendarView (RataDie).")
-        };
-
-        let era_days: u128 = era_days_from_date(view, year, month, day);
-
-        return Week::from(((era_days + SHIFT_BEFORE_FIRST_WEEK_DAY) % (REPEAT_WEAK_DAY_CYCLE as u128)) as u8);
-    }
-}
+pub(crate) use epoch::{epoch_days_from_seconds};
+pub(crate) use month::{month_from_days};
+pub(crate) use year::{year_from_days};

@@ -28,15 +28,9 @@
 
 use crate::types::{
     planets::earth::calendar::{
-        view::{CalendarView},
         constants::{
             seconds::{SECONDS_IN_DAY},
-            days::{BASE_MONTH_SUM_DAYS, LEAP_MONTH_SUM_DAYS},
-            year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR}
         },
-        functions::{
-            is_leap_year, sum_leap_years
-        }
     }
 };
 
@@ -52,27 +46,4 @@ pub fn epoch_days_from_seconds(mut seconds: u128) -> (u128, u128) {
             seconds -= SECONDS_IN_DAY;
         }
     }
-}
-
-pub fn era_days_from_date(view: CalendarView, year: u128, month: u8, day: u8) -> u128 {
-    let mut days: u128 = day as u128;
-
-    let leap_year: bool = is_leap_year(view, year);
-    let leap_years: u128 = sum_leap_years(view, year);
-
-    if !leap_year {
-        days += (leap_years * LEAP_DAYS_YEAR as u128) + (((year - 1) - leap_years) as u128 * BASE_DAYS_YEAR as u128);
-    } else {
-        days += ((leap_years - 1) * LEAP_DAYS_YEAR as u128) + ((year - leap_years) as u128 * BASE_DAYS_YEAR as u128);
-    }
-
-    if month >= 2 {
-        if !leap_year {
-            days += BASE_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
-        } else {
-            days += LEAP_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
-        }
-    }
-
-    return days;
 }

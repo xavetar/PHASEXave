@@ -58,13 +58,14 @@ use crate::types::{
             seconds::{SECONDS_IN_DAY},
             days::{ALIGN_JULIAN_TO_GREGORIAN_DAYS}
         },
+        functions::{era_days_from_date}
     },
-    it::unix_time::{
+    counter::unix_time::{
         constants::{
             days::{UNIX_DAYS_BEFORE_EPOCH_JULIAN}
         },
         functions::{
-            year_from_days, month_from_days, era_days_from_date
+            year_from_days, month_from_days
         }
     }
 };
