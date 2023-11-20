@@ -1,0 +1,42 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  macos:
+      runs-on: macos-13
+  
+      steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --release --features platform_specific_functions_darwin --verbose
+      - name: Test
+        run: cargo run --release --bin calendar-cli
+
+  linux:
+      runs-on: ubuntu-latest
+  
+      steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --release --features platform_specific_functions_unix --verbose
+      - name: Test
+        run: cargo run --release --bin calendar-cli
+  
+  windows:
+        runs-on: windows-latest
+    
+        steps:
+        - uses: actions/checkout@v3
+        - name: Build
+          run: cargo build --release --features platform_specific_functions_windows --verbose
+        - name: Test
+          run: cargo run --release --bin calendar-cli
+
