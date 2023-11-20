@@ -3,7 +3,6 @@
 name = "PHASEXave"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 publish = true
-build = "build.rs"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
