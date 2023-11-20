@@ -26,30 +26,6 @@
  * THE SOFTWARE.
  */
 
-use super::{zone_recalc};
-
-use crate::types::{
-    data::{
-        date::{Date},
-    },
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            seconds::{SECONDS_IN_DAY},
-            days::{ALIGN_JULIAN_TO_GREGORIAN_DAYS}
-        },
-        functions::{era_days_from_date}
-    },
-    counter::unix_time::{
-        constants::{
-            days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
-        },
-        functions::{
-            year_from_days, month_from_days
-        }
-    }
-};
-
 /*
     Signed Timezone:
 
@@ -81,54 +57,43 @@ use crate::types::{
     После этого прибавляется количество секунд временной зоны, и количество секунд за текущий день.
 */
 
-pub trait Gregorian {
-    fn to_gregorian(&mut self, tz_in_unixtime: bool);
-}
+use crate::types::{
+    data::{
+        zone::{Sign, Zone}
+    },
+    planets::earth::calendar::{
+        constants::{
+            seconds::{SECONDS_IN_DAY},
+        },
+    },
+};
 
-impl Gregorian for Date {
-    fn to_gregorian(&mut self, tz_in_unixtime: bool) {
-        let mut days: u128;
-
-        // Вычисление дней эры (+1 находится в самой дате)
-        self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day);
-
-        match self.view {
-            CalendarView::Julian => {
-                // Удаление отсутствующих дней в Григорианском календаре
-                if self.era_days >= ALIGN_JULIAN_TO_GREGORIAN_DAYS as u128 {
-                    self.era_days -= ALIGN_JULIAN_TO_GREGORIAN_DAYS as u128;
-                } else {
-                    panic!("[IMPOSSIBLE]: This days is missing in Gregorian Calendar!")
-                }
-            },
-            CalendarView::Gregorian => (),
-            _ => panic!("[ERROR]: Unknown CalendarView (to_gregorian)")
-        }
-
-        if self.era_days > UNIX_DAYS_BEFORE_EPOCH_GREGORIAN {
-            let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
-
-            self.unix_time = (self.era_days - (UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1)) * SECONDS_IN_DAY;
-
-            // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
-            // с учётом секунд внутри дня ± часовой пояс.
-            if !tz_in_unixtime {
-                zone_recalc(self.timezone, &mut self.unix_time, day_seconds, &mut self.era_days);
-            } else {
-                self.unix_time += day_seconds;
+pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_days: &mut u128) {
+    let tz_sec: u128 = timezone.to_seconds();
+    if timezone.sign == Sign::Signed && *unix_time < tz_sec {
+        panic!("[ERROR]: Overflow, signed timezone override self.unix_time!!")
+    } else {
+        if timezone.sign == Sign::Signed && tz_sec > 0 {
+            // Если секунд в последнем дне больше или равно, чем во временной зоне
+            if day_seconds >= tz_sec {
+                *unix_time -= tz_sec;
+                *unix_time += day_seconds;
+            } else if day_seconds < tz_sec {
+                *era_days -= (tz_sec - day_seconds).div_ceil(SECONDS_IN_DAY);
+                *unix_time -= tz_sec;
+                *unix_time += day_seconds;
             }
-        } else {
-            self.unix_time = 0;
+        } else if timezone.sign == Sign::Unsigned {
+            let total_secs: u128 = tz_sec + day_seconds;
+            if total_secs < SECONDS_IN_DAY {
+                *unix_time += tz_sec;
+                *unix_time += day_seconds;
+            } else if total_secs >= SECONDS_IN_DAY {
+                // Округление в меньшую сторону, если даже была указана отсутствующая временная зона [-12, +14]
+                *era_days += total_secs.div_euclid(SECONDS_IN_DAY);
+                *unix_time += tz_sec;
+                *unix_time += day_seconds;
+            }
         }
-
-        // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
-        // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
-        (self.year, days) = year_from_days(CalendarView::Gregorian, self.era_days);
-
-        self.month = month_from_days(CalendarView::Gregorian, self.year, &mut days).index();
-
-        self.day = days as u8;
-
-        self.view = CalendarView::Gregorian;
     }
 }

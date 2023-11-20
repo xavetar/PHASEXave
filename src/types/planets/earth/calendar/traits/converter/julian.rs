@@ -47,10 +47,11 @@
     по Юлианскому календарю или по Григорианскому -2 (отсутствующих дня), т.е 719162 (полных дня эпох по 31.12.1969) или 1.1.1970.
 */
 
+use super::{zone_recalc};
+
 use crate::types::{
     data::{
         date::{Date},
-        zone::{Sign}
     },
     planets::earth::calendar::{
         view::{CalendarView},
@@ -107,67 +108,44 @@ pub trait Julian {
 
 impl Julian for Date {
     fn to_julian(&mut self, tz_in_unixtime: bool) {
-        match self.view {
-            CalendarView::Julian => (),
-            CalendarView::Gregorian => {
-                let mut days: u128;
+        let mut days: u128;
 
+        match self.view {
+            CalendarView::Julian => {
+                // Вычисление дней эры
+                self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day);
+            },
+            CalendarView::Gregorian => {
                 // Вычисление дней эры и добавление отсутствующих дней в Григорианском календаре (+1 находится в самой дате)
                 self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day) + ALIGN_JULIAN_TO_GREGORIAN_DAYS as u128;
-
-                if self.era_days > UNIX_DAYS_BEFORE_EPOCH_JULIAN {
-                    let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
-
-                    self.unix_time = (self.era_days - (UNIX_DAYS_BEFORE_EPOCH_JULIAN + 1)) * SECONDS_IN_DAY;
-
-                    // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
-                    // с учётом секунд внутри дня ± часовой пояс.
-                    if !tz_in_unixtime {
-                        let tz_sec: u128 = self.timezone.to_seconds();
-                        if self.timezone.sign == Sign::Signed && self.unix_time < tz_sec {
-                            panic!("[ERROR]: Overflow, signed timezone override self.unix_time (to_julian)!")
-                        } else {
-                            if self.timezone.sign == Sign::Signed && tz_sec > 0 {
-                                // Если секунд в последнем дне больше или равно, чем во временной зоне
-                                if day_seconds >= tz_sec {
-                                    self.unix_time -= tz_sec;
-                                    self.unix_time += day_seconds;
-                                } else if day_seconds < tz_sec {
-                                    self.era_days -= (tz_sec - day_seconds).div_ceil(SECONDS_IN_DAY);
-                                    self.unix_time -= tz_sec;
-                                    self.unix_time += day_seconds;
-                                }
-                            } else if self.timezone.sign == Sign::Unsigned {
-                                let total_secs: u128 = tz_sec + day_seconds;
-                                if total_secs < SECONDS_IN_DAY {
-                                    self.unix_time += tz_sec;
-                                    self.unix_time += day_seconds;
-                                } else if total_secs >= SECONDS_IN_DAY {
-                                    // Округление в меньшую сторону, если даже была указана отсутствующая временная зона [-12, +14]
-                                    self.era_days += total_secs.div_euclid(SECONDS_IN_DAY);
-                                    self.unix_time += tz_sec;
-                                    self.unix_time += day_seconds;
-                                }
-                            }
-                        }
-                    } else {
-                        self.unix_time += day_seconds;
-                    }
-                } else {
-                    self.unix_time = 0;
-                }
-
-                // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
-                // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
-                (self.year, days) = year_from_days(CalendarView::Julian, self.era_days);
-
-                self.month = month_from_days(CalendarView::Julian, self.year, &mut days).index();
-
-                self.day = days as u8;
-
-                self.view = CalendarView::Julian;
             },
             _ => panic!("[ERROR]: Unknown CalendarView (to_julian)")
         }
+
+        if self.era_days > UNIX_DAYS_BEFORE_EPOCH_JULIAN {
+            let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
+
+            self.unix_time = (self.era_days - (UNIX_DAYS_BEFORE_EPOCH_JULIAN + 1)) * SECONDS_IN_DAY;
+
+            // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
+            // с учётом секунд внутри дня ± часовой пояс.
+            if !tz_in_unixtime {
+                zone_recalc(self.timezone, &mut self.unix_time, day_seconds, &mut self.era_days);
+            } else {
+                self.unix_time += day_seconds;
+            }
+        } else {
+            self.unix_time = 0;
+        }
+
+        // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
+        // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
+        (self.year, days) = year_from_days(CalendarView::Julian, self.era_days);
+
+        self.month = month_from_days(CalendarView::Julian, self.year, &mut days).index();
+
+        self.day = days as u8;
+
+        self.view = CalendarView::Julian;
     }
 }

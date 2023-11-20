@@ -48,14 +48,20 @@ pub trait RataDie {
 
 impl RataDie for Date {
     fn week_day(&self) -> Week {
-        return <Date as RataDie>::from(self.view.clone(), self.year, self.month, self.day);
+        let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match self.view {
+            CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
+            CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
+            _ => panic!("[ERROR]: Unknown CalendarView (RataDie - week_day).")
+        };
+
+        return Week::from(((self.era_days + SHIFT_BEFORE_FIRST_WEEK_DAY) % (REPEAT_WEAK_DAY_CYCLE as u128)) as u8);
     }
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
         let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match view {
             CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
             CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
-            _ => panic!("[ERROR]: Unknown CalendarView (RataDie).")
+            _ => panic!("[ERROR]: Unknown CalendarView (RataDie - from).")
         };
 
         let era_days: u128 = era_days_from_date(view, year, month, day);
