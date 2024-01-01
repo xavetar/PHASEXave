@@ -1,5 +1,5 @@
 ![Greenfield](https://img.shields.io/badge/Greenfield-0fc908.svg)
-![Build and test](https://img.shields.io/badge/build-passing-brightgreen.svg)
+[![Rust](https://github.com/xavetar/PHASEXave/actions/workflows/build.yml/badge.svg)](https://github.com/xavetar/PHASEXave/actions/workflows/build.yml)
 [![Deps](https://deps.rs/repo/github/xavetar/PHASEXave/status.svg)](https://deps.rs/repo/github/xavetar/PHASEXave)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
