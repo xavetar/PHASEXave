@@ -18,9 +18,9 @@ PHASEXave = "*"
 
 ## Validity
 
-Correct date, week day and time, even after three hundred sixteen billion eight hundred eighty seven million three hundred eighty seven thousand thirty eight years*.🤪
+Unsolved problems:
 
-\* - The processor was not enough for more. (Nine-ten quintillion seconds). It took about 5~10 minutes (on M1).
+- Problem of 3226 year (The Gregorian calendar advances 0.000031 days every year relative to the astronomical calendar - after this year, any of the existing algorithms will be invalid - just like the calendar).
 
 ## Features
 
