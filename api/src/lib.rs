@@ -68,7 +68,7 @@ pub mod functions {
     pub use crate::types::{
         planets::earth::calendar::{
             functions::{
-                is_leap_year
+                is_leap_year, is_overhead_year
             }
         }
     };

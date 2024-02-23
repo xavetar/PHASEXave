@@ -51,7 +51,7 @@ impl RataDie for Date {
         if self.era_days != 0 {
             let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match self.view {
                 CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
-                CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
+                CalendarView::Gregorian | CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
                 _ => panic!("[ERROR]: Unknown CalendarView (RataDie - week_day).")
             };
 
@@ -64,7 +64,7 @@ impl RataDie for Date {
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
         let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match view {
             CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
-            CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
+            CalendarView::Gregorian | CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
             _ => panic!("[ERROR]: Unknown CalendarView (RataDie - from).")
         };
 

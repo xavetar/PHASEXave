@@ -66,7 +66,7 @@ use crate::types::{
             days::{UNIX_DAYS_BEFORE_EPOCH_JULIAN}
         },
         functions::{
-            year_from_days, month_from_days
+            year_from_epoch_days, month_from_days
         }
     }
 };
@@ -109,7 +109,7 @@ impl Julian for Date {
 
         // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
         // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
-        (self.year, days) = year_from_days(CalendarView::Julian, self.era_days);
+        (self.year, days) = year_from_epoch_days(CalendarView::Julian, self.era_days);
 
         self.month = month_from_days(CalendarView::Julian, self.year, &mut days).index();
 

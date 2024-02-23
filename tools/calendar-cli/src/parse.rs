@@ -56,9 +56,10 @@ fn print_help() {
                                                                                 u8,u8,u8,u8 (max)
 
         -v, --view VIEW              Set the calendar view: 1 - Julian,
-                                                            2 - Gregorian)
+                                                            2 - Gregorian (default)
+                                                            3 - Solar
 
-        -f, --filename FILENAME      Save to filename: Calenar.txt (default)
+        -f, --filename FILENAME      Save to filename: Calendar.txt (default)
 
         --mode MODE                  Set the mode: 1 - To file
                                                    2 - To console (default)
@@ -159,6 +160,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                         match parsed_view {
                             1 => *view = CalendarView::Julian,
                             2 => *view = CalendarView::Gregorian,
+                            3 => *view = CalendarView::Solar,
                             _ => {
                                 println!("[ERROR]: Invalid view type: -v, --view");
                                 std::process::exit(0);

@@ -36,14 +36,16 @@ pub const fn is_leap_year(view: CalendarView, year: u128) -> bool {
     match view {
         CalendarView::Julian => return year % 4 == 0,
         CalendarView::Gregorian => return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0),
+        CalendarView::Solar => return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0),
         _ => panic!("[ERROR]: Unknown CalendarView (is_leap_year)!")
     }
 }
 
-pub const fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
+pub fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
     match view {
         CalendarView::Julian => return year / 4,
         CalendarView::Gregorian => return year / 4 - year / 100 + year / 400,
+        CalendarView::Solar => return year / 4 - year / 100 + year / 400,
         _ => panic!("[ERROR]: Unknown CalendarView (sum_leap_years)!")
     }
 }

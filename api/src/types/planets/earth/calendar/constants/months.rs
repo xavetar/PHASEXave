@@ -34,6 +34,7 @@ pub const MONTHS_IN_YEAR: u8 = 12;
 
 pub const BASE_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 pub const LEAP_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+pub const OVERHEAD_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 27, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 pub enum Months {
     January   = 1,
@@ -103,14 +104,20 @@ impl Months {
         }
     }
 
-    pub fn days(&self, leap: bool) -> u8 {
+    pub fn days(&self, leap: bool, overhead: bool) -> u8 {
         match self {
             Months::January   => BASE_MONTH_DAYS[0],
             Months::February  => {
-                if !leap {
+                if !leap && !overhead {
+                    return BASE_MONTH_DAYS[1];
+                } else if leap && !overhead {
+                    return BASE_MONTH_DAYS[1] + 1;
+                } else if !leap && overhead {
+                    return BASE_MONTH_DAYS[1] - 1;
+                } else if leap && overhead {
                     return BASE_MONTH_DAYS[1];
                 } else {
-                    return BASE_MONTH_DAYS[1] + 1;
+                    panic!("[IMPOSSIBLE]: Months::days()")
                 }
             },
             Months::March     => BASE_MONTH_DAYS[2],
@@ -126,14 +133,20 @@ impl Months {
         }
     }
 
-    pub fn seconds(&self, leap: bool) -> u128 {
+    pub fn seconds(&self, leap: bool, overhead: bool) -> u128 {
         match self {
             Months::January => BASE_MONTH_SECONDS[0],
             Months::February => {
-                if !leap {
-                    BASE_MONTH_SECONDS[1]
+                if !leap && !overhead {
+                    return BASE_MONTH_SECONDS[1];
+                } else if leap && !overhead {
+                    return BASE_MONTH_SECONDS[1] + CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR;
+                } else if !leap && overhead {
+                    return BASE_MONTH_SECONDS[1] - CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR;
+                } else if leap && overhead {
+                    return BASE_MONTH_SECONDS[1];
                 } else {
-                    BASE_MONTH_SECONDS[1] + CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR
+                    panic!("[IMPOSSIBLE]: Months::seconds()")
                 }
             },
             Months::March     => BASE_MONTH_SECONDS[2],

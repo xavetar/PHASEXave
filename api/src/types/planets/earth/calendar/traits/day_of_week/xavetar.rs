@@ -55,6 +55,10 @@ impl Xavetar for Date {
     }
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
+        if view == CalendarView::Solar {
+            unimplemented!()
+        }
+
         let (BASE_YEAR_SHIFTS, LEAP_YEAR_SHIFTS): (&[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize]) = match view {
             CalendarView::Gregorian => (&GREGORIAN_BASE_XAVETAR, &GREGORIAN_LEAP_XAVETAR),
             CalendarView::Julian => (&JULIAN_BASE_XAVETAR, &JULIAN_LEAP_XAVETAR),

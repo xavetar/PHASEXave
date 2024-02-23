@@ -30,5 +30,6 @@
 pub enum CalendarView {
     #[default]
     Julian = 0,
-    Gregorian = 1
+    Gregorian = 1,
+    Solar = 2
 }

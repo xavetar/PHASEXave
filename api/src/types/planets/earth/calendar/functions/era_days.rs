@@ -26,37 +26,70 @@
  * THE SOFTWARE.
  */
 
-use super::{is_leap_year, sum_leap_years};
+use super::{
+    is_leap_year, sum_leap_years,
+    is_overhead_year, sum_overhead_years
+};
 
 use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
         constants::{
-            days::{BASE_MONTH_SUM_DAYS, LEAP_MONTH_SUM_DAYS},
-            year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR}
+            days::{BASE_MONTH_SUM_DAYS, LEAP_MONTH_SUM_DAYS, OVERHEAD_MONTH_SUM_DAYS},
+            year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR, OVERHEAD_YEAR}
         },
     }
 };
 
 pub fn era_days_from_date(view: CalendarView, year: u128, month: u8, day: u8) -> u128 {
+
     let mut days: u128 = day as u128;
 
     let leap_year: bool = is_leap_year(view, year);
     let leap_years: u128 = sum_leap_years(view, year);
 
     if !leap_year {
-        days += (leap_years * LEAP_DAYS_YEAR as u128) + (((year - 1) - leap_years) as u128 * BASE_DAYS_YEAR as u128);
+        days += (leap_years * LEAP_DAYS_YEAR as u128) + (((year - 1) - leap_years) * BASE_DAYS_YEAR as u128);
     } else {
-        days += ((leap_years - 1) * LEAP_DAYS_YEAR as u128) + ((year - leap_years) as u128 * BASE_DAYS_YEAR as u128);
+        days += ((leap_years - 1) * LEAP_DAYS_YEAR as u128) + ((year - leap_years) * BASE_DAYS_YEAR as u128);
     }
 
-    if month >= 2 {
-        if !leap_year {
-            days += BASE_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
-        } else {
-            days += LEAP_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+    if view == CalendarView::Solar {
+        let overhead_years: u128 = sum_overhead_years(view, year);
+
+        if year % OVERHEAD_YEAR > 0 {
+            days -= overhead_years;
+        } else if year % OVERHEAD_YEAR == 0 {
+            days -= overhead_years - 1;
         }
     }
 
+    if month > 1 {
+        if view == CalendarView::Solar {
+            let overhead_year: bool = is_overhead_year(view, year);
+
+            if !leap_year && !overhead_year {
+                days += BASE_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+            } else if leap_year && !overhead_year {
+                days += LEAP_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+            } else if !leap_year && overhead_year {
+                days += OVERHEAD_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+            } else if leap_year && overhead_year {
+                days += BASE_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+            } else {
+                panic!("[IMPOSSIBLE]: What? (era_days_from_date -> CalendarView::Solar -> month > 1)")
+            }
+        } else if view == CalendarView::Julian || view == CalendarView::Gregorian {
+            if !leap_year {
+                days += BASE_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+            } else if leap_year {
+                days += LEAP_MONTH_SUM_DAYS[(month - 2) as usize] as u128;
+            } else {
+                panic!("[IMPOSSIBLE]: What? (era_days_from_date -> CalendarView::Julian || CalendarView::Gregorian -> month > 1)")
+            }
+        } else {
+            panic!("[ERROR]: Unknown CalendarView (era_days_from_date)!")
+        }
+    }
     return days;
 }

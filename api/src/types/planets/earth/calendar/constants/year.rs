@@ -28,3 +28,5 @@
 
 pub const BASE_DAYS_YEAR: u16 = 365;
 pub const LEAP_DAYS_YEAR: u16 = BASE_DAYS_YEAR + 1;
+pub const OVERHEAD_DAYS_YEAR: u16 = BASE_DAYS_YEAR - 1;
+pub const OVERHEAD_YEAR: u128 = 3226;

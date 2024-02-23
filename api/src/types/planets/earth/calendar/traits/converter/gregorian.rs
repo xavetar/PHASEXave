@@ -45,7 +45,7 @@ use crate::types::{
             days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
         },
         functions::{
-            year_from_days, month_from_days
+            year_from_epoch_days, month_from_days
         }
     }
 };
@@ -71,6 +71,7 @@ impl Gregorian for Date {
                 }
             },
             CalendarView::Gregorian => (),
+            CalendarView::Solar => (),
             _ => panic!("[ERROR]: Unknown CalendarView (to_gregorian)")
         }
 
@@ -92,7 +93,7 @@ impl Gregorian for Date {
 
         // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
         // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
-        (self.year, days) = year_from_days(CalendarView::Gregorian, self.era_days);
+        (self.year, days) = year_from_epoch_days(CalendarView::Gregorian, self.era_days);
 
         self.month = month_from_days(CalendarView::Gregorian, self.year, &mut days).index();
 

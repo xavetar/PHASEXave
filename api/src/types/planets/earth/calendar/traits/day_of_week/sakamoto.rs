@@ -54,6 +54,10 @@ impl Sakamoto for Date {
     }
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
+        if view == CalendarView::Solar {
+            unimplemented!()
+        }
+
         let BASE_YEAR_SHIFTS: &[u8; MONTHS_IN_YEAR as usize] = match view {
             CalendarView::Gregorian => &GREGORIAN_BASE_SAKAMOTO,
             CalendarView::Julian => &JULIAN_BASE_SAKAMOTO,

@@ -45,7 +45,7 @@ use crate::types::{
             }
         },
         functions::{
-            year_from_days, month_from_days,
+            year_from_epoch_days, month_from_days,
             epoch_days_from_seconds
         }
     },
@@ -123,7 +123,7 @@ impl Date {
 
         if view == CalendarView::Julian {
             date.era_days += UNIX_DAYS_BEFORE_EPOCH_JULIAN;
-        } else if view == CalendarView::Gregorian {
+        } else if view == CalendarView::Gregorian || view == CalendarView::Solar {
             date.era_days += UNIX_DAYS_BEFORE_EPOCH_GREGORIAN;
         } else {
             panic!("[ERROR]: Unknown CalendarView (to_date)!")
@@ -132,7 +132,7 @@ impl Date {
         // Текущий день, который идёт, фактически не является днём эры, он ещё не закончился, но визуально это +1
         date.era_days += 1;
 
-        (date.year, days) = year_from_days(view, date.era_days);
+        (date.year, days) = year_from_epoch_days(view, date.era_days);
         date.month = month_from_days(view, date.year, &mut days).index();
         (date.day, date.timezone, date.unix_time, date.view) = (days as u8, timezone, unix_time, view);
 

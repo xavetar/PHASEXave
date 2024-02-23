@@ -15,9 +15,14 @@ use PHASEXave::{
 };
 
 fn make_calendar(view: CalendarView, method: fn(CalendarView, u128, u8, u8) -> Week, year: u128, columns: u8, margin: [u8; 4]) -> Vec<Vec<char>> {
-    let is_leap_year: bool = is_leap_year(view, year);
-
-    return format_calendar_from_text_months(year, columns, margin, format_months_to_text(&format_months_by_days(view, method, year, is_leap_year)));
+    return format_calendar_from_text_months(
+        year, columns, margin,
+        format_months_to_text(
+            &format_months_by_days(
+                view, method, year, is_leap_year(view, year)
+            )
+        )
+    );
 }
 
 fn main() {

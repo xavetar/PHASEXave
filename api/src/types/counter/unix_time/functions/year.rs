@@ -29,38 +29,78 @@
 use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
-        constants::year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR},
-        functions::{is_leap_year}
+        constants::year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR, OVERHEAD_DAYS_YEAR},
+        functions::{is_leap_year, is_overhead_year}
     }
 };
 
 const START_YEAR: u16 = 1;
 
-pub fn year_from_days(view: CalendarView, days: u128) -> (u128, u128) {
-    let mut day: u128 = days;
+pub fn year_from_epoch_days(view: CalendarView, epoch_days: u128) -> (u128, u128) {
+    let mut day: u128 = epoch_days;
     let mut year: u128 = START_YEAR as u128;
 
-    loop {
-        if (day >= (BASE_DAYS_YEAR as u128)) && (day != 0) {
-            if is_leap_year(view, year) {
-                if day > LEAP_DAYS_YEAR as u128 {
-                    day -= LEAP_DAYS_YEAR as u128;
-                    year += 1;
-                } else {
-                    break;
+    if view == CalendarView::Solar {
+        loop {
+            if (day >= (OVERHEAD_DAYS_YEAR as u128)) && (day != 0) {
+                if !is_leap_year(view, year) && !is_overhead_year(view, year) {
+                    if day > BASE_DAYS_YEAR as u128 {
+                        day -= BASE_DAYS_YEAR as u128;
+                        year += 1;
+                    } else {
+                        break;
+                    }
+                } else if is_leap_year(view, year) && !is_overhead_year(view, year) {
+                    if day > LEAP_DAYS_YEAR as u128 {
+                        day -= LEAP_DAYS_YEAR as u128;
+                        year += 1;
+                    } else {
+                        break;
+                    }
+                } else if !is_leap_year(view, year) && is_overhead_year(view, year) {
+                    if day > OVERHEAD_DAYS_YEAR as u128 {
+                        day -= OVERHEAD_DAYS_YEAR as u128;
+                        year += 1;
+                    } else {
+                        break;
+                    }
+                } else if is_leap_year(view, year) && is_overhead_year(view, year) {
+                    if day > BASE_DAYS_YEAR as u128 {
+                        day -= BASE_DAYS_YEAR as u128;
+                        year += 1;
+                    } else {
+                        break;
+                    }
                 }
             } else {
-                if day > BASE_DAYS_YEAR as u128 {
-                    day -= BASE_DAYS_YEAR as u128;
-                    year += 1;
-                } else {
-                    break;
-                }
+                break;
             }
-        } else {
-            break;
-        }
-    };
+        };
+    } else if view == CalendarView::Gregorian || view == CalendarView::Julian {
+        loop {
+            if (day >= (BASE_DAYS_YEAR as u128)) && (day != 0) {
+                if is_leap_year(view, year) {
+                    if day > LEAP_DAYS_YEAR as u128 {
+                        day -= LEAP_DAYS_YEAR as u128;
+                        year += 1;
+                    } else {
+                        break;
+                    }
+                } else {
+                    if day > BASE_DAYS_YEAR as u128 {
+                        day -= BASE_DAYS_YEAR as u128;
+                        year += 1;
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                break;
+            }
+        };
+    } else {
+        panic!("[ERROR]: Unknown CalendarView (year_from_epoch_days)!")
+    }
 
     return (year, day);
 }
