@@ -31,6 +31,7 @@ pub const REPEAT_WEAK_DAY_CYCLE: u8 = DAYS_IN_WEEK;
 
 pub const SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN: u8 = 6 - 1;
 pub const SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN: u8 = 1 - 1;
+pub const SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR: u8 = 1 - 1;
 
 #[derive(Debug)]
 pub enum Week {

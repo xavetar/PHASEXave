@@ -32,4 +32,4 @@ mod year;
 
 pub(crate) use epoch::{epoch_days_from_seconds};
 pub(crate) use month::{month_from_days};
-pub(crate) use year::{year_from_epoch_days};
+pub(crate) use year::{year_from_era_days};

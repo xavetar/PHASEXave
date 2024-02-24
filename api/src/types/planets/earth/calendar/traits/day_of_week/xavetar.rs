@@ -35,11 +35,12 @@ use crate::types::{
             months::{MONTHS_IN_YEAR},
             shifts::{
                 JULIAN_BASE_XAVETAR, JULIAN_LEAP_XAVETAR,
-                GREGORIAN_BASE_XAVETAR, GREGORIAN_LEAP_XAVETAR
+                GREGORIAN_BASE_XAVETAR, GREGORIAN_LEAP_XAVETAR,
+                SOLAR_BASE_XAVETAR, SOLAR_LEAP_XAVETAR, SOLAR_OVERHEAD_XAVETAR
             }
         },
         functions::{
-            is_leap_year, sum_leap_years
+            is_leap_year, sum_leap_years, is_overhead_year, sum_overhead_years
         }
     }
 };
@@ -56,21 +57,42 @@ impl Xavetar for Date {
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
         if view == CalendarView::Solar {
-            unimplemented!()
-        }
+            let (BASE_YEAR_SHIFTS, LEAP_YEAR_SHIFTS, OVERHEAD_YEAR_SHIFTS): (&[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize]) = match view {
+                CalendarView::Solar => (&SOLAR_BASE_XAVETAR, &SOLAR_LEAP_XAVETAR, &SOLAR_OVERHEAD_XAVETAR),
+                _ => panic!("[ERROR]: Unknown CalendarView for Solar calendar (Xavetar).")
+            };
 
-        let (BASE_YEAR_SHIFTS, LEAP_YEAR_SHIFTS): (&[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize]) = match view {
-            CalendarView::Gregorian => (&GREGORIAN_BASE_XAVETAR, &GREGORIAN_LEAP_XAVETAR),
-            CalendarView::Julian => (&JULIAN_BASE_XAVETAR, &JULIAN_LEAP_XAVETAR),
-            _ => panic!("[ERROR]: Unknown CalendarView (Xavetar).")
-        };
+            let last_year: u128 = year - 1;
 
-        let last_year: u128 = year - 1;
+            let (leap_year, overhead_year): (bool, bool) = (is_leap_year(view, year), is_overhead_year(view, year));
 
-        if !is_leap_year(view, year) {
-            return Week::from(((last_year + sum_leap_years(view, last_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            if !leap_year && !overhead_year {
+                return Week::from(((last_year + sum_leap_years(view, last_year) - sum_overhead_years(view, last_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            } else if leap_year && !overhead_year {
+                return Week::from(((last_year + sum_leap_years(view, last_year) - sum_overhead_years(view, last_year) + LEAP_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            } else if !leap_year && overhead_year {
+                return Week::from(((last_year + sum_leap_years(view, last_year) - sum_overhead_years(view, last_year) + OVERHEAD_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            } else if leap_year && overhead_year {
+                return Week::from(((last_year + sum_leap_years(view, last_year) - sum_overhead_years(view, last_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            } else {
+                panic!("[IMPOSSIBLE]: What? Unknown error (Xavetar).")
+            }
+        } else if view == CalendarView::Gregorian || view == CalendarView::Julian {
+            let (BASE_YEAR_SHIFTS, LEAP_YEAR_SHIFTS): (&[u8; MONTHS_IN_YEAR as usize], &[u8; MONTHS_IN_YEAR as usize]) = match view {
+                CalendarView::Gregorian => (&GREGORIAN_BASE_XAVETAR, &GREGORIAN_LEAP_XAVETAR),
+                CalendarView::Julian => (&JULIAN_BASE_XAVETAR, &JULIAN_LEAP_XAVETAR),
+                _ => panic!("[ERROR]: Unknown CalendarView for Julian or Gregorian calendar (Xavetar).")
+            };
+
+            let last_year: u128 = year - 1;
+
+            if !is_leap_year(view, year) {
+                return Week::from(((last_year + sum_leap_years(view, last_year) + BASE_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            } else {
+                return Week::from(((last_year + sum_leap_years(view, last_year) + LEAP_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            }
         } else {
-            return Week::from(((last_year + sum_leap_years(view, last_year) + LEAP_YEAR_SHIFTS[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+            panic!("[ERROR]: Unknown CalendarView (Xavetar).")
         }
     }
 }

@@ -57,9 +57,9 @@ pub fn era_days_from_date(view: CalendarView, year: u128, month: u8, day: u8) ->
     if view == CalendarView::Solar {
         let overhead_years: u128 = sum_overhead_years(view, year);
 
-        if year % OVERHEAD_YEAR > 0 {
+        if year % (OVERHEAD_YEAR as u128) > 0 {
             days -= overhead_years;
-        } else if year % OVERHEAD_YEAR == 0 {
+        } else if year % (OVERHEAD_YEAR as u128) == 0 {
             days -= overhead_years - 1;
         }
     }

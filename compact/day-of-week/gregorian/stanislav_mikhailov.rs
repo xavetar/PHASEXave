@@ -117,10 +117,10 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
 
     if !is_leap_year_gregorian(year) {
         shift_week_day_in_month_and_day = (BASE[(month - 1) as usize] + day) % REPEAT_WEAK_DAY_CYCLE;
-        
+
         print_debug(
             "BASE",
-            shift_week_day_in_jan, 
+            shift_week_day_in_jan,
             shift_week_day_in_month_and_day,
             (shift_week_day_in_jan + shift_week_day_in_month_and_day) % REPEAT_WEAK_DAY_CYCLE
         );
@@ -131,7 +131,7 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
 
         print_debug(
             "LEAP",
-            shift_week_day_in_jan, 
+            shift_week_day_in_jan,
             shift_week_day_in_month_and_day,
             (shift_week_day_in_jan + shift_week_day_in_month_and_day) % REPEAT_WEAK_DAY_CYCLE
         );
@@ -143,7 +143,7 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
 }
 
 fn main() {
-    println!("{}", day_of_week(2024, 2, 29));
+    println!("{}", day_of_week(2024, 3, 29));
 }
 
 // Сокращенный вариант для понимания:
@@ -174,16 +174,16 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
     let last_year: u128 = year - 1;
 
     let sum_leap_years_gregorian: u128 = last_year / 4 - last_year / 100 + last_year / 400;
-    let shift_week_day_in_jan: u8 = ((last_year + sum_leap_years_gregorian) % REPEAT_WEAK_DAY_CYCLE as u16 as u128) as u8;
+    let shift_week_day_in_jan: u8 = ((last_year + sum_leap_years_gregorian) % REPEAT_WEAK_DAY_CYCLE as u128) as u8;
 
     let shift_week_day_in_month_and_day: u8;
 
     if !is_leap_year_gregorian(year) {
-        shift_week_day_in_month_and_day = (BASE[(month - 1) as usize] + day) % REPEAT_WEAK_DAY_CYCLE as u16;
-        return week_day((shift_week_day_in_jan + shift_week_day_in_month_and_day) % REPEAT_WEAK_DAY_CYCLE as u16);
+        shift_week_day_in_month_and_day = (BASE[(month - 1) as usize] + day) % REPEAT_WEAK_DAY_CYCLE;
+        return week_day((shift_week_day_in_jan + shift_week_day_in_month_and_day) % REPEAT_WEAK_DAY_CYCLE);
     } else if is_leap_year_gregorian(year) {
-        shift_week_day_in_month_and_day = (LEAP[(month - 1) as usize] + day) % REPEAT_WEAK_DAY_CYCLE as u16;
-        return week_day((shift_week_day_in_jan + shift_week_day_in_month_and_day) % REPEAT_WEAK_DAY_CYCLE as u16);
+        shift_week_day_in_month_and_day = (LEAP[(month - 1) as usize] + day) % REPEAT_WEAK_DAY_CYCLE;
+        return week_day((shift_week_day_in_jan + shift_week_day_in_month_and_day) % REPEAT_WEAK_DAY_CYCLE);
     }
 
     panic!("Unkonwn error");
@@ -221,9 +221,9 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
     let last_year: u128 = year - 1;
 
     if !is_leap_year_gregorian(year) {
-        return week_day(((last_year + (last_year / 4 - last_year / 100 + last_year / 400) + BASE[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u16 as u128) as u8);
+        return week_day(((last_year + (last_year / 4 - last_year / 100 + last_year / 400) + BASE[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
     } else if is_leap_year_gregorian(year) {
-        return week_day(((last_year + (last_year / 4 - last_year / 100 + last_year / 400) + LEAP[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u16 as u128) as u8);
+        return week_day(((last_year + (last_year / 4 - last_year / 100 + last_year / 400) + LEAP[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
     }
 
     panic!("Unkonwn error");

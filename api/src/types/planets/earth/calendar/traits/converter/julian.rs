@@ -57,7 +57,7 @@ use crate::types::{
         view::{CalendarView},
         constants::{
             seconds::{SECONDS_IN_DAY},
-            days::{ALIGN_JULIAN_TO_GREGORIAN_DAYS}
+            days::{ALIGN_JULIAN_TO_CONVERT_DAYS}
         },
         functions::{era_days_from_date}
     },
@@ -66,7 +66,7 @@ use crate::types::{
             days::{UNIX_DAYS_BEFORE_EPOCH_JULIAN}
         },
         functions::{
-            year_from_epoch_days, month_from_days
+            year_from_era_days, month_from_days
         }
     }
 };
@@ -86,7 +86,7 @@ impl Julian for Date {
             },
             CalendarView::Gregorian => {
                 // Вычисление дней эры и добавление отсутствующих дней в Григорианском календаре (+1 находится в самой дате)
-                self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day) + ALIGN_JULIAN_TO_GREGORIAN_DAYS as u128;
+                self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day) + ALIGN_JULIAN_TO_CONVERT_DAYS as u128;
             },
             _ => panic!("[ERROR]: Unknown CalendarView (to_julian)")
         }
@@ -109,7 +109,7 @@ impl Julian for Date {
 
         // Внутри функции происходит неявное смещение, из-за чего использование функции excess_leap_years является излишним
         // и может привести к неточностям. Этот метод основан на подсчёте дней, он действителен для любой даты и универсален.
-        (self.year, days) = year_from_epoch_days(CalendarView::Julian, self.era_days);
+        (self.year, days) = year_from_era_days(CalendarView::Julian, self.era_days);
 
         self.month = month_from_days(CalendarView::Julian, self.year, &mut days).index();
 

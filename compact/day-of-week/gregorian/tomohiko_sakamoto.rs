@@ -129,7 +129,7 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
     if month < 3 { local_year -= 1; }
 
     let sum_leap_years_gregorian: u128 = local_year / 4 - local_year / 100 + local_year / 400;
-    let shift_week_day_in_jan: u8 = ((local_year + sum_leap_years_gregorian) % REPEAT_WEAK_DAY_CYCLE as u128) as u8; // Выдаёт результаты, в которых можно запутаться, из-за оптимизаций
+    let shift_week_day_in_jan: u8 = ((local_year + sum_leap_years_gregorian) % REPEAT_WEAK_DAY_CYCLE as u128) as u8;
 
     let shift_week_day_in_month_and_day: u8 = (GREGORIAN_BASE[(month - 1) as usize] + day) % REPEAT_WEAK_DAY_CYCLE;
 
@@ -151,15 +151,14 @@ fn main() {
 
 const REPEAT_WEAK_DAY_CYCLE: u8 = 7;
 
-fn day_of_week(mut year: u16, month: u8, day: u8) -> &'static str {
-    let base: [u16; 12] = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
+fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
+    let base: [u8; 12] = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
 
-    if month < 3 {
-        year -= 1;
-    }
-    let v: u16 = (year + (year / 4 - year / 100 + year / 400) + base[(month - 1) as usize] + day as u16) % REPEAT_WEAK_DAY_CYCLE as u16;
+    if month < 3 { year -= 1; }
 
-    return match v {
+    let week_day: u8 = ((year + (year / 4 - year / 100 + year / 400) + base[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8;
+
+    return match week_day {
         0 => "Sunday",
         1 => "Monday",
         2 => "Tuesday",
@@ -169,4 +168,8 @@ fn day_of_week(mut year: u16, month: u8, day: u8) -> &'static str {
         6 => "Saturday",
         _ => panic!("Invalid day"),
     };
+}
+
+fn main() {
+    println!("{}", day_of_week(2024, 2, 29));
 }

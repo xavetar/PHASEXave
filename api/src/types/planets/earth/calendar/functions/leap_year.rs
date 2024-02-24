@@ -41,7 +41,7 @@ pub const fn is_leap_year(view: CalendarView, year: u128) -> bool {
     }
 }
 
-pub fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
+pub const fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
     match view {
         CalendarView::Julian => return year / 4,
         CalendarView::Gregorian => return year / 4 - year / 100 + year / 400,

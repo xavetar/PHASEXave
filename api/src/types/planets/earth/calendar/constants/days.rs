@@ -33,7 +33,7 @@ use super::{
     },
 };
 
-pub const ALIGN_JULIAN_TO_GREGORIAN_DAYS: u8 = 2;
+pub const ALIGN_JULIAN_TO_CONVERT_DAYS: u8 = 2;
 
 pub const BASE_MONTH_SUM_DAYS: [u16; MONTHS_IN_YEAR as usize] = [
     BASE_MONTH_DAYS[0] as u16,

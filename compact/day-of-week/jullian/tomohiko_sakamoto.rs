@@ -151,15 +151,14 @@ fn main() {
 
 const REPEAT_WEAK_DAY_CYCLE: u8 = 7;
 
-fn day_of_week(mut year: u16, month: u8, day: u8) -> &'static str {
-    let base: [u16; 12] = [5, 1, 0, 3, 5, 1, 3, 6, 2, 4, 0, 2];
+fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
+    let base: [u8; 12] = [5, 1, 0, 3, 5, 1, 3, 6, 2, 4, 0, 2];
 
-    if month < 3 {
-        year -= 1;
-    }
-    let v: u16 = (year + (year / 4) + base[(month - 1) as usize] + day as u16) % REPEAT_WEAK_DAY_CYCLE as u16;
+    if month < 3 { year -= 1; }
 
-    return match v {
+    let week_day: u8 = ((year + (year / 4 - year / 100 + year / 400) + base[(month - 1) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8;
+
+    return match week_day {
         0 => "Sunday",
         1 => "Monday",
         2 => "Tuesday",

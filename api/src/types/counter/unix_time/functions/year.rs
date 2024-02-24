@@ -36,8 +36,8 @@ use crate::types::{
 
 const START_YEAR: u16 = 1;
 
-pub fn year_from_epoch_days(view: CalendarView, epoch_days: u128) -> (u128, u128) {
-    let mut day: u128 = epoch_days;
+pub fn year_from_era_days(view: CalendarView, era_days: u128) -> (u128, u128) {
+    let mut day: u128 = era_days;
     let mut year: u128 = START_YEAR as u128;
 
     if view == CalendarView::Solar {
@@ -99,7 +99,7 @@ pub fn year_from_epoch_days(view: CalendarView, epoch_days: u128) -> (u128, u128
             }
         };
     } else {
-        panic!("[ERROR]: Unknown CalendarView (year_from_epoch_days)!")
+        panic!("[ERROR]: Unknown CalendarView (year_from_era_days)!")
     }
 
     return (year, day);

@@ -40,7 +40,7 @@ pub const fn is_overhead_year(view: CalendarView, year: u128) -> bool {
     match view {
         CalendarView::Julian => unimplemented!(),
         CalendarView::Gregorian => unimplemented!(),
-        CalendarView::Solar => return year % OVERHEAD_YEAR == 0,
+        CalendarView::Solar => return year % (OVERHEAD_YEAR as u128) == 0,
         _ => panic!("[ERROR]: Unknown CalendarView (is_overhead_year)!")
     }
 }
@@ -49,7 +49,7 @@ pub const fn is_overhead_leap_year(view: CalendarView, year: u128) -> bool {
     match view {
         CalendarView::Julian => unimplemented!(),
         CalendarView::Gregorian => unimplemented!(),
-        CalendarView::Solar => return year % OVERHEAD_YEAR == 0 && is_leap_year(view, year) == true,
+        CalendarView::Solar => return year % (OVERHEAD_YEAR as u128) == 0 && is_leap_year(view, year) == true,
         _ => panic!("[ERROR]: Unknown CalendarView (is_overhead_year)!")
     }
 }
@@ -70,7 +70,7 @@ pub fn sum_overhead_leap_years(view: CalendarView, sum_overhead_years: u128) -> 
         CalendarView::Solar => {
             let mut count: u128 = 0;
 
-            for overhead_year in (0..(sum_overhead_years * OVERHEAD_YEAR + 1)).step_by(OVERHEAD_YEAR as usize) {
+            for overhead_year in (0..(sum_overhead_years * (OVERHEAD_YEAR as u128) + 1)).step_by(OVERHEAD_YEAR as usize) {
                 if overhead_year != 0 {
                     if is_leap_year(view, overhead_year) {
                         count += 1;
