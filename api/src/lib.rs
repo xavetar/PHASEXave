@@ -43,7 +43,7 @@ pub use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
         traits::{
-            converter::{Julian, Gregorian},
+            converter::{Julian, Gregorian, Solar},
             day_of_week::{Xavetar, RataDie, Sakamoto}
         },
         constants::{

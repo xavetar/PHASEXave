@@ -27,9 +27,11 @@
  */
 
 mod tz;
+mod solar;
 mod julian;
 mod gregorian;
 
+pub use solar::{Solar};
 pub use julian::{Julian};
 pub use gregorian::{Gregorian};
 pub(self) use tz::{zone_recalc};

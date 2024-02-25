@@ -44,23 +44,22 @@ use crate::types::{
     },
     counter::unix_time::{
         constants::{
-            days::{UNIX_DAYS_BEFORE_EPOCH_GREGORIAN}
+            days::{UNIX_DAYS_BEFORE_EPOCH_SOLAR}
         },
         functions::{
-            year_from_era_days, month_from_days
+            year_from_era_days, month_from_days,
         }
     }
 };
 
-pub trait Gregorian {
-    fn to_gregorian(&mut self, tz_in_unixtime: bool);
+pub trait Solar {
+    fn to_solar(&mut self, tz_in_unixtime: bool);
 }
 
-impl Gregorian for Date {
-    fn to_gregorian(&mut self, tz_in_unixtime: bool) {
+impl Solar for Date {
+    fn to_solar(&mut self, tz_in_unixtime: bool) {
         let mut days: u128;
 
-        // Вычисление дней эры (+1 находится в самой дате)
         self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day);
 
         match self.view {
@@ -68,18 +67,18 @@ impl Gregorian for Date {
                 if self.era_days >= ALIGN_JULIAN_TO_CONVERT_DAYS as u128 {
                     self.era_days -= ALIGN_JULIAN_TO_CONVERT_DAYS as u128;
                 } else {
-                    panic!("[IMPOSSIBLE]: This days is missing in Gregorian Calendar! (to_gregorian)")
+                    panic!("[IMPOSSIBLE]: This days is missing in Solar Calendar! (to_solar)")
                 }
             },
             CalendarView::Gregorian => (),
             CalendarView::Solar => (),
-            _ => panic!("[ERROR]: Unknown CalendarView (to_gregorian)")
+            _ => panic!("[ERROR]: Unknown CalendarView (to_solar)")
         }
 
-        if self.era_days > UNIX_DAYS_BEFORE_EPOCH_GREGORIAN {
+        if self.era_days > UNIX_DAYS_BEFORE_EPOCH_SOLAR {
             let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
 
-            self.unix_time = (self.era_days - (UNIX_DAYS_BEFORE_EPOCH_GREGORIAN + 1)) * SECONDS_IN_DAY;
+            self.unix_time = (self.era_days - (UNIX_DAYS_BEFORE_EPOCH_SOLAR + 1)) * SECONDS_IN_DAY;
 
             // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
             // с учётом секунд внутри дня ± часовой пояс.
@@ -92,12 +91,12 @@ impl Gregorian for Date {
             self.unix_time = 0;
         }
 
-        (self.year, days) = year_from_era_days(CalendarView::Gregorian, self.era_days);
+        (self.year, days) = year_from_era_days(CalendarView::Solar, self.era_days);
 
-        self.month = month_from_days(CalendarView::Gregorian, self.year, &mut days).index();
+        self.month = month_from_days(CalendarView::Solar, self.year, &mut days).index();
 
         self.day = days as u8;
 
-        self.view = CalendarView::Gregorian;
+        self.view = CalendarView::Solar;
     }
 }

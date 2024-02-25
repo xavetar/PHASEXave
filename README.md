@@ -108,6 +108,19 @@ fn main() {
 
 #### UTC
 
+##### Solar
+
+Get UTC date for Solar calendar:
+
+```rust
+use PHASEXave::{CalendarView, Date};
+
+fn main() {
+    let date: Date = Date::utc(CalendarView::Solar);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+}
+```
+
 ##### Julian
 
 Get UTC date for Julian calendar:
@@ -135,6 +148,20 @@ fn main() {
 ```
 
 #### Now
+
+##### Solar
+
+Get current date with any timezone for Solar calendar:
+
+```rust
+use PHASEXave::{CalendarView, Date, Zone, Sign};
+
+fn main() {
+    let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
+    let date: Date = Date::now(CalendarView::Solar, timezone);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+}
+```
 
 ##### Julian
 
@@ -166,6 +193,19 @@ fn main() {
 
 #### Local
 
+##### Solar
+
+Get current date with local timezone for Solar calendar:
+
+```rust
+use PHASEXave::{CalendarView, Date};
+
+fn main() {
+    let date: Date = Date::local(CalendarView::Solar);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+}
+```
+
 ##### Julian
 
 Get current date with local timezone for Julian calendar:
@@ -194,6 +234,75 @@ fn main() {
 
 #### Conversion
 
+##### Solar to Julian
+
+Convert any Solar date to Julian date:
+
+```rust
+use PHASEXave::{Date, Sign, Zone, Julian, CalendarView};
+
+fn main() {
+    let mut date: Date = Date {
+        day: 27,
+        month: 2,
+        year: 3226,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Solar
+    };
+    <Date as Julian>::to_julian(&mut date, false);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+}
+```
+
+##### Solar to Gregorian
+
+Convert any Solar date to Gregorian date:
+
+```rust
+use PHASEXave::{Date, Sign, Zone, Gregorian, CalendarView};
+
+fn main() {
+    let mut date: Date = Date {
+        day: 1,
+        month: 3,
+        year: 3226,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Solar
+    };
+    <Date as Gregorian>::to_gregorian(&mut date, false);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+}
+```
+
+##### Julian to Solar
+
+Convert *any Julian date to Solar date:
+
+```rust
+use PHASEXave::{Date, Sign, Zone, Solar, CalendarView};
+
+fn main() {
+    let mut date: Date = Date {
+        day: 5,
+        month: 2,
+        year: 3226,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Julian
+    };
+    <Date as Solar>::to_solar(&mut date, false);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+}
+```
+
 ##### Julian to Gregorian
 
 Convert *any Julian date to Gregorian date:
@@ -218,6 +327,29 @@ fn main() {
 ```
 
 \* - any, but except first two days, that missing in Gregorian calendar
+
+##### Gregorian to Solar
+
+Convert any Gregorian date to Solar date:
+
+```rust
+use PHASEXave::{Date, Sign, Zone, Solar, CalendarView};
+
+fn main() {
+    let mut date: Date = Date {
+        day: 28,
+        month: 2,
+        year: 3226,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Gregorian
+    };
+    <Date as Solar>::to_solar(&mut date, false);
+    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+}
+```
 
 ##### Gregorian to Julian
 
@@ -252,6 +384,7 @@ use PHASEXave::{CalendarView, Date, Julian, Gregorian, Sign, Zone};
 fn main() {
     let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 3, minutes: 0, seconds: 0 };
     let mut date: Date = Date::now(CalendarView::Gregorian, timezone);
+    <Date as Solar>::to_solar(&mut date, true);
     <Date as Julian>::to_julian(&mut date, true);
     <Date as Gregorian>::to_gregorian(&mut date, true);
     println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
@@ -260,7 +393,43 @@ fn main() {
 
 #### Day of Week
 
-Get week day from Gregorian and Julian calendar:
+Get week day from Solar, Julian and Gregorian calendar:
+
+##### Solar
+
+Get week day from Date:
+
+```rust
+use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sign, Zone};
+
+fn main() {
+    let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 };
+
+    let date: Date = Date::now(CalendarView::Gregorian, timezone);
+    println!(
+        "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\n",
+        rata_die = <Date as RataDie>::week_day(&date).name(),
+        xavetar = <Date as Xavetar>::week_day(&date).name(),
+    );
+    println!("Date: {yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+}
+```
+
+Get week day from any date:
+
+```rust
+use PHASEXave::{CalendarView, Date, RataDie, Xavetar};
+
+fn main() {
+    let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
+    println!(
+        "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\n",
+        rata_die = <Date as RataDie>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),
+        xavetar = <Date as Xavetar>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),
+    );
+    println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
+}
+```
 
 ##### Julian
 
