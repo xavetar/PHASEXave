@@ -26,12 +26,12 @@
  * THE SOFTWARE.
  */
 
-pub const DAYS_IN_WEEK: u8 = 7;
+pub const DAYS_IN_WEEK: u8 = 7_u8;
 pub const REPEAT_WEAK_DAY_CYCLE: u8 = DAYS_IN_WEEK;
 
-pub const SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN: u8 = 6 - 1;
-pub const SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN: u8 = 1 - 1;
-pub const SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR: u8 = 1 - 1;
+pub const SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN: u8 = 5_u8;
+pub const SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN: u8 = 0_u8;
+pub const SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR: u8 = 0_u8;
 
 #[derive(Debug)]
 pub enum Week {
@@ -47,25 +47,25 @@ pub enum Week {
 impl Week {
     pub fn index(&self) -> u8 {
         match self {
-            Week::Monday    => 1,
-            Week::Tuesday   => 2,
-            Week::Wednesday => 3,
-            Week::Thursday  => 4,
-            Week::Friday    => 5,
-            Week::Saturday  => 6,
-            Week::Sunday    => 7,
+            Week::Monday    => 1_u8,
+            Week::Tuesday   => 2_u8,
+            Week::Wednesday => 3_u8,
+            Week::Thursday  => 4_u8,
+            Week::Friday    => 5_u8,
+            Week::Saturday  => 6_u8,
+            Week::Sunday    => 7_u8,
         }
     }
 
     pub fn from(week_day: u8) -> Week {
         match week_day {
-            1      => Week::Monday,
-            2      => Week::Tuesday,
-            3      => Week::Wednesday,
-            4      => Week::Thursday,
-            5      => Week::Friday,
-            6      => Week::Saturday,
-            7 | 0  => Week::Sunday,
+            1_u8         => Week::Monday,
+            2_u8         => Week::Tuesday,
+            3_u8         => Week::Wednesday,
+            4_u8         => Week::Thursday,
+            5_u8         => Week::Friday,
+            6_u8         => Week::Saturday,
+            7_u8 | 0_u8  => Week::Sunday,
             _  => panic!("Invalid week day: {}", week_day),
         }
     }

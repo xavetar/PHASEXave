@@ -32,6 +32,7 @@ use crate::types::{
         view::{CalendarView},
         constants::{
             week::{
+                SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR,
                 SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN,
                 SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN,
                 REPEAT_WEAK_DAY_CYCLE, Week,
@@ -48,10 +49,11 @@ pub trait RataDie {
 
 impl RataDie for Date {
     fn week_day(&self) -> Week {
-        if self.era_days != 0 {
+        if self.era_days != 0_u128 {
             let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match self.view {
+                CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR as u128,
                 CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
-                CalendarView::Gregorian | CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
+                CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
                 _ => panic!("[ERROR]: Unknown CalendarView (RataDie - week_day).")
             };
 
@@ -63,8 +65,9 @@ impl RataDie for Date {
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
         let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match view {
+            CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR as u128,
             CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
-            CalendarView::Gregorian | CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
+            CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
             _ => panic!("[ERROR]: Unknown CalendarView (RataDie - from).")
         };
 

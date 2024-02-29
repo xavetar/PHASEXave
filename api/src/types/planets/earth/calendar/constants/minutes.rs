@@ -26,4 +26,4 @@
  * THE SOFTWARE.
  */
 
- pub const MINUTES_IN_HOUR: u8 = 60;
+ pub const MINUTES_IN_HOUR: u8 = 60_u8;

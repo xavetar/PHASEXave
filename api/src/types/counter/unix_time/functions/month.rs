@@ -28,49 +28,33 @@
 
 use crate::types::planets::earth::calendar::{
     view::{CalendarView},
-    functions::{is_leap_year, is_overhead_year},
+    functions::{is_leap_year},
     constants::{
         months::{
-            Months, BASE_MONTH_DAYS, LEAP_MONTH_DAYS, OVERHEAD_MONTH_DAYS
+            Months, BASE_MONTH_DAYS, LEAP_MONTH_DAYS
         }
     }
 };
 
 pub fn month_from_days(view: CalendarView, year: u128, days: &mut u128) -> Months {
-    let months: &[u8; 12];
+    let months: &[u8; 12_usize];
 
-    if view == CalendarView::Solar {
-        if !is_leap_year(view, year) && !is_overhead_year(view, year) {
-            months = &BASE_MONTH_DAYS;
-        } else if is_leap_year(view, year) && !is_overhead_year(view, year) {
-            months = &LEAP_MONTH_DAYS;
-        } else if !is_leap_year(view, year) && is_overhead_year(view, year) {
-            months = &OVERHEAD_MONTH_DAYS;
-        } else if is_leap_year(view, year) && is_overhead_year(view, year) {
-            months = &BASE_MONTH_DAYS;
-        } else {
-            panic!("[IMPOSSIBLE]: What? (month_from_days)")
-        }
-    } else if view == CalendarView::Gregorian || view == CalendarView::Julian {
-        if !is_leap_year(view, year) {
-            months = &BASE_MONTH_DAYS
-        } else {
-            months = &LEAP_MONTH_DAYS
-        }
+    if !is_leap_year(view, year) {
+        months = &BASE_MONTH_DAYS
     } else {
-        panic!("[ERROR]: Unknown CalendarView (month_from_days)!")
+        months = &LEAP_MONTH_DAYS
     }
 
-    let mut month: usize = 0;
+    let mut month: usize = 0_usize;
 
     loop {
         if *days > (months[month] as u128) {
             *days -= months[month] as u128;
-            month += 1;
+            month += 1_usize;
         } else {
             break;
         }
     }
 
-    return Months::from((month + 1) as u8);
+    return Months::from((month + 1_usize) as u8);
 }

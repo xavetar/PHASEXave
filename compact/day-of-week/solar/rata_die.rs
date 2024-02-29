@@ -25,7 +25,6 @@
 
 const BASE_DAYS_YEAR: u16 = 365;
 const LEAP_DAYS_YEAR: u16 = BASE_DAYS_YEAR + 1;
-const OVERHEAD_DAYS_YEAR: u16 = BASE_DAYS_YEAR - 1;
 
 const REPEAT_WEAK_DAY_CYCLE: u8 = 7;
 
@@ -35,14 +34,21 @@ const MONTHS_IN_YEAR: u8 = 12;
 
 const BASE_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const LEAP_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const OVERHEAD_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 27, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-const fn is_leap_year_solar(year: u128) -> bool {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-}
+fn is_leap_year_solar(year: u128) -> bool {
+    if year != 0 {
+        let last_year: u128 = year - 1;
 
-const fn is_overhead_year_solar(year: u128) -> bool {
-    return year % 3226 == 0;
+        let leap_years: f64 = (last_year as f64) / 4.0_f64 - (last_year as f64) / 100.0_f64 + (last_year as f64) / 400.0_f64 - (last_year as f64) / 4000.0_f64 - (last_year as f64) / 20000.0_f64 - (last_year as f64) / 100000.0_f64;
+
+        if (leap_years + 0.24219_f64) as u128 > (leap_years) as u128 {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false
+    }
 }
 
 const fn week_day(shift: u8) -> &'static str {
@@ -62,27 +68,19 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
     let mut days: u128 = day as u128;
 
     for i in 1..year {
-        if !is_leap_year_solar(i) && !is_overhead_year_solar(i) {
+        if !is_leap_year_solar(i) {
             days += BASE_DAYS_YEAR as u128;
-        } else if is_leap_year_solar(i) && !is_overhead_year_solar(i) {
+        } else {
             days += LEAP_DAYS_YEAR as u128;
-        } else if !is_leap_year_solar(i) && is_overhead_year_solar(i) {
-            days += OVERHEAD_DAYS_YEAR as u128;
-        } else if is_overhead_year_solar(i) && is_overhead_year_solar(i) {
-            days += BASE_DAYS_YEAR as u128;
         }
     }
 
     if month > 1 {
         for i in 0..(month - 1) {
-            if !is_leap_year_solar(year) && !is_overhead_year_solar(year) {
+            if !is_leap_year_solar(year) {
                 days += BASE_MONTH_DAYS[i as usize] as u128;
-            } else if is_leap_year_solar(year) && !is_overhead_year_solar(year) {
+            } else {
                 days += LEAP_MONTH_DAYS[i as usize] as u128;
-            } else if !is_leap_year_solar(year) && is_overhead_year_solar(year) {
-                days += OVERHEAD_MONTH_DAYS[i as usize] as u128;
-            } else if is_overhead_year_solar(year) && is_overhead_year_solar(year) {
-                days += BASE_MONTH_DAYS[i as usize] as u128;
             }
         }
     }
@@ -93,5 +91,5 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
 }
 
 fn main() {
-    println!("{}", day_of_week(9678, 1, 1));
+    println!("{}", day_of_week(322600000, 12, 31));
 }

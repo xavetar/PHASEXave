@@ -30,11 +30,10 @@ use super::{
     seconds::{BASE_MONTH_SECONDS, CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR}
 };
 
-pub const MONTHS_IN_YEAR: u8 = 12;
+pub const MONTHS_IN_YEAR: u8 = 12_u8;
 
-pub const BASE_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-pub const LEAP_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-pub const OVERHEAD_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31, 27, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+pub const BASE_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31_u8, 28_u8, 31_u8, 30_u8, 31_u8, 30_u8, 31_u8, 31_u8, 30_u8, 31_u8, 30_u8, 31_u8];
+pub const LEAP_MONTH_DAYS: [u8; MONTHS_IN_YEAR as usize] = [31_u8, 29_u8, 31_u8, 30_u8, 31_u8, 30_u8, 31_u8, 31_u8, 30_u8, 31_u8, 30_u8, 31_u8];
 
 pub enum Months {
     January   = 1,
@@ -54,35 +53,35 @@ pub enum Months {
 impl Months {
     pub fn index(&self) -> u8 {
         match self {
-            Months::January   => 1,
-            Months::February  => 2,
-            Months::March     => 3,
-            Months::April     => 4,
-            Months::May       => 5,
-            Months::June      => 6,
-            Months::July      => 7,
-            Months::August    => 8,
-            Months::September => 9,
-            Months::October   => 10,
-            Months::November  => 11,
-            Months::December  => 12,
+            Months::January   => 1_u8,
+            Months::February  => 2_u8,
+            Months::March     => 3_u8,
+            Months::April     => 4_u8,
+            Months::May       => 5_u8,
+            Months::June      => 6_u8,
+            Months::July      => 7_u8,
+            Months::August    => 8_u8,
+            Months::September => 9_u8,
+            Months::October   => 10_u8,
+            Months::November  => 11_u8,
+            Months::December  => 12_u8,
         }
     }
 
     pub fn from(month: u8) -> Months {
         match month {
-            1  => Months::January,
-            2  => Months::February,
-            3  => Months::March,
-            4  => Months::April,
-            5  => Months::May,
-            6  => Months::June,
-            7  => Months::July,
-            8  => Months::August,
-            9  => Months::September,
-            10 => Months::October,
-            11 => Months::November,
-            12 => Months::December,
+            1_u8  => Months::January,
+            2_u8  => Months::February,
+            3_u8  => Months::March,
+            4_u8  => Months::April,
+            5_u8  => Months::May,
+            6_u8  => Months::June,
+            7_u8  => Months::July,
+            8_u8  => Months::August,
+            9_u8  => Months::September,
+            10_u8 => Months::October,
+            11_u8 => Months::November,
+            12_u8 => Months::December,
             _  => panic!("Invalid month: {}", month),
         }
     }
@@ -104,20 +103,14 @@ impl Months {
         }
     }
 
-    pub fn days(&self, leap: bool, overhead: bool) -> u8 {
+    pub fn days(&self, leap: bool) -> u8 {
         match self {
             Months::January   => BASE_MONTH_DAYS[0],
             Months::February  => {
-                if !leap && !overhead {
-                    return BASE_MONTH_DAYS[1];
-                } else if leap && !overhead {
-                    return BASE_MONTH_DAYS[1] + 1;
-                } else if !leap && overhead {
-                    return BASE_MONTH_DAYS[1] - 1;
-                } else if leap && overhead {
+                if !leap {
                     return BASE_MONTH_DAYS[1];
                 } else {
-                    panic!("[IMPOSSIBLE]: Months::days()")
+                    return BASE_MONTH_DAYS[1] + 1_u8;
                 }
             },
             Months::March     => BASE_MONTH_DAYS[2],
@@ -133,20 +126,14 @@ impl Months {
         }
     }
 
-    pub fn seconds(&self, leap: bool, overhead: bool) -> u128 {
+    pub fn seconds(&self, leap: bool) -> u128 {
         match self {
             Months::January => BASE_MONTH_SECONDS[0],
             Months::February => {
-                if !leap && !overhead {
-                    return BASE_MONTH_SECONDS[1];
-                } else if leap && !overhead {
-                    return BASE_MONTH_SECONDS[1] + CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR;
-                } else if !leap && overhead {
-                    return BASE_MONTH_SECONDS[1] - CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR;
-                } else if leap && overhead {
+                if !leap {
                     return BASE_MONTH_SECONDS[1];
                 } else {
-                    panic!("[IMPOSSIBLE]: Months::seconds()")
+                    return BASE_MONTH_SECONDS[1] + CALENDAR_LEAP_SECONDS_IN_LEAP_YEAR;
                 }
             },
             Months::March     => BASE_MONTH_SECONDS[2],

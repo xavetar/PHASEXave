@@ -26,4 +26,4 @@
  * THE SOFTWARE.
  */
 
-pub const HOURS_IN_A_DAY: u8 = 24;
+pub const HOURS_IN_A_DAY: u8 = 24_u8;

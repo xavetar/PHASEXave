@@ -29,27 +29,45 @@
 use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
+        constants::{
+            year::{
+                SOLAR_YEAR_LEAP_LENGTH_INT,
+                SOLAR_YEAR_LEAP_LENGTH_F64
+            }
+        }
     }
 };
 
-pub const fn is_leap_year(view: CalendarView, year: u128) -> bool {
+pub fn is_leap_year(view: CalendarView, year: u128) -> bool {
     match view {
-        CalendarView::Julian => return year % 4 == 0,
-        CalendarView::Gregorian => return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0),
-        CalendarView::Solar => return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0),
+        CalendarView::Julian => return year % 4_u128 == 0_u128,
+        CalendarView::Gregorian => return year % 4_u128 == 0_u128 && (year % 100_u128 != 0_u128 || year % 400_u128 == 0_u128),
+        CalendarView::Solar => {
+            if year != 0 {
+                let leap_years: f64 = ((year - 1_u128) * SOLAR_YEAR_LEAP_LENGTH_INT) as f64 / 100000.0_f64;
+
+                if (leap_years + SOLAR_YEAR_LEAP_LENGTH_F64) as u128 > (leap_years) as u128 {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false
+            }
+        },
         _ => panic!("[ERROR]: Unknown CalendarView (is_leap_year)!")
     }
 }
 
-pub const fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
+pub fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
     match view {
-        CalendarView::Julian => return year / 4,
-        CalendarView::Gregorian => return year / 4 - year / 100 + year / 400,
-        CalendarView::Solar => return year / 4 - year / 100 + year / 400,
+        CalendarView::Julian => return year / 4_u128,
+        CalendarView::Gregorian => return year / 4_u128 - year / 100_u128 + year / 400_u128,
+        CalendarView::Solar => return (year * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u128,
         _ => panic!("[ERROR]: Unknown CalendarView (sum_leap_years)!")
     }
 }
 
 pub const fn excess_leap_years(year: u128) -> u128 {
-    return year / 100 - year / 400;
+    return year / 100_u128 - year / 400_u128;
 }

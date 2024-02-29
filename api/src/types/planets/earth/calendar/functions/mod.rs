@@ -28,11 +28,6 @@
 
 mod era_days;
 mod leap_year;
-mod overhead_year;
 
 pub use era_days::{era_days_from_date};
 pub use leap_year::{is_leap_year, sum_leap_years};
-pub use overhead_year::{
-    is_overhead_year, sum_overhead_years,
-    is_overhead_leap_year, sum_overhead_leap_years
-};

@@ -29,7 +29,6 @@
 use PHASEXave::{
     CalendarView, Months, Week,
     constants::{DAYS_IN_WEEK, MONTHS_IN_YEAR},
-    functions::{is_overhead_year}
 };
 
 const MAX_DAYS_IN_MONTH: u8 = 31;
@@ -154,23 +153,13 @@ pub fn format_months_to_text(calendar: &DAYS_IN_MONTHS_LINEAR) -> TEXT_BY_MONTHS
 }
 
 pub fn format_months_by_days(view: CalendarView, method: fn(CalendarView, u128, u8, u8) -> Week, year: u128, is_leap_year: bool) -> DAYS_IN_MONTHS_LINEAR {
-    let overhead: bool;
-
-    if view == CalendarView::Solar {
-        overhead = is_overhead_year(view, year);
-    } else if view == CalendarView::Gregorian || view == CalendarView::Julian {
-        overhead = false;
-    } else {
-        panic!("[ERROR]: Unknown CalendarView (format_months_by_days)!")
-    }
-
     // 2D Array
     let mut days_in_months: DAYS_IN_MONTHS_LINEAR = [[0; DAYS_IN_MONTH_LINEAR as usize]; MONTHS_IN_YEAR as usize];
 
     for month_in_year in 1..(MONTHS_IN_YEAR + 1) {
         let month: Months = Months::from(month_in_year);
         let shift: u8 = method(view, year, month.index(), 1).index() - 1;
-        for day_in_month in 1..(month.days(is_leap_year, overhead) + 1) {
+        for day_in_month in 1..(month.days(is_leap_year) + 1) {
             days_in_months[(month_in_year - 1) as usize][(shift + (day_in_month - 1)) as usize] = day_in_month;
         }
 

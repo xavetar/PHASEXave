@@ -107,7 +107,7 @@ impl Julian for Date {
                 self.unix_time += day_seconds;
             }
         } else {
-            self.unix_time = 0;
+            self.unix_time = 0_u128;
         }
 
         (self.year, days) = year_from_era_days(CalendarView::Julian, self.era_days);

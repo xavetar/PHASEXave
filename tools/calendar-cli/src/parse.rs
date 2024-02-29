@@ -45,8 +45,8 @@ fn print_help() {
         -y, --year YEAR              Set the year: local system year (default),
                                                    any year - max u128
 
-        -m, --method METHOD          Set the method: 1 - Xavetar - High Precision - Fast (default),
-                                                     2 - Rata Die - High Precision - Fast
+        -m, --method METHOD          Set the method: 1 - Xavetar - High Precision - Fast,
+                                                     2 - Rata Die - High Precision - Slow (default)
                                                      3 - Sakamoto - High Precision - Fast
 
         -c, --columns COLUMNS        Set the number of columns in row: 3 (default),
