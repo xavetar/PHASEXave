@@ -35,10 +35,10 @@ use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
         constants::{
-            days::{ALIGN_JULIAN}
+            days::{JULIAN_BCE_DAYS_FIRST_YEAR}
         },
         functions::{
-            days_from_date, era_days_from_date
+            era_days_from_date
         }
     },
     counter::unix_time::{
@@ -59,10 +59,10 @@ impl Solar for Date {
 
         match self.view {
             CalendarView::Julian => {
-                if self.era_days >= ALIGN_JULIAN as u128 {
-                    self.era_days -= ALIGN_JULIAN as u128;
+                if self.era_days > JULIAN_BCE_DAYS_FIRST_YEAR as u128 {
+                    self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
                 } else {
-                    panic!("[IMPOSSIBLE]: This days is missing in Solar Calendar! (to_date)")
+                    panic!("[IMPOSSIBLE]: This days is missing in CE (Current era) of Solar Calendar! (to_date)")
                 }
             },
             CalendarView::Gregorian => (),
@@ -75,28 +75,7 @@ impl Solar for Date {
     }
 
     fn to_presentation(&mut self, tz_in_unixtime: bool) {
-        let last_year: u128 = if self.year > 0 { self.year - 1 } else { 0 };
-        
-        match self.view {
-            CalendarView::Julian => {
-                // Конвертируем из Юлианского в Солнечный (в Юлианском больше високосных дней, но представление меньше)
-                // Удаляем из Юлианских дней эры, отсутствующие в Солнечном календаре дни Юлианского календаря
-                self.era_days = 365_u128 * last_year;
-                self.era_days += ((last_year * 25_u128) as f64 / 100.0_f64 - ((last_year * 781_u128) as f64 / 100000.0_f64)) as u128;
-                self.era_days += days_from_date(CalendarView::Solar, self.year, self.month, self.day);
-            },
-            CalendarView::Gregorian => {
-                // Конвертируем из Григорианского в Солнечный (в Григорианском больше високосных дней, но представление меньше)
-                // Удаляем из Григорианских дней эры, отсутствующие в Солнечном календаре дни Григорианского календаря
-                self.era_days = 365_u128 * last_year;
-                self.era_days += ((last_year * 2425_u128) as f64 / 10000.0_f64 - ((last_year * 31_u128) as f64 / 100000.0_f64)) as u128;
-                self.era_days += days_from_date(CalendarView::Solar, self.year, self.month, self.day);
-            },
-            CalendarView::Solar => {
-                self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day);
-            },
-            _ => panic!("[ERROR]: Unknown CalendarView in Solar converter (to_presentation)")
-        }
+        self.era_days = era_days_from_date(CalendarView::Solar, self.year, self.month, self.day);
 
         self.fill_time(UNIX_TIME_START_AFTER_DAY, tz_in_unixtime);
         self.fill_date(CalendarView::Solar);

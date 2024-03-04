@@ -40,28 +40,9 @@ use crate::types::{
     }
 };
 
-pub fn days_from_date(view: CalendarView, year: u128, month: u8, day: u8) -> u128 {
-
-    let mut days: u128 = day as u128;
-
-    let leap_year: bool = is_leap_year(view, year);
-
-    if month > 1_u8 {
-        if !leap_year {
-            days += BASE_MONTH_SUM_DAYS[(month - 2_u8) as usize] as u128;
-        } else {
-            days += LEAP_MONTH_SUM_DAYS[(month - 2_u8) as usize] as u128;
-        }
-    }
-
-    return days;
-}
-
 pub fn era_days_from_date(view: CalendarView, year: u128, month: u8, day: u8) -> u128 {
 
-    let mut days: u128 = day as u128;
-
-    let (leap_year, leap_years): (bool, u128) = (is_leap_year(view, year), sum_leap_years(view, year));
+    let (mut days, leap_year, leap_years): (u128, bool, u128) = (day as u128, is_leap_year(view, year), sum_leap_years(view, year));
 
     if !leap_year {
         days += (leap_years * LEAP_DAYS_YEAR as u128) + (((year - 1_u128) - leap_years) * BASE_DAYS_YEAR as u128);

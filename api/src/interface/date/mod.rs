@@ -34,7 +34,7 @@ use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
         constants::{
-            days::{ALIGN_JULIAN},
+            days::{JULIAN_BCE_DAYS_FIRST_YEAR},
             months::{Months},
         },
     },
@@ -122,7 +122,7 @@ impl Date {
         date.era_days += UNIX_TIME_START_AFTER_DAY;
 
         if view == CalendarView::Julian {
-            date.era_days += ALIGN_JULIAN as u128;
+            date.era_days += JULIAN_BCE_DAYS_FIRST_YEAR as u128;
         }
 
         // Текущий день, который идёт, фактически не является днём эры, он ещё не закончился, но визуально это +1
@@ -131,6 +131,10 @@ impl Date {
         (date.year, days) = year_from_era_days(view, date.era_days);
         date.month = month_from_days(view, date.year, &mut days).index();
         (date.day, date.timezone, date.unix_time, date.view) = (days as u8, timezone, unix_time, view);
+
+        if view == CalendarView::Julian {
+            date.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+        }
 
         return date;
     }
