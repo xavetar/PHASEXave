@@ -550,7 +550,7 @@ Output:
 ```
 Julian Week day:
 
-Rata Die: Sunday
+Rata Die: Tuesday
 Xavetar: Tuesday
 Sakamoto: Tuesday
 
