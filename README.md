@@ -231,6 +231,42 @@ fn main() {
 }
 ```
 
+#### Presentation
+
+Convert any* date representation between different calendars:
+
+```rust
+use PHASEXave::{CalendarView, Date, Sign, Zone, Julian, Gregorian, Solar};
+
+fn main() {
+    let mut date: Date = Date {
+        day: 27,
+        month: 2,
+        year: 3226,
+        timezone: Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 },
+        unix_time: 0,
+        era_days: 0,
+        view: CalendarView::Solar
+    };
+    <Date as Julian>::to_presentation(&mut date, true);
+    println!("JL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Gregorian>::to_presentation(&mut date, true);
+    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Solar>::to_presentation(&mut date, true);
+    println!("SL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+}
+```
+
+Output:
+
+```
+JL: 3226/2/27:1177987:39642393600
+GR: 3226/2/27:1177965:39640492800
+SL: 3226/2/27:1177964:39640406400
+```
+
+\* - any, but except first BCE days in Julian Calendar,
+
 #### Conversion
 
 ##### Solar to Julian
@@ -250,10 +286,15 @@ fn main() {
         era_days: 0,
         view: CalendarView::Solar
     };
-    <Date as Julian>::to_julian(&mut date, false);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
-    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Julian>::to_date(&mut date, false);
+    println!("JL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+JL: 3226/2/4:1177964:39640406400
 ```
 
 ##### Solar to Gregorian
@@ -273,10 +314,15 @@ fn main() {
         era_days: 0,
         view: CalendarView::Solar
     };
-    <Date as Gregorian>::to_gregorian(&mut date, false);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
-    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Gregorian>::to_date(&mut date, false);
+    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+GR: 3226/2/28:1177966:39640579200
 ```
 
 ##### Julian to Solar
@@ -296,10 +342,15 @@ fn main() {
         era_days: 0,
         view: CalendarView::Julian
     };
-    <Date as Solar>::to_solar(&mut date, false);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
-    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Solar>::to_date(&mut date, false);
+    println!("SL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+SL: 3226/2/28:1177965:39640492800
 ```
 
 ##### Julian to Gregorian
@@ -319,10 +370,15 @@ fn main() {
         era_days: 0,
         view: CalendarView::Julian
     };
-    <Date as Gregorian>::to_gregorian(&mut date, false);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
-    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Gregorian>::to_date(&mut date, false);
+    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+GR: 2023/11/12:738836:1699747200
 ```
 
 \* - any, but except first two days, that missing in Gregorian calendar
@@ -344,10 +400,15 @@ fn main() {
         era_days: 0,
         view: CalendarView::Gregorian
     };
-    <Date as Solar>::to_solar(&mut date, false);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
-    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Solar>::to_date(&mut date, false);
+    println!("SL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+SL: 3226/3/1:1177966:39640579200
 ```
 
 ##### Gregorian to Julian
@@ -367,10 +428,15 @@ fn main() {
         era_days: 0,
         view: CalendarView::Gregorian
     };
-    <Date as Julian>::to_julian(&mut date, false);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
-    println!("{era_days}:{unix_time}", era_days = date.era_days, unix_time = date.unix_time);
+    <Date as Julian>::to_date(&mut date, false);
+    println!("JL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+JL: 2023/10/30:738836:1699747200
 ```
 
 ##### Between
@@ -378,16 +444,22 @@ fn main() {
 Convert any Gregorian to Julian and Julian to Gregorian:
 
 ```rust
-use PHASEXave::{CalendarView, Date, Julian, Gregorian, Sign, Zone};
+use PHASEXave::{CalendarView, Date, Julian, Gregorian, Solar, Sign, Zone};
 
 fn main() {
-    let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 3, minutes: 0, seconds: 0 };
+    let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
     let mut date: Date = Date::now(CalendarView::Gregorian, timezone);
-    <Date as Solar>::to_solar(&mut date, true);
-    <Date as Julian>::to_julian(&mut date, true);
-    <Date as Gregorian>::to_gregorian(&mut date, true);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    <Date as Solar>::to_date(&mut date, true);
+    <Date as Julian>::to_date(&mut date, true);
+    <Date as Gregorian>::to_date(&mut date, true);
+    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
 }
+```
+
+Output:
+
+```
+GR: 2024/3/4:738949:1709574752
 ```
 
 #### Day of Week
@@ -414,6 +486,17 @@ fn main() {
 }
 ```
 
+Output:
+
+```
+Solar Week day:
+
+Rata Die: Tuesday
+Xavetar: Tuesday
+
+Date: 2024/3/5
+```
+
 Get week day from any date:
 
 ```rust
@@ -428,6 +511,17 @@ fn main() {
     );
     println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
 }
+```
+
+Output:
+
+```
+Solar Week day:
+
+Rata Die: Tuesday
+Xavetar: Tuesday
+
+Date: 1582/10/5
 ```
 
 ##### Julian
@@ -451,10 +545,22 @@ fn main() {
 }
 ```
 
+Output:
+
+```
+Julian Week day:
+
+Rata Die: Sunday
+Xavetar: Tuesday
+Sakamoto: Tuesday
+
+Date: 2024/2/21
+```
+
 Get week day from any date:
 
 ```rust
-use PHASEXave::{CalendarView, Date, Julian, RataDie, Xavetar, Sakamoto};
+use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto};
 
 fn main() {
     let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
@@ -466,6 +572,18 @@ fn main() {
     );
     println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
 }
+```
+
+Output:
+
+```
+Julian Week day:
+
+Rata Die: Friday
+Xavetar: Friday
+Sakamoto: Friday
+
+Date: 1582/10/5
 ```
 
 ##### Gregorian
@@ -489,10 +607,22 @@ fn main() {
 }
 ```
 
+Output:
+
+```
+Gregorian Week day:
+
+Rata Die: Tuesday
+Sakamoto: Tuesday
+Xavetar: Tuesday
+
+Date: 2024/3/5
+```
+
 Get week day from any date:
 
 ```rust
-use PHASEXave::{CalendarView, Date, Julian, RataDie, Xavetar, Sakamoto};
+use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto};
 
 fn main() {
     let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
@@ -504,6 +634,18 @@ fn main() {
     );
     println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
 }
+```
+
+Output:
+
+```
+Gregorian Week day:
+
+Rata Die: Tuesday
+Xavetar: Tuesday
+Sakamoto: Tuesday
+
+Date: 1582/10/5
 ```
 
 ## License
