@@ -12,7 +12,7 @@
 The program accepts the following command-line options:
 
 
-    -z, --zone [ZONE]              Set the timezone. The default value is local system timezone.
+    -z, --zone [ZONE]: Set the timezone. The default value is local system timezone.
     -m, --method [METHOD]: Set the method for determining the day of the week. There are three options available:
         1: Xavetar - High Precision - Fast
         2: Rata Die - High Precision - Fast (default)
