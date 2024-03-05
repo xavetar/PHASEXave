@@ -1,23 +1,23 @@
 # Package
 [package]
-name = "calendar-cli"
+name = "date-cli"
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
-publish = false
+publish = true
 version = "1.0.0"
 edition.workspace = true
 license.workspace = true
 license-file.workspace = true
 rust-version.workspace = true
-description = "Fast, clear and simple interface for view calendar from CLI for Solar, Julian, Gregorian calendar."
+description = "Fast, clear and simple interface for view date from CLI for Solar, Julian, Gregorian calendar."
 repository.workspace = true
-keywords = ["calendar", "cli", "solar", "julian", "gregorian"]
+keywords = ["date-and-time", "cli", "solar", "julian", "gregorian"]
 categories.workspace = true
 include.workspace = true
 exclude.workspace = true
 
 # Binary
 [[bin]]
-name = "calendar-cli"
+name = "date-cli"
 path = "src/main.rs"
 
 # Features

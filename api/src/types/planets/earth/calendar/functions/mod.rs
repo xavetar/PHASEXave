@@ -29,5 +29,5 @@
 mod days;
 mod leap_year;
 
-pub use days::{era_days_from_date};
+pub use days::{days_from_presentation_date};
 pub use leap_year::{is_leap_year, sum_leap_years};

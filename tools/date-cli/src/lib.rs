@@ -26,6 +26,7 @@
  * THE SOFTWARE.
  */
 
-pub const UNIX_EPOCH_SOLAR_START_YEAR: u16 = 1970_u16; // 02.01.1970
-pub const UNIX_EPOCH_JULIAN_START_YEAR: u16 = 1969_u16; // 19.12.1969
-pub const UNIX_EPOCH_GREGORIAN_START_YEAR: u16 = 1970_u16; // 01.01.1970
+#![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
+
+pub mod parse;

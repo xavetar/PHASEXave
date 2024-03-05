@@ -36,6 +36,7 @@ use crate::types::{
             },
             months::{MONTHS_IN_YEAR},
             shifts::{
+                SOLAR_BASE_SAKAMOTO,
                 JULIAN_BASE_SAKAMOTO,
                 GREGORIAN_BASE_SAKAMOTO
             }
@@ -58,7 +59,7 @@ impl Sakamoto for Date {
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
         let BASE_YEAR_SHIFTS: &[u8; MONTHS_IN_YEAR as usize] = match view {
-            CalendarView::Solar => unimplemented!(),
+            CalendarView::Solar => &SOLAR_BASE_SAKAMOTO,
             CalendarView::Julian => &JULIAN_BASE_SAKAMOTO,
             CalendarView::Gregorian => &GREGORIAN_BASE_SAKAMOTO,
             _ => panic!("[ERROR]: Unknown CalendarView (Sakamoto).")

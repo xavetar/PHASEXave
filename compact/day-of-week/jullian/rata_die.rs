@@ -28,7 +28,7 @@ const LEAP_DAYS_YEAR: u16 = BASE_DAYS_YEAR + 1;
 
 const REPEAT_WEAK_DAY_CYCLE: u8 = 7;
 
-const SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN: u8 = 5;
+const SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN: u8 = 5;
 
 const MONTHS_IN_YEAR: u8 = 12;
 
@@ -73,7 +73,7 @@ fn day_of_week(year: u128, month: u8, day: u8) -> &'static str {
         }
     }
 
-    let dow: u8 = ((days + SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128) % (REPEAT_WEAK_DAY_CYCLE as u128)) as u8;
+    let dow: u8 = ((days + SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN as u128) % (REPEAT_WEAK_DAY_CYCLE as u128)) as u8;
     
     return week_day(dow);
 }

@@ -34,25 +34,40 @@ use crate::types::{
     }
 };
 
-const START_YEAR: u16 = 1_u16;
+/*
+    Название было изменено с year_from_era_days, фактически мы получаем из результата работы этой функции
+    количество/сумму лет с представления даты в какой-то календарной системе, но в самом представлении даты,
+    могут находится дни другой эры, именно поэтому такое название было бы не совсем корректным.
 
-pub fn year_from_era_days(view: CalendarView, era_days: u128) -> (u128, u128) {
-    let mut day: u128 = era_days;
-    let mut year: u128 = START_YEAR as u128;
+    В Юлианском календаре это дни 01.01.1 BCE и 02.01.1 BCE, таким образом по факту функция возвращает
+    год, в представления даты в какой-то календарной системе. И этот результат должен быть скорректирован
+    в функциях выше, для приведения к формату CE (Current Era) или BCE (Before Current Era)*.
+
+    Для Григорианского и Солнечного данные логические утверждения так-же верны, ведь правильное количество/сумма
+    лет для этой эры, является подмножеством презинтативной даты, зависящей от количества дней в году, не смотря
+    на то, что для этих календарей это ничего не меняет, для них можно считать что название функции так и осталось
+    year_from_era_days, т.к в них отсутствуют BCE (Before Current Era) дни/года.
+
+    * - данная функциональность ПОКА не реализована.
+*/
+
+pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) -> (u128, u128) {
+    let mut year: u128 = 1_u128;
+    let mut days: u128 = presentation_days;
 
     loop {
         let leap_year: bool = is_leap_year(view, year);
 
-        if leap_year && day > LEAP_DAYS_YEAR as u128 {
-            day -= LEAP_DAYS_YEAR as u128;
+        if leap_year && days > LEAP_DAYS_YEAR as u128 {
+            days -= LEAP_DAYS_YEAR as u128;
             year += 1_u128;
-        } else if !leap_year && day > BASE_DAYS_YEAR as u128 {
-            day -= BASE_DAYS_YEAR as u128;
+        } else if !leap_year && days > BASE_DAYS_YEAR as u128 {
+            days -= BASE_DAYS_YEAR as u128;
             year += 1_u128;
         } else {
             break;
         }
     };
 
-    return (year, day);
+    return (year, days);
 }

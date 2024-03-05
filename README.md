@@ -471,16 +471,17 @@ Get week day from Solar, Julian and Gregorian calendar:
 Get week day from Date:
 
 ```rust
-use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sign, Zone};
+use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto, Sign, Zone};
 
 fn main() {
     let timezone: Zone = Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 };
 
-    let date: Date = Date::now(CalendarView::Gregorian, timezone);
+    let date: Date = Date::now(CalendarView::Solar, timezone);
     println!(
-        "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\n",
+        "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
         rata_die = <Date as RataDie>::week_day(&date).name(),
         xavetar = <Date as Xavetar>::week_day(&date).name(),
+        sakamoto = <Date as Sakamoto>::week_day(&date).name(),
     );
     println!("Date: {yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
 }
@@ -493,21 +494,23 @@ Solar Week day:
 
 Rata Die: Tuesday
 Xavetar: Tuesday
+Sakamoto: Tuesday
 
-Date: 2024/3/5
+Date: 2024/3/6
 ```
 
 Get week day from any date:
 
 ```rust
-use PHASEXave::{CalendarView, Date, RataDie, Xavetar};
+use PHASEXave::{CalendarView, Date, RataDie, Sakamoto, Xavetar};
 
 fn main() {
     let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
     println!(
-        "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\n",
-        rata_die = <Date as RataDie>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),
-        xavetar = <Date as Xavetar>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),
+        "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
+        rata_die = <Date as RataDie>::from(CalendarView::Solar, yyyy, mm, dd).name(),
+        xavetar = <Date as Xavetar>::from(CalendarView::Solar, yyyy, mm, dd).name(),
+        sakamoto = <Date as Sakamoto>::from(CalendarView::Solar, yyyy, mm, dd).name(),
     );
     println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
 }
@@ -520,6 +523,7 @@ Solar Week day:
 
 Rata Die: Tuesday
 Xavetar: Tuesday
+Sakamoto: Tuesday
 
 Date: 1582/10/5
 ```

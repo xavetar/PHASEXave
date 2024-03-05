@@ -12,15 +12,16 @@
 The program accepts the following command-line options:
 
     -y, --year [YEAR]: Set the year. The default value is the local system year, but you can also specify any year up to a maximum of u128.
-    -m, --method [METHOD]: Set the method. There are three options available:
-        1: Xavetar - High Precision - Fast (default)
-        2: Rata Die - High Precision - Fast
+    -m, --method [METHOD]: Set the method for determining the day of the week. There are three options available:
+        1: Xavetar - High Precision - Fast
+        2: Rata Die - High Precision - Fast (default)
         3: Sakamoto - High Precision - Fast
     -c, --columns [COLUMNS]: Set the number of columns in a row. The default value is 3, but you can specify a value in the range of 1-12.
     -l, --margin [MARGIN]: Set the margin [top, right, bottom, left]. The default value is 0,1,1,1, but you can specify values up to u8,u8,u8,u8.
     -v, --view [VIEW]: Set the calendar view. There are two options available:
         1: Julian
         2: Gregorian (default)
+        3: Solar
     -f, --filename [FILENAME]: Save to filename. The default filename is Calendar.txt, but you can specify a different filename.
     --mode [MODE]: Set the mode. There are two options available:
         1: To file

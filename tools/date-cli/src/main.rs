@@ -27,75 +27,75 @@
  */
 
 use PHASEXave::{
-    CalendarView, Date, Week,
+    CalendarView,
+    Date, Time,
+    Zone, Sign,
+    Months, Week,
     RataDie,
-    functions::{is_leap_year}
 };
 
-use calendar_cli::{
-    text::{
-        format_months_by_days,
-        format_months_to_text,
-        format_calendar_from_text_months
-    },
-    save::{save_to_file},
+use date_cli::{
     parse::{parse_args},
-    types::enums::{Modes}
 };
 
-fn make_calendar(view: CalendarView, method: fn(CalendarView, u128, u8, u8) -> Week, year: u128, columns: u8, margin: [u8; 4]) -> Vec<Vec<char>> {
-    return format_calendar_from_text_months(
-        year, columns, margin,
-        format_months_to_text(
-            &format_months_by_days(
-                view, method, year, is_leap_year(view, year)
-            )
-        )
+fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u128, u8, u8) -> Week) {
+    let date: Date;
+
+    if timezone.sign == Sign::Unsigned && timezone.hours == 255 && timezone.minutes == 255 && timezone.seconds == 255 {
+        date = Date::local(view);
+    } else {
+        date = Date::now(view, timezone);
+    }
+
+    let time: Time = Time::now(date.timezone);
+
+    print!(
+        "{day_of_week} {month} {day} {hours:02}:{minutes:02}:{seconds:02}",
+        day_of_week = method(view, date.year, date.month, date.day).name(),
+        month = Months::from(date.month).name(),
+        day = date.day,
+        hours = time.hours,
+        minutes = time.minutes,
+        seconds = time.seconds
     );
+
+    if date.timezone.sign == Sign::Unsigned {
+        print!("+")
+    } else if date.timezone.sign == Sign::Signed {
+        print!("-");
+    } else {
+        panic!("[PANIC] Unknown timezone sign!");
+    }
+
+    println!(
+        "{timezone_hours:02}:{timezone_minutes:02}:{timezone_seconds:02} {year} {calendar_view:?}",
+        timezone_hours = date.timezone.hours,
+        timezone_minutes = date.timezone.minutes,
+        timezone_seconds = date.timezone.seconds,
+        year = date.year,
+        calendar_view = view
+    )
 }
 
 fn main() {
     let (
-        mut year,
+        mut timezone,
         mut method,
-        mut columns,
-        mut margin,
         mut view,
-        mut mode,
-        mut filename
     )
     :
     (
-        u128,
+        Zone,
         fn(CalendarView, u128, u8, u8) -> Week,
-        u8,
-        [u8; 4],
         CalendarView,
-        Modes,
-        String
     )
     =
     (
-        Date::local(CalendarView::Gregorian).year,
+        Zone { sign: Sign::Unsigned, hours: 255, minutes: 255, seconds: 255},
         <Date as RataDie>::from,
-        3,
-        [0, 1, 1, 1],
         CalendarView::Gregorian,
-        Modes::Console,
-        String::from("Calendar.txt")
     );
-    
-    parse_args(&mut year, &mut method, &mut columns, &mut margin, &mut view, &mut mode, &mut filename);
 
-    let calendar_text: Vec<Vec<char>> = make_calendar(view, method, year, columns, margin);
-
-    if mode == Modes::File {
-        save_to_file(filename, calendar_text);
-    } else if mode == Modes::Console {
-        for month in calendar_text {
-            println!("{}", String::from_iter(month));
-        }
-    } else {
-        panic!("[ERROR]: Unknown mode!")
-    }
+    parse_args(&mut timezone, &mut method, &mut view);
+    make_output(view, timezone, method);
 }

@@ -38,7 +38,7 @@ use crate::types::{
             days::{JULIAN_BCE_DAYS_FIRST_YEAR}
         },
         functions::{
-            era_days_from_date
+            days_from_presentation_date
         }
     },
     counter::unix_time::{
@@ -49,13 +49,13 @@ use crate::types::{
 };
 
 pub trait Gregorian : Converter {
-    fn to_date(&mut self, tz_in_unixtime: bool);
-    fn to_presentation(&mut self, tz_in_unixtime: bool);
+    fn to_date(&mut self, timezone_in_unix_time: bool);
+    fn to_presentation(&mut self, timezone_in_unix_time: bool);
 }
 
 impl Gregorian for Date {
-    fn to_date(&mut self, tz_in_unixtime: bool) {
-        self.era_days = era_days_from_date(self.view.clone(), self.year, self.month, self.day);
+    fn to_date(&mut self, timezone_in_unix_time: bool) {
+        self.era_days = days_from_presentation_date(self.view.clone(), self.year, self.month, self.day);
 
         match self.view {
             CalendarView::Julian => {
@@ -70,14 +70,14 @@ impl Gregorian for Date {
             _ => panic!("[ERROR]: Unknown CalendarView in Gregorian converter (to_date)")
         }
 
-        self.fill_time(UNIX_TIME_START_AFTER_DAY, tz_in_unixtime);
+        self.fill_time(UNIX_TIME_START_AFTER_DAY, timezone_in_unix_time);
         self.fill_date(CalendarView::Gregorian);
     }
 
-    fn to_presentation(&mut self, tz_in_unixtime: bool) {
-        self.era_days = era_days_from_date(CalendarView::Gregorian, self.year, self.month, self.day);
+    fn to_presentation(&mut self, timezone_in_unix_time: bool) {
+        self.era_days = days_from_presentation_date(CalendarView::Gregorian, self.year, self.month, self.day);
 
-        self.fill_time(UNIX_TIME_START_AFTER_DAY, tz_in_unixtime);
+        self.fill_time(UNIX_TIME_START_AFTER_DAY, timezone_in_unix_time);
         self.fill_date(CalendarView::Gregorian);
     }
 }

@@ -26,12 +26,31 @@
  * THE SOFTWARE.
  */
 
+/*
+    Названия констант были измененны с:
+
+    SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR
+    SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN
+    SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN
+
+    Почему? Потому-что представление календаря, может содержать в себе дни с BCE (Before Common Era),
+    использование предыдущих названий было бы не совсем корректным и запутывающим, ведь использование
+    таких наименований подразумевает, что весь календарь принадлежит к текущей эре и вызывает побочные
+    ложные умозаключения.
+
+    Дата представления, дата смещения от представления, не тоже самое, что дата в текущей эре,
+    дата представления может содержать в себе дни или смещения от дней другой эры. Она может быть
+    привязана к дням другой эры, для того чтобы сохранить когерентность календарной системы и её
+    совместимость с BCE (Before Common Era). Абстрактный год, содержит в себе дни и предыдущей эры
+    и текущей.
+*/
+
 pub const DAYS_IN_WEEK: u8 = 7_u8;
 pub const REPEAT_WEAK_DAY_CYCLE: u8 = DAYS_IN_WEEK;
 
-pub const SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN: u8 = 5_u8;
-pub const SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN: u8 = 0_u8;
-pub const SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR: u8 = 0_u8;
+pub const SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR: u8 = 0_u8;
+pub const SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN: u8 = 5_u8;
+pub const SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN: u8 = 0_u8;
 
 #[derive(Debug)]
 pub enum Week {

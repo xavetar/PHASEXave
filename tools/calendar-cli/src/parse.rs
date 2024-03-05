@@ -46,7 +46,7 @@ fn print_help() {
                                                    any year - max u128
 
         -m, --method METHOD          Set the method: 1 - Xavetar - High Precision - Fast,
-                                                     2 - Rata Die - High Precision - Slow (default)
+                                                     2 - Rata Die - High Precision - Fast (default)
                                                      3 - Sakamoto - High Precision - Fast
 
         -c, --columns COLUMNS        Set the number of columns in row: 3 (default),
@@ -141,16 +141,16 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                         .expect("[ERROR]: One of value is not a unsigned integer!");
 
                     if margin_values.len() < margin.len() {
-                        println!("[ERROR]: Invalid argument format: -o, --margin [top, right, bottom, left]");
+                        println!("[ERROR]: Invalid argument format: -l, --margin [top, right, bottom, left]");
                         std::process::exit(0);
                     } else if margin_values.len() > margin.len() {
-                        println!("[ERROR]: Invalid argument format: -o, --margin [top, right, bottom, left]");
+                        println!("[ERROR]: Invalid argument format: -l, --margin [top, right, bottom, left]");
                         std::process::exit(0);
                     } else {
                         *margin = [margin_values[0], margin_values[1], margin_values[2], margin_values[3]];
                     }
                 } else {
-                    println!("[ERROR]: Value not provided: -o, --margins");
+                    println!("[ERROR]: Value not provided: -l, --margins");
                     std::process::exit(0);
                 }
             }
@@ -167,7 +167,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                             }
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned intege: -v, --view [VIEW]");
+                        println!("[ERROR]: Value is not a unsigned integer: -v, --view [VIEW]");
                         std::process::exit(0);
                     }
                 } else {

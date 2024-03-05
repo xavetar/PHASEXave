@@ -40,28 +40,28 @@ use crate::types::{
     },
     counter::unix_time::{
         functions::{
-            year_from_era_days, month_from_days,
+            year_from_presentation_days, month_from_days,
         }
     }
 };
 
 pub trait Converter {
     fn fill_date(&mut self, to: CalendarView);
-    fn fill_time(&mut self, day_before_timer_start: u128, tz_in_unixtime: bool);
+    fn fill_time(&mut self, day_before_timer_start: u128, timezone_in_unix_time: bool);
 }
 
 impl Converter for Date {
     fn fill_date(&mut self, to: CalendarView) {
         let mut days: u128;
 
-        (self.year, days) = year_from_era_days(to, self.era_days);
+        (self.year, days) = year_from_presentation_days(to, self.era_days);
 
         self.month = month_from_days(to, self.year, &mut days).index();
 
         (self.day, self.view) = (days as u8, to);
     }
 
-    fn fill_time(&mut self, day_before_timer_start: u128, tz_in_unixtime: bool) {
+    fn fill_time(&mut self, day_before_timer_start: u128, timezone_in_unix_time: bool) {
         if self.era_days > day_before_timer_start {
             let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
 
@@ -69,7 +69,7 @@ impl Converter for Date {
 
             // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
             // с учётом секунд внутри дня ± часовой пояс.
-            if !tz_in_unixtime {
+            if !timezone_in_unix_time {
                 zone_recalc(self.timezone, &mut self.unix_time, day_seconds, &mut self.era_days);
             } else {
                 self.unix_time += day_seconds;

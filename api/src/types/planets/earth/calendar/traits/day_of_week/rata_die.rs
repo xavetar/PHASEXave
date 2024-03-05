@@ -32,13 +32,13 @@ use crate::types::{
         view::{CalendarView},
         constants::{
             week::{
-                SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR,
-                SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN,
-                SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN,
+                SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR,
+                SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN,
+                SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN,
                 REPEAT_WEAK_DAY_CYCLE, Week,
             },
         },
-        functions::{era_days_from_date}
+        functions::{days_from_presentation_date}
     }
 };
 
@@ -54,13 +54,13 @@ impl RataDie for Date {
 
     fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
         let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match view {
-            CalendarView::Solar => SHIFT_BEFORE_FIRST_WEEK_DAY_SOLAR as u128,
-            CalendarView::Julian => SHIFT_BEFORE_FIRST_WEEK_DAY_JULIAN as u128,
-            CalendarView::Gregorian => SHIFT_BEFORE_FIRST_WEEK_DAY_GREGORIAN as u128,
+            CalendarView::Solar => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR as u128,
+            CalendarView::Julian => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN as u128,
+            CalendarView::Gregorian => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN as u128,
             _ => panic!("[ERROR]: Unknown CalendarView (RataDie - from).")
         };
 
-        let era_days: u128 = era_days_from_date(view, year, month, day);
+        let era_days: u128 = days_from_presentation_date(view, year, month, day);
 
         return Week::from(((era_days + SHIFT_BEFORE_FIRST_WEEK_DAY) % (REPEAT_WEAK_DAY_CYCLE as u128)) as u8);
     }

@@ -85,12 +85,12 @@ impl Time {
         return Self::to_time(unix_time, local_timezone(), false);
     }
 
-    pub fn from(unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Time {
-        return Self::to_time(unix_time, timezone, tz_in_unixtime);
+    pub fn from(unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Time {
+        return Self::to_time(unix_time, timezone, timezone_in_unix_time);
     }
 
-    fn to_time(mut unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Time {
-        if !tz_in_unixtime {
+    fn to_time(mut unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Time {
+        if !timezone_in_unix_time {
             let timezone_seconds: u128 = timezone.to_seconds();
 
             if unix_time < timezone_seconds && timezone.sign == Sign::Signed {

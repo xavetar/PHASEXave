@@ -43,7 +43,7 @@ use crate::types::{
             days::{UNIX_TIME_START_AFTER_DAY}
         },
         functions::{
-            year_from_era_days, month_from_days,
+            year_from_presentation_days, month_from_days,
             epoch_days_from_seconds
         }
     },
@@ -95,12 +95,12 @@ impl Date {
         return Self::to_date(view, unix_time, local_timezone(), false);
     }
 
-    pub fn from(view: CalendarView, unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Date {
-        return Self::to_date(view, unix_time, timezone, tz_in_unixtime);
+    pub fn from(view: CalendarView, unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Date {
+        return Self::to_date(view, unix_time, timezone, timezone_in_unix_time);
     }
 
-    fn to_date(view: CalendarView, mut unix_time: u128, timezone: Zone, tz_in_unixtime: bool) -> Date {
-        if !tz_in_unixtime {
+    fn to_date(view: CalendarView, mut unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Date {
+        if !timezone_in_unix_time {
             let timezone_seconds: u128 = timezone.to_seconds();
 
             if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
@@ -115,26 +115,27 @@ impl Date {
         }
 
         let mut days: u128;
+        let mut presentation_days: u128;
         let mut date: Date = Date::default();
 
-        (date.era_days, _) = epoch_days_from_seconds(unix_time);
+        (presentation_days, _) = epoch_days_from_seconds(unix_time);
 
-        date.era_days += UNIX_TIME_START_AFTER_DAY;
+        presentation_days += UNIX_TIME_START_AFTER_DAY + 1_u128;
 
         if view == CalendarView::Julian {
-            date.era_days += JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+            presentation_days += JULIAN_BCE_DAYS_FIRST_YEAR as u128;
         }
 
-        // Текущий день, который идёт, фактически не является днём эры, он ещё не закончился, но визуально это +1
-        date.era_days += 1;
-
-        (date.year, days) = year_from_era_days(view, date.era_days);
+        (date.year, days) = year_from_presentation_days(view, presentation_days);
         date.month = month_from_days(view, date.year, &mut days).index();
-        (date.day, date.timezone, date.unix_time, date.view) = (days as u8, timezone, unix_time, view);
 
         if view == CalendarView::Julian {
-            date.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+            presentation_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
         }
+
+        (date.day, date.timezone, date.unix_time, date.era_days, date.view)
+        =
+        (days as u8, timezone, unix_time, presentation_days, view);
 
         return date;
     }
