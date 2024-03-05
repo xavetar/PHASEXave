@@ -91,7 +91,7 @@ fn main() {
     )
     =
     (
-        Zone { sign: Sign::Unsigned, hours: 255, minutes: 255, seconds: 255},
+        Zone { sign: Sign::Unsigned, hours: 255, minutes: 255, seconds: 255 },
         <Date as RataDie>::from,
         CalendarView::Gregorian,
     );
