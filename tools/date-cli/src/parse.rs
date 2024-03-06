@@ -37,16 +37,16 @@ fn print_help() {
     println!(
         "Usage: {bin_name} [options]\n\nOptions:
 
-        -z, --zone ZONE              Set the timezone: [+/-][hours:minutes:seconds]: local timezone (default),
-                                                                                     u8,u8,u8,u8 (max)
+        -z, --zone [ZONE]              Set the timezone: [+/-][hours:minutes:seconds]: local timezone (default),
+                                                                                       [+/-][255-1:255-1:255-1] (max)
 
-        -m, --method METHOD          Set the method: 1 - Xavetar - High Precision - Fast,
-                                                     2 - Rata Die - High Precision - Fast (default)
-                                                     3 - Sakamoto - High Precision - Fast
+        -m, --method [METHOD]          Set the method: 1 - Xavetar - High Precision - Fast,
+                                                       2 - Rata Die - High Precision - Fast (default)
+                                                       3 - Sakamoto - High Precision - Fast
 
-        -v, --view VIEW              Set the calendar view: 1 - Julian,
-                                                            2 - Gregorian (default)
-                                                            3 - Solar
+        -v, --view [VIEW]              Set the calendar view: 1 - Julian,
+                                                              2 - Gregorian (default)
+                                                              3 - Solar
 
         ", bin_name = std::path::Path::new::<String>(
             &std::env::args().nth(0)
@@ -81,7 +81,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u128, u8, u
                         .split(':')
                         .map(|x| x.parse::<u8>())
                         .collect::<Result<Vec<u8>, std::num::ParseIntError>>()
-                        .expect("[ERROR]: One of value is not a unsigned integer!");
+                        .expect("[ERROR]: One of value overflow type or is not a unsigned integer!");
 
                     if zone_values.len() < 3 {
                         println!("[ERROR]: Invalid argument format: -z, --zone [+/-][hours:minutes:seconds]");

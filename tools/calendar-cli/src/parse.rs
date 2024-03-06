@@ -43,7 +43,7 @@ fn print_help() {
         -h, --help                   Show this help message and exit!
 
         -y, --year YEAR              Set the year: local system year (default),
-                                                   any year - max u128
+                                                   any year (max - 2^128 − 1)
 
         -m, --method METHOD          Set the method: 1 - Xavetar - High Precision - Fast,
                                                      2 - Rata Die - High Precision - Fast (default)
@@ -53,7 +53,7 @@ fn print_help() {
                                                                        1-12 range (max)
 
         -l, --margin MARGIN          Set the margin [top, right, bottom, left]: 0,1,1,1 (default),
-                                                                                u8,u8,u8,u8 (max)
+                                                                                255,255,255,255 (max)
 
         -v, --view VIEW              Set the calendar view: 1 - Julian,
                                                             2 - Gregorian (default)
@@ -138,7 +138,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                         .split(',')
                         .map(|x| x.parse::<u8>())
                         .collect::<Result<Vec<u8>, std::num::ParseIntError>>()
-                        .expect("[ERROR]: One of value is not a unsigned integer!");
+                        .expect("[ERROR]: One of value overflow type or is not a unsigned integer!");
 
                     if margin_values.len() < margin.len() {
                         println!("[ERROR]: Invalid argument format: -l, --margin [top, right, bottom, left]");
