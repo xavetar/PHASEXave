@@ -36,7 +36,8 @@ const MAX_DAYS_IN_MONTH: u8 = 31;
 const MAX_SHIFT_DAYS_IN_WEEK: u8 = DAYS_IN_WEEK - 1;
 
 const COLUMNS_MATRIX_MONTH: u8 = DAYS_IN_WEEK;
-const ROWS_MATRIX_MONTH: u8 = (MAX_SHIFT_DAYS_IN_WEEK + MAX_DAYS_IN_MONTH).div_ceil(DAYS_IN_WEEK);
+// Equivalent to: (MAX_SHIFT_DAYS_IN_WEEK + MAX_DAYS_IN_MONTH).div_ceil(DAYS_IN_WEEK)
+const ROWS_MATRIX_MONTH: u8 = (MAX_SHIFT_DAYS_IN_WEEK + MAX_DAYS_IN_MONTH + (DAYS_IN_WEEK - 1)) / DAYS_IN_WEEK;
 
 const DAYS_IN_MONTH_LINEAR: u8 = COLUMNS_MATRIX_MONTH * ROWS_MATRIX_MONTH;
 
@@ -71,7 +72,8 @@ fn to_chars<T: Default + Copy + std::ops::IndexMut<usize, Output = char>>(cursor
 pub fn format_calendar_from_text_months(year: u128, columns: u8, margin: [u8; 4], text_by_months_in_year: TEXT_BY_MONTHS_IN_YEAR) -> Vec<Vec<char>> {
     let mut cursor_line: usize = 0;
 
-    let row_objects: u8 = MONTHS_IN_YEAR.div_ceil(columns);
+    // Equivalent to: MONTHS_IN_YEAR.div_ceil(columns)
+    let row_objects: u8 = (MONTHS_IN_YEAR + (columns - 1)) / columns;
 
     let width_calendar: u16 = (LINE_WIDTH as u16 * columns as u16) + ((margin[1] as u16 + margin[3] as u16) * (columns as u16));
     let height_calendar: u16 = (LINE_HEIGTH as u16 * row_objects as u16) + ((margin[0] as u16 + margin[2] as u16) * (row_objects as u16)) + 1 + 1; // calendar height + space + year (header)

@@ -17,8 +17,8 @@ resolver="2"
 [workspace.package]
 authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 edition = "2021"
-version = "1.7.9"
-rust-version = "1.70"
+version = "1.8.0"
+rust-version = "1.67.0"
 license = "MIT AND Apache-2.0"
 license-file = "LICENSE-Anti-Virus"
 repository = "https://github.com/xavetar/PHASEXave"
@@ -33,7 +33,7 @@ exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lo
 
 # Dependencies
 [workspace.dependencies]
-PHASEXave = { version = "=1.7.9", path = "api/", default-features = false }
+PHASEXave = { version = "=1.8.0", path = "api/", default-features = false }
 
 # Profiles
 [profile.dev]
