@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  RUST_VERSION: 1.67.0
+  CARGO_TERM_COLOR: always
+
+jobs:
+  Test-tools:
+    strategy:
+      matrix:
+        runs-on:
+          - macOS-13
+          - macOS-12
+          - macOS-11
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set minimal supported Rust version
+        run: |
+          rustup default ${RUST_VERSION}
+      - name: Build
+        run: |
+          cargo build --release --bin date-cli
+          cargo build --release --bin calendar-cli
+      - name: Date CLI
+        run: |
+          cargo run --release --quiet --bin date-cli -- -v 1
+          cargo run --release --quiet --bin date-cli -- -v 2
+          cargo run --release --quiet --bin date-cli -- -v 3
+      - name: Calendar CLI
+        run: |
+          cargo run --release --quiet --bin calendar-cli -- -v 1
+          cargo run --release --quiet --bin calendar-cli -- -v 2
+          cargo run --release --quiet --bin calendar-cli -- -v 3

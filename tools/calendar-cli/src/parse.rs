@@ -40,29 +40,29 @@ fn print_help() {
     println!(
         "Usage: {bin_name} [options]\n\nOptions:
 
-        -h, --help                   Show this help message and exit!
+        -h, --help                     Show this help message and exit!
 
-        -y, --year YEAR              Set the year: local system year (default),
-                                                   any year (max - 2^128 − 1)
+        -y, --year [YEAR]              Set the year: local system year (default),
+                                                     any year (max - 2^128 − 1)
 
-        -m, --method METHOD          Set the method: 1 - Xavetar - High Precision - Fast,
-                                                     2 - Rata Die - High Precision - Fast (default)
-                                                     3 - Sakamoto - High Precision - Fast
+        -m, --method [METHOD]          Set the method: 1 - Xavetar - High Precision - Fast,
+                                                       2 - Rata Die - High Precision - Fast (default)
+                                                       3 - Sakamoto - High Precision - Fast
 
-        -c, --columns COLUMNS        Set the number of columns in row: 3 (default),
-                                                                       1-12 range (max)
+        -c, --columns [COLUMNS]        Set the number of columns in row: 3 (default),
+                                                                         1-12 range (max)
 
-        -l, --margin MARGIN          Set the margin [top, right, bottom, left]: 0,1,1,1 (default),
-                                                                                255,255,255,255 (max)
+        -l, --margin [MARGIN]          Set the margin [top, right, bottom, left]: 0,1,1,1 (default),
+                                                                                  255,255,255,255 (max)
 
-        -v, --view VIEW              Set the calendar view: 1 - Julian,
-                                                            2 - Gregorian (default)
-                                                            3 - Solar
+        -v, --view [VIEW]              Set the calendar view: 1 - Julian,
+                                                              2 - Gregorian (default)
+                                                              3 - Solar
 
-        -f, --filename FILENAME      Save to filename: Calendar.txt (default)
+        -f, --filename [FILENAME]      Save to filename: Calendar.txt (default)
 
-        --mode MODE                  Set the mode: 1 - To file
-                                                   2 - To console (default)
+        --mode [MODE]                  Set the mode: 1 - To file
+                                                     2 - To console (default)
         ", bin_name = std::path::Path::new::<String>(
             &std::env::args().nth(0)
             .expect("[ERROR]: Binary path is unknown (print_help)!"))

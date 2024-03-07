@@ -1,0 +1,167 @@
+name: CI
+
+on:
+  create:
+    tags:
+      - '*'
+
+env:
+  RUST_VERSION: 1.67.0
+  CROSS_VERSION: 0.2.5
+  CARGO_TERM_COLOR: always
+
+jobs:
+  Test-tools:
+    strategy:
+      matrix:
+        runs-on:
+          - macOS-13
+          - macOS-12
+          - macOS-11
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set minimal supported Rust version
+        run: |
+          rustup default ${RUST_VERSION}
+      - name: Build
+        run: |
+          cargo build --release --bin date-cli
+          cargo build --release --bin calendar-cli
+      - name: Date CLI
+        run: |
+          cargo run --release --quiet --bin date-cli -- -v 1
+          cargo run --release --quiet --bin date-cli -- -v 2
+          cargo run --release --quiet --bin date-cli -- -v 3
+      - name: Calendar CLI
+        run: |
+          cargo run --release --quiet --bin calendar-cli -- -v 1
+          cargo run --release --quiet --bin calendar-cli -- -v 2
+          cargo run --release --quiet --bin calendar-cli -- -v 3
+
+  Cross-build:
+    strategy:
+      max-parallel: 8
+      matrix:
+        target:
+          - arm-linux-androideabi
+          - arm-unknown-linux-musleabi
+          - arm-unknown-linux-musleabihf
+          - armv5te-unknown-linux-musleabi
+          - armv7-linux-androideabi
+          - armv7-unknown-linux-musleabihf
+          - armv7-unknown-linux-musleabi
+          - aarch64-linux-android
+          - aarch64-unknown-linux-gnu
+          - aarch64-unknown-linux-musl
+          - i586-unknown-linux-musl
+          - i686-linux-android
+          - i686-unknown-linux-musl
+          - x86_64-linux-android
+          - x86_64-unknown-linux-gnu
+          - x86_64-unknown-linux-musl
+          - x86_64-pc-windows-gnu
+          - riscv64gc-unknown-linux-gnu
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set minimal supported Rust version
+        run: |
+          rustup default ${RUST_VERSION}
+      - name: Install cross
+        run: |
+          cd /tmp && curl -L https://github.com/cross-rs/cross/releases/download/v${CROSS_VERSION}/cross-x86_64-unknown-linux-musl.tar.gz | tar xzf -
+      - name: Run Cross-build
+        run: |
+          /tmp/cross build --target=${{ matrix.target }} --release --locked
+      - name: Archive binary
+        run: |
+          set -eu
+          mkdir ./date-cli-${{ matrix.target }}
+          mkdir ./calendar-cli-${{ matrix.target }}
+          if [[ "${{ matrix.target }}" == *"-windows-"* ]]; then
+            cp ./target/${{ matrix.target }}/release/date-cli.exe ./date-cli-${{ matrix.target }}
+            cp ./target/${{ matrix.target }}/release/calendar-cli.exe ./calendar-cli-${{ matrix.target }}
+            zip -r ./date-cli-${{ matrix.target }}.zip ./date-cli-${{ matrix.target }}
+            zip -r ./calendar-cli-${{ matrix.target }}.zip ./calendar-cli-${{ matrix.target }}
+          else
+            cp ./target/${{ matrix.target }}/release/date-cli ./date-cli-${{ matrix.target }}
+            cp ./target/${{ matrix.target }}/release/calendar-cli ./calendar-cli-${{ matrix.target }}
+            tar zcf ./date-cli-${{ matrix.target }}.tar.gz ./date-cli-${{ matrix.target }}
+            tar zcf ./calendar-cli-${{ matrix.target }}.tar.gz ./calendar-cli-${{ matrix.target }}
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact_${{ matrix.target }}
+          path: |
+            date-cli-*.zip
+            calendar-cli-*.zip
+            date-cli-*.tar.gz
+            calendar-cli-*.tar.gz
+
+  Build-macOS:
+    strategy:
+      matrix:
+        runs-on:
+          - macOS-13
+          - macOS-12
+          - macOS-11
+        target:
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set minimal supported Rust version
+        run: |
+          rustup default ${RUST_VERSION}
+      - name : Add target platform
+        run: |
+          rustup target add ${{ matrix.target }}
+      - name: Build
+        run: |
+          cargo build --target=${{ matrix.target }} --release
+      - name: Archive binary
+        run: |
+          set -eu
+          mkdir ./date-cli-${{ matrix.target }}_${{ matrix.runs-on }}
+          mkdir ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}
+          cp ./target/${{ matrix.target }}/release/date-cli ./date-cli-${{ matrix.target }}_${{ matrix.runs-on }}
+          cp ./target/${{ matrix.target }}/release/calendar-cli ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}
+          tar zcf ./date-cli-${{ matrix.target }}_${{ matrix.runs-on }}.tar.gz ./date-cli-${{ matrix.target }}_${{ matrix.runs-on }}
+          tar zcf ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}.tar.gz ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact_${{ matrix.target }}_${{ matrix.runs-on }}
+          path: |
+            date-cli-*.tar.gz
+            calendar-cli-*.tar.gz
+
+
+  Release-if-tag-exist:
+    needs:
+      - Test-tools
+      - Cross-build
+      - Build-macOS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: build_artifact_*
+          path: ./publish_folder
+          merge-multiple: true
+      - run: ls -la ./publish_folder
+      - name: Release
+        if: contains(github.ref, 'refs/tags/')
+        run: |
+          set -eux
+          # Show and create checksums
+          (cd publish_folder && sha256sum * | tee /dev/stderr > sha256sums.txt)
+          TAG=$(echo $GITHUB_REF | cut -d / -f 3)
+          VERSION=$TAG
+          REPO=$(echo $GITHUB_REPOSITORY | cut -d / -f 2)
+          curl -L https://github.com/tcnksm/ghr/releases/download/v0.16.2/ghr_v0.16.2_linux_amd64.tar.gz | tar xzf -
+          ./ghr_v0.16.2_linux_amd64/ghr -t ${{ secrets.GITHUB_TOKEN }} -u ${GITHUB_ACTOR} -r ${REPO} -c ${GITHUB_SHA} -delete ${VERSION} ./publish_folder

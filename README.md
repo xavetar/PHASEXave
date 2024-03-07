@@ -1,5 +1,5 @@
 ![Greenfield](https://img.shields.io/badge/Greenfield-0fc908.svg)
-[![Rust](https://github.com/xavetar/PHASEXave/actions/workflows/build.yml/badge.svg)](https://github.com/xavetar/PHASEXave/actions/workflows/build.yml)
+[![CI](https://github.com/xavetar/PHASEXave/actions/workflows/on_tag.yaml/badge.svg)](https://github.com/xavetar/PHASEXave/actions/workflows/on_tag.yaml)
 [![Deps](https://deps.rs/repo/github/xavetar/PHASEXave/status.svg)](https://deps.rs/repo/github/xavetar/PHASEXave)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -46,7 +46,7 @@ cargo build --release
 
 ### Cross-bulid
 
-You need to have [Docker](https://www.docker.com/products/docker-desktop/) and [Cross](https://www.docker.com/products/docker-desktop/):
+You need to have [Docker](https://www.docker.com/products/docker-desktop/) and [Cross](https://github.com/cross-rs/cross?tab=readme-ov-file#installation):
 
 #### Build
 
