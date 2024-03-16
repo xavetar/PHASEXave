@@ -88,14 +88,14 @@ fn to_presentation(date: &mut Date, to: CalendarView) {
             // Equivalent to: 365.2425 * last_year
             // Equivalent to: ((365.25 * last_year)) - 0.0075 * last_year
             date.view = CalendarView::Gregorian;
-            date.era_days = (((last_year * 365.0_f64) + (last_year * 25.0_f64) / 100.0_f64)) - last_year * 75.0_f64 / 10000.0_f64;
+            date.era_days = (((last_year * 365.0_f64) + (last_year * 25.0_f64) / 100.0_f64)) - ((last_year * 75.0_f64) / 10000.0_f64);
             date.era_days += days_from(&date);
         },
         (CalendarView::Julian, CalendarView::Solar) => {
             // Equivalent to: 365.24219 * last_year
             // Equivalent to: ((365.25 * last_year)) - 0.00781 * last_year
             date.view = CalendarView::Julian;
-            date.era_days = (((last_year * 365.0_f64) + (last_year * 25.0_f64) / 100.0_f64)) - last_year * 781.0_f64 / 100000.0_f64;
+            date.era_days = (((last_year * 365.0_f64) + (last_year * 25.0_f64) / 100.0_f64)) - ((last_year * 781.0_f64) / 100000.0_f64);
             date.era_days += days_from(&date);
         },
         (CalendarView::Gregorian, CalendarView::Gregorian) => {
@@ -108,14 +108,14 @@ fn to_presentation(date: &mut Date, to: CalendarView) {
             // Equivalent to: (365.25 * last_year) - 2
             // Equivalent to: ((365.2425 * last_year) + 0.0075 * last_year) - 2
             date.view = CalendarView::Julian;
-            date.era_days = (((last_year * 365.0_f64) + (last_year * 2425.0_f64) / 10000.0_f64) + last_year * 75.0_f64 / 10000.0_f64) - JULIAN_BCE_DAYS_FIRST_YEAR as f64;
+            date.era_days = (((last_year * 365.0_f64) + (last_year * 2425.0_f64) / 10000.0_f64) + ((last_year * 75.0_f64) / 10000.0_f64)) - JULIAN_BCE_DAYS_FIRST_YEAR as f64;
             date.era_days += days_from(&date);
         },
         (CalendarView::Gregorian, CalendarView::Solar) => {
             // Equivalent to: 365.24219 * last_year
             // Equivalent to: (365.2425 * last_year) - 0.00031 * last_year
             date.view = CalendarView::Solar;
-            date.era_days = ((last_year * 365.0_f64) + (last_year * 2425.0_f64) / 10000.0_f64) - last_year * 31.0_f64 / 100000.0_f64;
+            date.era_days = ((last_year * 365.0_f64) + (last_year * 2425.0_f64) / 10000.0_f64) - ((last_year * 31.0_f64) / 100000.0_f64);
             date.era_days += days_from(&date);
         },
         (CalendarView::Solar, CalendarView::Solar) => {
@@ -125,17 +125,17 @@ fn to_presentation(date: &mut Date, to: CalendarView) {
             date.era_days += days_from(&date);
         },
         (CalendarView::Solar, CalendarView::Julian) => {
-            // Equivalent to: 365.24219 * last_year
+            // Equivalent to: 365.25 * last_year
             // Equivalent to: ((365.24219 * last_year) + 0.00781 * last_year) - 2
             date.view = CalendarView::Julian;
-            date.era_days = (((last_year * 365.0_f64) + (last_year * 24219.0_f64) / 100000.0_f64) + last_year * 781.0_f64 / 100000.0_f64) - JULIAN_BCE_DAYS_FIRST_YEAR as f64;
+            date.era_days = (((last_year * 365.0_f64) + (last_year * 24219.0_f64) / 100000.0_f64) + ((last_year * 781.0_f64) / 100000.0_f64)) - JULIAN_BCE_DAYS_FIRST_YEAR as f64;
             date.era_days += days_from(&date);
         },
         (CalendarView::Solar, CalendarView::Gregorian) => {
-            // Equivalent to: 365.24219 * last_year
+            // Equivalent to: 365.2425 * last_year
             // Equivalent to: ((365.24219 * last_year) + 0.00031 * last_year)
             date.view = CalendarView::Gregorian;
-            date.era_days = ((last_year * 365.0_f64) + (last_year * 24219.0_f64) / 100000.0_f64) + last_year * 31.0_f64 / 100000.0_f64;
+            date.era_days = ((last_year * 365.0_f64) + (last_year * 24219.0_f64) / 100000.0_f64) + ((last_year * 31.0_f64) / 100000.0_f64);
             date.era_days += days_from(&date);
         },
         _ => panic!("[ERROR]: Unknown conversion method (to_presentation)!")
@@ -159,7 +159,7 @@ fn days_from(date: &Date) -> f64 {
 
     if !check_date(&date) { panic!("[ERROR]: Invalid input date, or is not leap in this calendar: {:?}.", date.view); };
 
-    let (mut days, leap_year): (f64, bool) = (date.day as f64, is_leap_year(date.view, date.year));
+    let mut days: f64 = date.day as f64;
 
     if date.month > 1_u8 && date.month < 13_u8 {
         for m in 1_u8..date.month {
@@ -195,7 +195,7 @@ fn main() {
         view: CalendarView::Gregorian
     };
 
-    to_presentation(&mut date, CalendarView::Julian);
+    to_presentation(&mut date, CalendarView::Solar);
 
     println!("Date: {:?}", date);
 }
