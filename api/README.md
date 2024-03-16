@@ -12,15 +12,18 @@
     <a href="https://nowpayments.io/donation?api_key=NRH28QG-ABRM7CC-J7NVGXN-F8FTRS1&source=lk_donation&medium=referral" target="_blank">
         <img src="https://nowpayments.io/images/embeds/donation-button-black.svg" alt="Crypto donation button by NOWPayments" style="height: 60px !important; width: 217px !important;">
     </a>
-    <a href="https://www.buymeacoffee.com/xavetar" target="_blank">
-        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important; width: 217px !important;">
-    </a>
 </div>
 
 ## Validity of Calendars
 
 - The Gregorian calendar advances every year by 0.000031 days in absolute values, relative to the point of the vernal equinox. Between 3225~3232 the divergence will reach about 2 days from the Vernal Equinox.
 - The Solar calendar solves all the leap year problems of the Gregorian and Julian calendar, but it is a bit slower than the others because of more complex computational operations.
+
+## Validity of Leap Year Algorithms
+
+- Julian year: u128 - 2^128
+- Gregorian year: u128 - 2^128
+- Solar year: u128 / 24219 = 14050223664104152254980577539608085 ~ 2^113
 
 ## Features
 
