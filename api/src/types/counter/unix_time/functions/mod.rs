@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,8 @@
  * THE SOFTWARE.
  */
 
-mod epoch;
 mod month;
 mod year;
 
 pub(crate) use month::{month_from_days};
-pub(crate) use epoch::{epoch_days_from_seconds};
 pub(crate) use year::{year_from_presentation_days};

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ use calendar_cli::{
     types::enums::{Modes}
 };
 
-fn make_calendar(view: CalendarView, method: fn(CalendarView, u128, u8, u8) -> Week, year: u128, columns: u8, margin: [u8; 4]) -> Vec<Vec<char>> {
+fn make_calendar(view: CalendarView, method: fn(CalendarView, u64, u8, u8) -> Week, year: u64, columns: u8, margin: [u8; 4]) -> Vec<Vec<char>> {
     return format_calendar_from_text_months(
         year, columns, margin,
         format_months_to_text(
@@ -66,8 +66,8 @@ fn main() {
     )
     :
     (
-        u128,
-        fn(CalendarView, u128, u8, u8) -> Week,
+        u64,
+        fn(CalendarView, u64, u8, u8) -> Week,
         u8,
         [u8; 4],
         CalendarView,

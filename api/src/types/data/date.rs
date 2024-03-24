@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ use crate::types::{
 pub struct Date {
     pub day: u8,
     pub month: u8,
-    pub year: u128,
+    pub year: u64,
     pub timezone: Zone,
     pub unix_time: u128,
     pub era_days: u128,

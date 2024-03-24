@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@
 pub const BASE_DAYS_YEAR: u16 = 365_u16;
 pub const LEAP_DAYS_YEAR: u16 = BASE_DAYS_YEAR + 1_u16;
 
-pub const JULIAN_YEAR_LEAP_LENGTH_INT: u128 = 25_u128;
-pub const SOLAR_YEAR_LEAP_LENGTH_INT: u128 = 24219_u128;
-pub const GREGORIAN_YEAR_LEAP_LENGTH_INT: u128 = 2425_u128;
+pub const JULIAN_YEAR_LEAP_LENGTH_INT: u64 = 25_u64;
+pub const SOLAR_YEAR_LEAP_LENGTH_INT: u64 = 24219_u64;
+pub const GREGORIAN_YEAR_LEAP_LENGTH_INT: u64 = 2425_u64;
 
 pub const JULIAN_YEAR_LEAP_LENGTH_F64: f64 = 0.25_f64;
 pub const SOLAR_YEAR_LEAP_LENGTH_F64: f64 = 0.24219_f64;

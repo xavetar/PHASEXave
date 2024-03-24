@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Creative Commons Zero v1.0 Universal (CC0) License.
  * You may obtain a copy of the License at

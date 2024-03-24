@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ use crate::types::{
 
 pub trait RataDie {
     fn week_day(&self) -> Week;
-    fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week;
+    fn from(view: CalendarView, year: u64, month: u8, day: u8) -> Week;
 }
 
 impl RataDie for Date {
@@ -52,7 +52,7 @@ impl RataDie for Date {
         return <Date as RataDie>::from(self.view.clone(), self.year, self.month, self.day);
     }
 
-    fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
+    fn from(view: CalendarView, year: u64, month: u8, day: u8) -> Week {
         let SHIFT_BEFORE_FIRST_WEEK_DAY: u128 = match view {
             CalendarView::Solar => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR as u128,
             CalendarView::Julian => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN as u128,

@@ -12,7 +12,7 @@
 The program accepts the following command-line options:
 
 ```
--y, --year [YEAR]: Set the year. The default value is the local system year, but you can also specify any year up to a maximum of u128.
+-y, --year [YEAR]: Set the year. The default value is the local system year, but you can also specify any year up to a maximum of u64.
 -m, --method [METHOD]: Set the method for determining the day of the week. There are three options available:
     1: Xavetar - High Precision - Fast
     2: Rata Die - High Precision - Fast (default)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,8 +59,8 @@ impl Gregorian for Date {
 
         match self.view {
             CalendarView::Julian => {
-                if self.era_days > JULIAN_BCE_DAYS_FIRST_YEAR as u128 {
-                    self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+                if self.era_days > JULIAN_BCE_DAYS_FIRST_YEAR {
+                    self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
                 } else {
                     panic!("[IMPOSSIBLE]: This days is missing in CE (Current era) of Gregorian Calendar! (to_date)")
                 }

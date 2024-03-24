@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ fn to_chars<T: Default + Copy + std::ops::IndexMut<usize, Output = char>>(cursor
     return line;
 }
 
-pub fn format_calendar_from_text_months(year: u128, columns: u8, margin: [u8; 4], text_by_months_in_year: TEXT_BY_MONTHS_IN_YEAR) -> Vec<Vec<char>> {
+pub fn format_calendar_from_text_months(year: u64, columns: u8, margin: [u8; 4], text_by_months_in_year: TEXT_BY_MONTHS_IN_YEAR) -> Vec<Vec<char>> {
     let mut cursor_line: usize = 0;
 
     // Equivalent to: MONTHS_IN_YEAR.div_ceil(columns)
@@ -154,7 +154,7 @@ pub fn format_months_to_text(calendar: &DAYS_IN_MONTHS_LINEAR) -> TEXT_BY_MONTHS
     return text_by_months_in_year;
 }
 
-pub fn format_months_by_days(view: CalendarView, method: fn(CalendarView, u128, u8, u8) -> Week, year: u128, is_leap_year: bool) -> DAYS_IN_MONTHS_LINEAR {
+pub fn format_months_by_days(view: CalendarView, method: fn(CalendarView, u64, u8, u8) -> Week, year: u64, is_leap_year: bool) -> DAYS_IN_MONTHS_LINEAR {
     // 2D Array
     let mut days_in_months: DAYS_IN_MONTHS_LINEAR = [[0; DAYS_IN_MONTH_LINEAR as usize]; MONTHS_IN_YEAR as usize];
 

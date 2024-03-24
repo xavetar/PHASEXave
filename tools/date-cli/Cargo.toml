@@ -5,13 +5,13 @@ authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 publish = true
 version = "1.0.2"
 edition.workspace = true
-license.workspace = true
 license-file.workspace = true
 rust-version.workspace = true
 description = "Fast, clear and simple CLI tool for view date from CLI for Solar, Julian, Gregorian calendar."
+readme = "README.md"
 repository.workspace = true
 keywords = ["date-and-time", "cli", "solar", "julian", "gregorian"]
-categories.workspace = true
+categories = ["date-and-time"]
 include.workspace = true
 exclude.workspace = true
 
@@ -28,10 +28,10 @@ default = []
 [dependencies]
 
 [target.'cfg(target_vendor = "apple")'.dependencies]
-PHASEXave = { version = "1.8.1", features = ["platform_specific_functions_darwin"] }
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_darwin"] }
 
 [target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
-PHASEXave = { version = "1.8.1", features = ["platform_specific_functions_unix"] }
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_unix"] }
 
 [target.'cfg(target_family = "windows")'.dependencies]
-PHASEXave = { version = "1.8.1", features = ["platform_specific_functions_windows"] }
+PHASEXave = { path = "../../api", features = ["platform_specific_functions_windows"] }

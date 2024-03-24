@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,14 +37,14 @@ fn print_help() {
     println!(
         "Usage: {bin_name} [options]\n\nOptions:
 
-        -z, --zone [ZONE]              Set the timezone: [+/-][hours:minutes:seconds]: local timezone (default),
+        -z, --zone [ZONE]              Set the timezone: [+/-][hours:minutes:seconds]: local timezone (default)
                                                                                        [+/-][255-1:255-1:255-1] (max)
 
-        -m, --method [METHOD]          Set the method: 1 - Xavetar - High Precision - Fast,
-                                                       2 - Rata Die - High Precision - Fast (default)
-                                                       3 - Sakamoto - High Precision - Fast
+        -m, --method [METHOD]          Determining the day of week method: 1 - Xavetar - High Precision - Fast
+                                                                           2 - Rata Die - High Precision - Fast (default)
+                                                                           3 - Sakamoto - High Precision - Fast
 
-        -v, --view [VIEW]              Set the calendar view: 1 - Julian,
+        -v, --view [VIEW]              Set the calendar view: 1 - Julian
                                                               2 - Gregorian (default)
                                                               3 - Solar
 
@@ -56,7 +56,7 @@ fn print_help() {
     );
 }
 
-pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u128, u8, u8) -> Week, view: &mut CalendarView) {
+pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u64, u8, u8) -> Week, view: &mut CalendarView) {
     let mut args: std::iter::Skip<std::env::Args> = std::env::args().skip(1);
 
     while let Some(arg) = args.next() {
@@ -81,7 +81,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u128, u8, u
                         .split(':')
                         .map(|x| x.parse::<u8>())
                         .collect::<Result<Vec<u8>, std::num::ParseIntError>>()
-                        .expect("[ERROR]: One of value overflow type or is not a unsigned integer!");
+                        .expect("[ERROR]: One of value or more is not a unsigned integer or overflow type!");
 
                     if zone_values.len() < 3 {
                         println!("[ERROR]: Invalid argument format: -z, --zone [+/-][hours:minutes:seconds]");
@@ -112,7 +112,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u128, u8, u
                             }
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: -m, --method [METHOD]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: -m, --method [METHOD]");
                         std::process::exit(0);
                     }
                 } else {
@@ -133,7 +133,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u128, u8, u
                             }
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: -v, --view [VIEW]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: -v, --view [VIEW]");
                         std::process::exit(0);
                     }
                 } else {

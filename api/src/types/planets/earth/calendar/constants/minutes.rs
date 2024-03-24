@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,4 +26,4 @@
  * THE SOFTWARE.
  */
 
- pub const MINUTES_IN_HOUR: u8 = 60_u8;
+pub const MINUTES_IN_HOUR: u8 = 60_u8;

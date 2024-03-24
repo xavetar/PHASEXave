@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ use crate::types::{
 
 pub trait Sakamoto {
     fn week_day(&self) -> Week;
-    fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week;
+    fn from(view: CalendarView, year: u64, month: u8, day: u8) -> Week;
 }
 
 impl Sakamoto for Date {
@@ -57,7 +57,7 @@ impl Sakamoto for Date {
         return <Date as Sakamoto>::from(self.view.clone(), self.year, self.month, self.day);
     }
 
-    fn from(view: CalendarView, year: u128, month: u8, day: u8) -> Week {
+    fn from(view: CalendarView, year: u64, month: u8, day: u8) -> Week {
         let BASE_YEAR_SHIFTS: &[u8; MONTHS_IN_YEAR as usize] = match view {
             CalendarView::Solar => &SOLAR_BASE_SAKAMOTO,
             CalendarView::Julian => &JULIAN_BASE_SAKAMOTO,
@@ -65,10 +65,10 @@ impl Sakamoto for Date {
             _ => panic!("[ERROR]: Unknown CalendarView (Sakamoto).")
         };
 
-        let mut local_year: u128 = year;
+        let mut local_year: u64 = year;
 
-        if month < 3_u8 { local_year -= 1_u128; }
+        if month < 3_u8 { local_year -= 1_u64; }
 
-        return Week::from(((local_year + sum_leap_years(view, local_year) + BASE_YEAR_SHIFTS[(month - 1_u8) as usize] as u128 + day as u128) % REPEAT_WEAK_DAY_CYCLE as u128) as u8);
+        return Week::from(((local_year + sum_leap_years(view, local_year) + BASE_YEAR_SHIFTS[(month - 1_u8) as usize] as u64 + day as u64) % REPEAT_WEAK_DAY_CYCLE as u64) as u8);
     }
 }

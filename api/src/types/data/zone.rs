@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,9 @@ pub struct Zone {
 }
 
 impl Zone {
-    pub const fn to_seconds(&self) -> u128 {
-        return ((self.hours as u128) * SECONDS_IN_HOUR) +
-               ((self.minutes as u128) * SECONDS_IN_MINUTE) +
-               (self.seconds as u128);
+    pub const fn to_seconds(&self) -> u32 {
+        return ((self.hours as u32) * SECONDS_IN_HOUR as u32) +
+            ((self.minutes as u32) * SECONDS_IN_MINUTE as u32) +
+            (self.seconds as u32);
     }
 }

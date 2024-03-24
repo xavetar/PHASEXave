@@ -1,5 +1,5 @@
 ![Greenfield](https://img.shields.io/badge/Greenfield-0fc908.svg)
-[![Rust](https://github.com/xavetar/PHASEXave/actions/workflows/build.yml/badge.svg)](https://github.com/xavetar/PHASEXave/actions/workflows/build.yml)
+[![CI](https://github.com/xavetar/PHASEXave/actions/workflows/on_tag.yaml/badge.svg)](https://github.com/xavetar/PHASEXave/actions/workflows/on_tag.yaml)
 [![Deps](https://deps.rs/repo/github/xavetar/PHASEXave/status.svg)](https://deps.rs/repo/github/xavetar/PHASEXave)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -19,11 +19,13 @@
 - The Gregorian calendar advances every year by 0.000031 days in absolute values, relative to the point of the vernal equinox. Between 3225~3232 the divergence will reach about 2 days from the Vernal Equinox.
 - The Solar calendar solves all the leap year problems of the Gregorian and Julian calendar, but it is a bit slower than the others because of more complex computational operations.
 
-## Validity of Leap Year Algorithms
+## Validity of Leap Year Algorithm
 
-- Julian year: u128 - 2^128
-- Gregorian year: u128 - 2^128
-- Solar year: u128 / 24219 = 14050223664104152254980577539608085 ~ 2^113
+- Solar year: u128 - 2^64
+- Julian year: u128 - 2^64
+- Gregorian year: u128 - 2^64
+
+Why **2^64**? **u128 * 366** (upper limit of days in a year) overflows era days and seconds after unix epoch, because of this the temporary is u64, in the next version this type will be **u128** again or more.
 
 ## Features
 
@@ -509,7 +511,7 @@ Get week day from any date:
 use PHASEXave::{CalendarView, Date, RataDie, Sakamoto, Xavetar};
 
 fn main() {
-    let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
+    let (yyyy, mm, dd): (u64, u8, u8) = (1582, 10, 5);
     println!(
         "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
         rata_die = <Date as RataDie>::from(CalendarView::Solar, yyyy, mm, dd).name(),
@@ -571,7 +573,7 @@ Get week day from any date:
 use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto};
 
 fn main() {
-    let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
+    let (yyyy, mm, dd): (u64, u8, u8) = (1582, 10, 5);
     println!(
         "Julian Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
         rata_die = <Date as RataDie>::from(CalendarView::Julian, yyyy, mm, dd).name(),
@@ -633,7 +635,7 @@ Get week day from any date:
 use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto};
 
 fn main() {
-    let (yyyy, mm, dd): (u128, u8, u8) = (1582, 10, 5);
+    let (yyyy, mm, dd): (u64, u8, u8) = (1582, 10, 5);
     println!(
         "Gregorian Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
         rata_die = <Date as RataDie>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),

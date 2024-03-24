@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ pub enum Week {
 }
 
 impl Week {
-    pub fn index(&self) -> u8 {
+    pub const fn index(&self) -> u8 {
         match self {
             Week::Monday    => 1_u8,
             Week::Tuesday   => 2_u8,
@@ -54,6 +54,18 @@ impl Week {
             Week::Friday    => 5_u8,
             Week::Saturday  => 6_u8,
             Week::Sunday    => 7_u8,
+        }
+    }
+
+    pub const fn name(&self) -> &'static str {
+        match self {
+            Week::Monday    => "Monday",
+            Week::Tuesday   => "Tuesday",
+            Week::Wednesday => "Wednesday",
+            Week::Thursday  => "Thursday",
+            Week::Friday    => "Friday",
+            Week::Saturday  => "Saturday",
+            Week::Sunday    => "Sunday"
         }
     }
 
@@ -70,15 +82,11 @@ impl Week {
         }
     }
 
-    pub fn name(&self) -> &'static str {
-        match self {
-            Week::Monday    => "Monday",
-            Week::Tuesday   => "Tuesday",
-            Week::Wednesday => "Wednesday",
-            Week::Thursday  => "Thursday",
-            Week::Friday    => "Friday",
-            Week::Saturday  => "Saturday",
-            Week::Sunday    => "Sunday"
-        }
+    pub fn next(&self) -> Week {
+        return Week::from((self.index() + 1_u8) % DAYS_IN_WEEK);
+    }
+
+    pub fn previous(&self) -> Week {
+        return Week::from((self.index() - 1_u8) % DAYS_IN_WEEK);
     }
 }

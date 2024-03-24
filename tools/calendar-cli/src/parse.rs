@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,20 +42,20 @@ fn print_help() {
 
         -h, --help                     Show this help message and exit!
 
-        -y, --year [YEAR]              Set the year: local system year (default),
-                                                     any year (max - 2^128 − 1)
+        -y, --year [YEAR]              Set the year: local system year (default)
+                                                     any year (max - 2^64)
 
-        -m, --method [METHOD]          Set the method: 1 - Xavetar - High Precision - Fast,
-                                                       2 - Rata Die - High Precision - Fast (default)
-                                                       3 - Sakamoto - High Precision - Fast
+        -m, --method [METHOD]          Determining the day of week method: 1 - Xavetar - High Precision - Fast
+                                                                           2 - Rata Die - High Precision - Fast (default)
+                                                                           3 - Sakamoto - High Precision - Fast
 
         -c, --columns [COLUMNS]        Set the number of columns in row: 3 (default),
                                                                          1-12 range (max)
 
-        -l, --margin [MARGIN]          Set the margin [top, right, bottom, left]: 0,1,1,1 (default),
+        -l, --margin [MARGIN]          Set the margin [top, right, bottom, left]: 0,1,1,1 (default)
                                                                                   255,255,255,255 (max)
 
-        -v, --view [VIEW]              Set the calendar view: 1 - Julian,
+        -v, --view [VIEW]              Set the calendar view: 1 - Julian
                                                               2 - Gregorian (default)
                                                               3 - Solar
 
@@ -71,7 +71,7 @@ fn print_help() {
     );
 }
 
-pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -> Week, columns: &mut u8, margin: &mut [u8; 4], view: &mut CalendarView, mode: &mut Modes, filename: &mut String) {
+pub fn parse_args(year: &mut u64, method: &mut fn(CalendarView, u64, u8, u8) -> Week, columns: &mut u8, margin: &mut [u8; 4], view: &mut CalendarView, mode: &mut Modes, filename: &mut String) {
     let mut args: std::iter::Skip<std::env::Args> = std::env::args().skip(1);
 
     while let Some(arg) = args.next() {
@@ -82,10 +82,10 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
             }
             "-y" | "--year" => {
                 if let Some(year_str) = args.next() {
-                    if let Ok(parsed_year) = year_str.parse::<u128>() {
+                    if let Ok(parsed_year) = year_str.parse::<u64>() {
                         *year = parsed_year;
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: -y, --year [YEAR]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: -y, --year [YEAR]");
                         std::process::exit(0);
                     }
                 } else {
@@ -106,7 +106,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                             }
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: -m, --method [METHOD]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: -m, --method [METHOD]");
                         std::process::exit(0);
                     }
                 } else {
@@ -124,7 +124,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                             std::process::exit(0);
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: -c, --columns [COLUMNS]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: -c, --columns [COLUMNS]");
                         std::process::exit(0);
                     }
                 } else {
@@ -138,7 +138,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                         .split(',')
                         .map(|x| x.parse::<u8>())
                         .collect::<Result<Vec<u8>, std::num::ParseIntError>>()
-                        .expect("[ERROR]: One of value overflow type or is not a unsigned integer!");
+                        .expect("[ERROR]: One of value or more is not a unsigned integer or overflow type!");
 
                     if margin_values.len() < margin.len() {
                         println!("[ERROR]: Invalid argument format: -l, --margin [top, right, bottom, left]");
@@ -167,7 +167,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                             }
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: -v, --view [VIEW]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: -v, --view [VIEW]");
                         std::process::exit(0);
                     }
                 } else {
@@ -204,7 +204,7 @@ pub fn parse_args(year: &mut u128, method: &mut fn(CalendarView, u128, u8, u8) -
                             }
                         }
                     } else {
-                        println!("[ERROR]: Value is not a unsigned integer: --mode [MODE]");
+                        println!("[ERROR]: Value is not a unsigned integer or overflow type: --mode [MODE]");
                         std::process::exit(0);
                     }
                 } else {

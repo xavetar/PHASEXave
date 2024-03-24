@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,18 +38,17 @@ use crate::types::{
 };
 
 pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_days: &mut u128) {
-    let tz_sec: u128 = timezone.to_seconds();
+    let tz_sec: u128 = timezone.to_seconds() as u128;
     if timezone.sign == Sign::Signed && *unix_time < tz_sec {
         panic!("[ERROR]: Overflow, signed timezone override self.unix_time!!")
     } else {
         if timezone.sign == Sign::Signed && tz_sec > 0 {
-            // Если секунд в последнем дне больше или равно, чем во временной зоне
             if day_seconds >= tz_sec {
                 *unix_time -= tz_sec;
                 *unix_time += day_seconds;
             } else if day_seconds < tz_sec {
-                // Equivalent to: (tz_sec - day_seconds).div_ceil(SECONDS_IN_DAY)
-                *era_days -= (tz_sec - day_seconds + (SECONDS_IN_DAY - 1)) / SECONDS_IN_DAY;
+                // Equivalent to: (tz_sec - day_seconds).div_ceil(SECONDS_IN_DAY): (a + (b - 1)) / b
+                *era_days -= ((tz_sec - day_seconds) + (SECONDS_IN_DAY - 1)) / SECONDS_IN_DAY;
                 *unix_time -= tz_sec;
                 *unix_time += day_seconds;
             }
@@ -59,8 +58,8 @@ pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_
                 *unix_time += tz_sec;
                 *unix_time += day_seconds;
             } else if total_secs >= SECONDS_IN_DAY {
-                // Округление в меньшую сторону, если даже была указана отсутствующая временная зона [-12, +14]
-                *era_days += total_secs.div_euclid(SECONDS_IN_DAY);
+                // Equivalent to: total_secs.div_euclid(SECONDS_IN_DAY): (a - (a mod b)) / b
+                *era_days += (total_secs - (total_secs % SECONDS_IN_DAY)) / SECONDS_IN_DAY;
                 *unix_time += tz_sec;
                 *unix_time += day_seconds;
             }

@@ -1,0 +1,28 @@
+[advisories]
+yanked = "deny"
+
+[licenses]
+# List of allowed licenses SPDX license: https://spdx.org/licenses/
+allow = [
+#    "CC0-1.0",
+    "MIT",
+    "Apache-2.0",
+    "LicenseRef-Anti-Virus"
+]
+unused-allowed-license = "deny"
+confidence-threshold = 1.0
+
+[[licenses.clarify]]
+crate = "PHASEXave"
+expression = "LicenseRef-Anti-Virus"
+license-files = [{ path = "LICENSE", hash = 0x86bfa44b } ]
+
+[[licenses.clarify]]
+crate = "calendar-cli"
+expression = "LicenseRef-Anti-Virus"
+license-files = [{ path = "LICENSE", hash = 0x86bfa44b } ]
+
+[[licenses.clarify]]
+crate = "date-cli"
+expression = "LicenseRef-Anti-Virus"
+license-files = [{ path = "LICENSE", hash = 0x86bfa44b } ]

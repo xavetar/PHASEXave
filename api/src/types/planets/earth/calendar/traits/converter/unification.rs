@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ pub trait Converter {
 
 impl Converter for Date {
     fn fill_date(&mut self, to: CalendarView) {
-        let mut days: u128;
+        let mut days: u16;
 
         (self.year, days) = year_from_presentation_days(to, self.era_days);
 

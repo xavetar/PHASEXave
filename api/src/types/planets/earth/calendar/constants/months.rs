@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ pub enum Months {
 }
 
 impl Months {
-    pub fn index(&self) -> u8 {
+    pub const fn index(&self) -> u8 {
         match self {
             Months::January   => 1_u8,
             Months::February  => 2_u8,
@@ -68,25 +68,7 @@ impl Months {
         }
     }
 
-    pub fn from(month: u8) -> Months {
-        match month {
-            1_u8  => Months::January,
-            2_u8  => Months::February,
-            3_u8  => Months::March,
-            4_u8  => Months::April,
-            5_u8  => Months::May,
-            6_u8  => Months::June,
-            7_u8  => Months::July,
-            8_u8  => Months::August,
-            9_u8  => Months::September,
-            10_u8 => Months::October,
-            11_u8 => Months::November,
-            12_u8 => Months::December,
-            _  => panic!("Invalid month: {}", month),
-        }
-    }
-
-    pub fn name(&self) -> &'static str {
+    pub const fn name(&self) -> &'static str {
         match self {
             Months::January   => "January",
             Months::February  => "February",
@@ -103,7 +85,7 @@ impl Months {
         }
     }
 
-    pub fn days(&self, leap: bool) -> u8 {
+    pub const fn days(&self, leap: bool) -> u8 {
         match self {
             Months::January   => BASE_MONTH_DAYS[0],
             Months::February  => {
@@ -126,7 +108,7 @@ impl Months {
         }
     }
 
-    pub fn seconds(&self, leap: bool) -> u128 {
+    pub const fn seconds(&self, leap: bool) -> u128 {
         match self {
             Months::January => BASE_MONTH_SECONDS[0],
             Months::February => {
@@ -147,5 +129,31 @@ impl Months {
             Months::November  => BASE_MONTH_SECONDS[10],
             Months::December  => BASE_MONTH_SECONDS[11],
         }
+    }
+
+    pub fn from(month: u8) -> Months {
+        match month {
+            1_u8         => Months::January,
+            2_u8         => Months::February,
+            3_u8         => Months::March,
+            4_u8         => Months::April,
+            5_u8         => Months::May,
+            6_u8         => Months::June,
+            7_u8         => Months::July,
+            8_u8         => Months::August,
+            9_u8         => Months::September,
+            10_u8        => Months::October,
+            11_u8        => Months::November,
+            12_u8 | 0_u8 => Months::December,
+            _  => panic!("Invalid month: {}", month),
+        }
+    }
+
+    pub fn next(&self) -> Months {
+        return Months::from((self.index() + 1_u8) % MONTHS_IN_YEAR);
+    }
+
+    pub fn previous(&self) -> Months {
+        return Months::from((self.index() - 1_u8) % MONTHS_IN_YEAR);
     }
 }

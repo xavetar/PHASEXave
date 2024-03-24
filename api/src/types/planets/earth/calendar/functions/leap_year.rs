@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,23 +31,23 @@ use crate::types::{
         view::{CalendarView},
         constants::{
             year::{
-                SOLAR_YEAR_LEAP_LENGTH_INT,
-                SOLAR_YEAR_LEAP_LENGTH_F64
+                SOLAR_YEAR_LEAP_LENGTH_INT
             }
         }
     }
 };
 
-pub fn is_leap_year(view: CalendarView, year: u128) -> bool {
+pub const fn is_leap_year(view: CalendarView, year: u64) -> bool {
     match view {
-        CalendarView::Julian => return year % 4_u128 == 0_u128,
-        CalendarView::Gregorian => return year % 4_u128 == 0_u128 && (year % 100_u128 != 0_u128 || year % 400_u128 == 0_u128),
+        CalendarView::Julian => return year % 4_u64 == 0_u64,
+        CalendarView::Gregorian => return year % 4_u64 == 0_u64 && (year % 100_u64 != 0_u64 || year % 400_u64 == 0_u64),
+        // Equivalent to (Overflow):
+        //      let leap_years_fraction: f64 = ((year - 1_u64) * SOLAR_YEAR_LEAP_LENGTH_INT).rem_euclid(100000_u64) as f64 / 100000.0_f64
+        // Equivalent to (truncating division, but float point):
+        //      let leap_years_fraction: f64 = ((((year - 1_u64) % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) % 100000_u64) as f64 / 100000.0_f64;
         CalendarView::Solar => {
             if year != 0 {
-                // Equivalent to: ((year - 1_u128) * SOLAR_YEAR_LEAP_LENGTH_INT) as f64 / 100000.0_f64
-                let leap_years_fraction: f64 = ((year - 1_u128) * SOLAR_YEAR_LEAP_LENGTH_INT).rem_euclid(100000) as f64 / 100000.0_f64;
-
-                if (leap_years_fraction + SOLAR_YEAR_LEAP_LENGTH_F64) as u128 > leap_years_fraction as u128 {
+                if sum_leap_years(view, year) > sum_leap_years(view, year - 1) {
                     return true;
                 } else {
                     return false;
@@ -60,11 +60,18 @@ pub fn is_leap_year(view: CalendarView, year: u128) -> bool {
     }
 }
 
-pub fn sum_leap_years(view: CalendarView, year: u128) -> u128 {
+pub const fn sum_leap_years(view: CalendarView, year: u64) -> u64 {
     match view {
-        CalendarView::Julian => return year / 4_u128,
-        CalendarView::Gregorian => return year / 4_u128 - year / 100_u128 + year / 400_u128,
-        CalendarView::Solar => return (year * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u128,
+        CalendarView::Julian => return year / 4_u64,
+        CalendarView::Gregorian => return year / 4_u64 - year / 100_u64 + year / 400_u64,
+        // Equivalent to (overflow): (year * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u64
+        // Equivalent to (truncating division):
+        //      let leap_years: u64 = year.div_euclid(100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT;
+        //      let indivisible_years: u64 = ((year % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u64
+        //      return leap_years + indivisible;
+        // Equivalent to (truncating division):
+        //      return (year.div_euclid(100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) + (((year % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u64)
+        CalendarView::Solar => return (((year - (year % 100000_u64)) / 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) + (((year % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u64),
         _ => panic!("[ERROR]: Unknown CalendarView (sum_leap_years)!")
     }
 }

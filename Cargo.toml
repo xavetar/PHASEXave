@@ -3,12 +3,12 @@
 
 members = [
     "api",
-    "tools/calendar-cli", "tools/date-cli",
+    "tools/calendar-cli", "tools/date-cli"
 ]
 
 default-members = [
     "api",
-    "tools/calendar-cli", "tools/date-cli",
+    "tools/calendar-cli", "tools/date-cli"
 ]
 
 resolver="2"
@@ -19,13 +19,10 @@ authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 edition = "2021"
 version = "1.8.1"
 rust-version = "1.67.0"
-license = "MIT AND Apache-2.0"
-license-file = "LICENSE-Anti-Virus"
+license-file = "LICENSE"
 repository = "https://github.com/xavetar/PHASEXave"
 description = "Date and time library"
-keywords = ["date-and-time", "calendar", "solar", "julian", "gregorian"]
-categories = ["date-and-time"]
-include = ["src/", "Cross.toml", "Cargo.toml", "LICENSE-Anti-Virus", "LICENSE-MIT", "LICENSE-Apache"]
+include = ["src/", "Cross.toml", "Cargo.toml", "LICENSE"]
 exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lock", "**/*.rs.bk", "*.pdb", ".AppleDouble", ".LSOverride",
     "Icon", "._*", ".DocumentRevisions-V100", ".fseventsd", ".Spotlight-V100", ".TemporaryItems", ".Trashes",
     ".VolumeIcon.icns", ".com.apple.timemachine.donotpresent", ".AppleDB", ".AppleDesktop", "Network Trash Folder",
@@ -33,17 +30,27 @@ exclude = ["res/", "compact/", ".*", ".DS_Store", "debug/", "target/", "Cargo.lo
 
 # Dependencies
 [workspace.dependencies]
-PHASEXave = { version = "=1.8.1", path = "api/", default-features = false }
+PHASEXave = { version = "=1.8.1", path = "api", default-features = false }
 
 # Profiles
 [profile.dev]
 lto = "off"
+debug = true
+strip = false
 opt-level = 0
 panic = "abort"
-strip = false
+incremental = false
+codegen-units = 256
+overflow-checks = true
+debug-assertions = true
 
 [profile.release]
 lto = "fat"
+strip = true
+debug = false
 opt-level = 3
 panic = "abort"
-strip = true
+incremental = false
+codegen-units = 256
+overflow-checks = true
+debug-assertions = false

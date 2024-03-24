@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ use date_cli::{
     parse::{parse_args},
 };
 
-fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u128, u8, u8) -> Week) {
+fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u64, u8, u8) -> Week) {
     let date: Date;
 
     if timezone.sign == Sign::Unsigned && timezone.hours == 255 && timezone.minutes == 255 && timezone.seconds == 255 {
@@ -68,11 +68,12 @@ fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u128
     }
 
     println!(
-        "{timezone_hours:02}:{timezone_minutes:02}:{timezone_seconds:02} {year} {calendar_view:?}",
+        "{timezone_hours:02}:{timezone_minutes:02}:{timezone_seconds:02} {year} {ce_era_days} {calendar_view:?}",
         timezone_hours = date.timezone.hours,
         timezone_minutes = date.timezone.minutes,
         timezone_seconds = date.timezone.seconds,
         year = date.year,
+        ce_era_days = date.era_days,
         calendar_view = view
     )
 }
@@ -86,7 +87,7 @@ fn main() {
     :
     (
         Zone,
-        fn(CalendarView, u128, u8, u8) -> Week,
+        fn(CalendarView, u64, u8, u8) -> Week,
         CalendarView,
     )
     =

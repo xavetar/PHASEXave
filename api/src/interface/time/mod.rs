@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ impl Time {
 
     fn to_time(mut unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Time {
         if !timezone_in_unix_time {
-            let timezone_seconds: u128 = timezone.to_seconds();
+            let timezone_seconds: u128 = timezone.to_seconds() as u128;
 
             if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
                 panic!("[ERROR]: Overflow, signed timezone override unix_time!")

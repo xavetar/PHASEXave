@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,19 @@
  * THE SOFTWARE.
  */
 
-use mach::mach_time;
-use mach::clock_types::NSEC_PER_SEC;
+use super::c::{
+    KERN_SUCCESS, NSEC_PER_SEC,
+    mach_timebase_info_data_t, mach_timebase_info, mach_absolute_time
+};
 
 pub fn uptime() -> u64 {
-    let mut timebase_info: mach_time::mach_timebase_info_data_t = mach_time::mach_timebase_info_data_t {
+    let mut timebase_info: mach_timebase_info_data_t = mach_timebase_info_data_t {
         numer: 0, denom: 0
     };
 
-    if unsafe { mach_time::mach_timebase_info(&mut timebase_info) } != mach::kern_return::KERN_SUCCESS {
+    if unsafe { mach_timebase_info(&mut timebase_info) } != KERN_SUCCESS {
         panic!("Error calling mach_timebase_info.");
     }
 
-    return ((unsafe { mach_time::mach_absolute_time() } * timebase_info.numer as u64) / timebase_info.denom as u64) / NSEC_PER_SEC;
+    return ((unsafe { mach_absolute_time() } * timebase_info.numer as u64) / timebase_info.denom as u64) / NSEC_PER_SEC as u64;
 }

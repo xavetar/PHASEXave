@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@
 
 use super::{
     months::{
+        MONTHS_IN_YEAR,
         BASE_MONTH_DAYS, LEAP_MONTH_DAYS,
-        MONTHS_IN_YEAR
     },
 };
 
-pub const JULIAN_BCE_DAYS_FIRST_YEAR: u8 = 2_u8;
+pub const JULIAN_BCE_DAYS_FIRST_YEAR: u128 = 2_u128;
 
 pub const BASE_MONTH_SUM_DAYS: [u16; MONTHS_IN_YEAR as usize] = [
     BASE_MONTH_DAYS[0] as u16,

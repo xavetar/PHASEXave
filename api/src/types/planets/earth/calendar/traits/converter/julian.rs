@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,9 @@ impl Julian for Date {
     fn to_date(&mut self, timezone_in_unix_time: bool) {
         match self.view {
             CalendarView::Julian => {
-                if self.year == 1_u128 {
+                if self.year == 1_u64 {
                     if self.month == 1_u8 {
-                        if (1_u8..=JULIAN_BCE_DAYS_FIRST_YEAR).contains(&self.day) {
+                        if (1_u8..=JULIAN_BCE_DAYS_FIRST_YEAR as u8).contains(&self.day) {
                             panic!("[IMPOSSIBLE]: This presentation of days is missing in CE (Current Era) of Julian Calendar! (to_date)")
                         }
                     }
@@ -68,21 +68,21 @@ impl Julian for Date {
                 self.era_days = days_from_presentation_date(self.view.clone(), self.year, self.month, self.day);
             },
             CalendarView::Gregorian | CalendarView::Solar => {
-                self.era_days = days_from_presentation_date(self.view.clone(), self.year, self.month, self.day) + JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+                self.era_days = days_from_presentation_date(self.view.clone(), self.year, self.month, self.day) + JULIAN_BCE_DAYS_FIRST_YEAR;
             },
             _ => panic!("[ERROR]: Unknown CalendarView in Julian converter (to_date)")
         }
 
-        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR as u128, timezone_in_unix_time);
+        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, timezone_in_unix_time);
         self.fill_date(CalendarView::Julian);
 
-        self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+        self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
     }
 
     fn to_presentation(&mut self, timezone_in_unix_time: bool) {
-        if self.year == 1_u128 {
+        if self.year == 1_u64 {
             if self.month == 1_u8 {
-                if (1_u8..=JULIAN_BCE_DAYS_FIRST_YEAR).contains(&self.day) {
+                if (1_u8..=JULIAN_BCE_DAYS_FIRST_YEAR as u8).contains(&self.day) {
                     panic!("[IMPOSSIBLE]: This presentation of days is missing in CE (Current Era) of Julian Calendar! (to_date)")
                 }
             }
@@ -90,9 +90,9 @@ impl Julian for Date {
 
         self.era_days = days_from_presentation_date(CalendarView::Julian, self.year, self.month, self.day);
 
-        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR as u128, timezone_in_unix_time);
+        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, timezone_in_unix_time);
         self.fill_date(CalendarView::Julian);
 
-        self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR as u128;
+        self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
     }
 }

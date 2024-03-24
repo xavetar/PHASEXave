@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Stanislav Mikhailov (xavetar)
+ * Copyright 2024 Stanislav Mikhailov (xavetar)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,18 +26,25 @@
  * THE SOFTWARE.
  */
 
-use crate::types::planets::earth::calendar::{
-    view::{CalendarView},
-    functions::{is_leap_year},
-    constants::{
-        months::{
-            Months, BASE_MONTH_DAYS, LEAP_MONTH_DAYS
+use crate::types::{
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                functions::{is_leap_year},
+                constants::{
+                    months::{
+                        Months, MONTHS_IN_YEAR,
+                        BASE_MONTH_DAYS, LEAP_MONTH_DAYS,
+                    }
+                }
+            }
         }
     }
 };
 
-pub fn month_from_days(view: CalendarView, year: u128, days: &mut u128) -> Months {
-    let months: &[u8; 12_usize];
+pub fn month_from_days(view: CalendarView, year: u64, days: &mut u16) -> Months {
+    let months: &[u8; MONTHS_IN_YEAR as usize];
 
     if !is_leap_year(view, year) {
         months = &BASE_MONTH_DAYS
@@ -48,8 +55,8 @@ pub fn month_from_days(view: CalendarView, year: u128, days: &mut u128) -> Month
     let mut month: usize = 0_usize;
 
     loop {
-        if *days > (months[month] as u128) {
-            *days -= months[month] as u128;
+        if *days > (months[month] as u16) {
+            *days -= months[month] as u16;
             month += 1_usize;
         } else {
             break;

@@ -1,3 +1,113 @@
+PHASEXave is primarily distributed under the terms of three the Anti-Virus AND MIT AND the Apache License (Version 2.0)
+
+There is no logic in licensing. In this regard, the following was added: "Anti-Virus license":
+
+1) Code can be paid (antonym: free).
+2) Code can be free (antonym: paid).
+
+: The ability to view code, for example, on GitHub.
+
+3) Code can be open (synonym: open-source).
+4) Code can be closed (synonym: proprietary).
+
+: Have you looked at someone else's code? Now it doesn't belong to you!
+
+5) Code can be viral.
+6) Code can be non-viral (anti-viral).
+
+: The ability to do anything with the code, copy it, modify it.
+
+7) Code can be free (synonym: freedom).
+8) Code can be non-free (synonym: slavery).
+
+Enumerating possible interpretations of different licenses based on logic:
+
+1) Code + Paid (antonym: free) + Closed + Viral + Free (synonym: freedom).
+2) Code + Paid (antonym: free) + Closed + Viral + Non-free.
+3) Code + Paid (antonym: free) + Closed + Non-viral + Free (synonym: freedom).
+4) Code + Paid (antonym: free) + Closed + Non-viral + Non-free.
+
+5) Code + Paid (antonym: free) + Open + Viral + Free (synonym: freedom).
+6) Code + Paid (antonym: free) + Open + Viral + Non-free.
+7) Code + Paid (antonym: free) + Open + Non-viral + Free (synonym: freedom).
+8) Code + Paid (antonym: free) + Open + Non-viral + Non-free.
+
+1) Code + Free (antonym: paid) + Closed + Viral + Free (synonym: freedom).
+2) Code + Free (antonym: paid) + Closed + Viral + Non-free.
+3) Code + Free (antonym: paid) + Closed + Non-viral + Free (synonym: freedom).
+4) Code + Free (antonym: paid) + Closed + Non-viral + Non-free.
+
+5) Code + Free (antonym: paid) + Open + Viral + Free (synonym: freedom).
+6) Code + Free (antonym: paid) + Open + Viral + Non-free.
+7) Code + Free (antonym: paid) + Open + Non-viral + Free (synonym: freedom).
+8) Code + Free (antonym: paid) + Open + Non-viral + Non-free.
+
+The decision depends on the answer to the root question: "Can free code be viral, absorbing other code and forcing a
+change in the license?"
+
+Code can have an open license (open source), license can also be closed-source (proprietary), but still
+free (like freedom) for a limited circle of individuals. No license can interpret rules for a downstream
+project - the code is not your slave. When your code infects someone else's code, it is not free (like freedom);
+it is free of charge (antonym: paid).
+
+The only license with absolute freedom criteria is CC0. This is a collision in the English language, mixing the
+concepts of money and freedom, capitalism.
+
+If you cannot use FSF code or any other viral license code, what right does that license have to exploit my code or
+yours? Moreover, by using licenses of this kind, you lose the rights to your code. Therefore, any direct or indirect
+use of code under viral licenses is strictly prohibited, including recursive use
+(in dependencies, dependency dependencies, etc.).
+
+And the next time you correct "free" (antonym: paid) to "free" (synonym: freedom) on Wikipedia pages and ban my
+IP address, I suggest you test your vocabulary, knowledge and usage of basic logic and critical thinking to write
+a license without contradictions. On the other hand, making everyone's brains so zombified by imposed "freedom"
+requires effort; even Orwell would envy it. If you disagree with something, it's your problem.
+
+1. Anti-Virus license:
+
+Anti-Virus License Agreement
+
+    Copyright (c) 2024 Stanislav Mikhailov (xavetar)
+
+    All rights reserved. The use, copying, modification, merging, publication,
+    distribution, sublicense, and/or sale of software, including but not limited
+    to any of its components, as part of a binary or other executable code
+    created from, incorporating, or interacting with software distributed under
+    the General Public Virus (GPV) or any similar license, in any version, is
+    prohibited.
+
+    Stanislav Mikhailov reserves the right to make changes to the text
+    of this license at any time and at its discretion.
+
+    This license applies to the software provided by Stanislav Mikhailov and all
+    of its components, unless otherwise stated explicitly.
+
+2. MIT license:
+
+    MIT License
+
+    Copyright (c) 2024 Stanislav Mikhailov (xavetar)
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+3. Apache License (Version 2.0):
+
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -186,7 +296,7 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2023 Stanislav Mikhailov (xavetar)
+   Copyright 2024 Stanislav Mikhailov (xavetar)
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

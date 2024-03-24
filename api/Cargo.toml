@@ -5,13 +5,14 @@ authors = ["Stanislav Mikhailov <xavetar@proton.me>"]
 publish = true
 version.workspace = true
 edition.workspace = true
-license.workspace = true
 license-file.workspace = true
 rust-version.workspace = true
 description = "Fast, clear and simple interface for calculating date, week day and time in Solar, Julian, Gregorian calendar."
+documentation = "https://docs.rs/crate/PHASEXave/latest"
+readme = "README.md"
 repository.workspace = true
-keywords.workspace = true
-categories.workspace = true
+keywords = ["date-and-time", "calendar", "solar", "julian", "gregorian"]
+categories = ["date-and-time"]
 include.workspace = true
 exclude.workspace = true
 
@@ -25,14 +26,14 @@ path = "src/lib.rs"
 default = []
 
 platform_specific_functions_unix = ["dep:libc"]
-platform_specific_functions_darwin = ["dep:mach", "dep:core-foundation"]
+platform_specific_functions_darwin = ["dep:libc", "dep:core-foundation"]
 platform_specific_functions_windows = ["dep:winapi"]
 
 # Dependencies
 [dependencies]
 
 [target.'cfg(target_vendor = "apple")'.dependencies]
-mach = { version = "0.3.2", optional = true, default-features = false }
+libc = { version = "0.2.153", optional = true, default-features = false }
 core-foundation = { version = "0.9.4", optional = true, default-features = false, features = ["link"] }
 
 [target.'cfg(all(not(target_vendor = "apple"), target_family = "unix"))'.dependencies]
