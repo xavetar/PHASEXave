@@ -27,18 +27,25 @@
  */
 
 use crate::types::{
-    data::date::{Date},
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            week::{
-                SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR,
-                SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN,
-                SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN,
-                REPEAT_WEAK_DAY_CYCLE, Week,
-            },
-        },
-        functions::{days_from_presentation_date}
+    data::{
+        date::{Date}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    week::{
+                        Week,
+                        REPEAT_WEAK_DAY_CYCLE,
+                        SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR,
+                        SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN,
+                        SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN,
+                    },
+                },
+                functions::{days_from_presentation_date},
+            }
+        }
     }
 };
 

@@ -27,10 +27,14 @@
  */
 
 use crate::types::{
-    planets::earth::calendar::{
-        constants::{
-            seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR}
-        },
+    planets::{
+        earth::{
+            calendar::{
+                constants::{
+                    seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR}
+                },
+            }
+        }
     }
 };
 

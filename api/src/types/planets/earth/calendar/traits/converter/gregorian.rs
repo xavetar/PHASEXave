@@ -32,19 +32,25 @@ use crate::types::{
     data::{
         date::{Date},
     },
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            days::{JULIAN_BCE_DAYS_FIRST_YEAR}
-        },
-        functions::{
-            days_from_presentation_date
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    days::{JULIAN_BCE_DAYS_FIRST_YEAR}
+                },
+                functions::{
+                    days_from_presentation_date
+                },
+            }
         }
     },
-    counter::unix_time::{
-        constants::{
-            days::{UNIX_TIME_START_AFTER_DAY}
-        },
+    counter::{
+        unix_time::{
+            constants::{
+                days::{UNIX_TIME_START_AFTER_DAY}
+            },
+        }
     }
 };
 

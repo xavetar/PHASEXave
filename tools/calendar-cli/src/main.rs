@@ -40,7 +40,9 @@ use calendar_cli::{
     },
     save::{save_to_file},
     parse::{parse_args},
-    types::enums::{Modes}
+    types::{
+        enums::{Modes}
+    }
 };
 
 fn make_calendar(view: CalendarView, method: fn(CalendarView, u64, u8, u8) -> Week, year: u64, columns: u8, margin: [u8; 4]) -> Vec<Vec<char>> {

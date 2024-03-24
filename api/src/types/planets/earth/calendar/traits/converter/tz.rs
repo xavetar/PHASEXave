@@ -30,10 +30,14 @@ use crate::types::{
     data::{
         zone::{Sign, Zone}
     },
-    planets::earth::calendar::{
-        constants::{
-            seconds::{SECONDS_IN_DAY},
-        },
+    planets::{
+        earth::{
+            calendar::{
+                constants::{
+                    seconds::{SECONDS_IN_DAY},
+                },
+            }
+        }
     },
 };
 

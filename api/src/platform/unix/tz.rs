@@ -27,11 +27,17 @@
  */
 
 use crate::types::{
-    data::zone::{Sign, Zone},
-    planets::earth::calendar::{
-        constants::{
-            seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR},
-        },
+    data::{
+        zone::{Sign, Zone}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                constants::{
+                    seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR},
+                },
+            }
+        }
     }
 };
 

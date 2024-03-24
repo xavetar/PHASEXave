@@ -26,13 +26,21 @@
  * THE SOFTWARE.
  */
 
-use std::time::{SystemTime, UNIX_EPOCH};
 pub use crate::types::data::time::{Time, Uptime};
+
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use crate::types::{
-    data::zone::{Sign, Zone},
-    planets::earth::calendar::{
-        constants::{
-            seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR, SECONDS_IN_DAY}
+    data::{
+        zone::{Sign, Zone}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                constants::{
+                    seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR, SECONDS_IN_DAY}
+                }
+            }
         }
     }
 };

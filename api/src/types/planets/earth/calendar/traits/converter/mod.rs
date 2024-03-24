@@ -32,9 +32,9 @@ mod julian;
 mod gregorian;
 mod unification;
 
+pub(self) use tz::{zone_recalc};
 pub(self) use unification::{Converter};
 
 pub use solar::{Solar};
 pub use julian::{Julian};
 pub use gregorian::{Gregorian};
-pub(self) use tz::{zone_recalc};

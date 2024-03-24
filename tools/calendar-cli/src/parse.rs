@@ -27,7 +27,9 @@
  */
 
 use super::{
-    types::enums::{Modes},
+    types::{
+        enums::{Modes}
+    },
 };
 
 use PHASEXave::{

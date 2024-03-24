@@ -31,8 +31,12 @@ use super::{
 };
 
 use crate::types::{
-    planets::earth::calendar::{
-        view::{CalendarView},
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+            }
+        }
     }
 };
 

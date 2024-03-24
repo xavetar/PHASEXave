@@ -29,7 +29,9 @@
 use crate::types::{
     planets::earth::calendar::{
         view::{CalendarView},
-        constants::year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR},
+        constants::{
+            year::{BASE_DAYS_YEAR, LEAP_DAYS_YEAR}
+        },
         functions::{is_leap_year, days_from_presentation_date}
     }
 };

@@ -32,15 +32,21 @@ use crate::types::{
     data::{
         date::{Date},
     },
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            seconds::{SECONDS_IN_DAY},
-        },
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    seconds::{SECONDS_IN_DAY},
+                },
+            }
+        }
     },
-    counter::unix_time::{
-        functions::{
-            year_from_presentation_days, month_from_days,
+    counter::{
+        unix_time::{
+            functions::{
+                year_from_presentation_days, month_from_days,
+            }
         }
     }
 };

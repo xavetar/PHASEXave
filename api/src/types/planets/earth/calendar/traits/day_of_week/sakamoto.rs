@@ -27,22 +27,29 @@
  */
 
 use crate::types::{
-    data::date::{Date},
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            week::{
-                REPEAT_WEAK_DAY_CYCLE, Week
-            },
-            months::{MONTHS_IN_YEAR},
-            shifts::{
-                SOLAR_BASE_SAKAMOTO,
-                JULIAN_BASE_SAKAMOTO,
-                GREGORIAN_BASE_SAKAMOTO
+    data::{
+        date::{Date}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    week::{
+                        Week,
+                        REPEAT_WEAK_DAY_CYCLE,
+                    },
+                    months::{MONTHS_IN_YEAR},
+                    shifts::{
+                        SOLAR_BASE_SAKAMOTO,
+                        JULIAN_BASE_SAKAMOTO,
+                        GREGORIAN_BASE_SAKAMOTO,
+                    },
+                },
+                functions::{
+                    sum_leap_years
+                },
             }
-        },
-        functions::{
-            sum_leap_years
         }
     }
 };

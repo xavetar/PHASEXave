@@ -28,4 +28,4 @@
 
 pub mod time;
 pub mod tz;
-pub(super) mod c;
+pub(self) mod c;

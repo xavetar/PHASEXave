@@ -26,8 +26,12 @@
  * THE SOFTWARE.
  */
 
-use winapi::um::winnt::LARGE_INTEGER;
-use winapi::um::profileapi::{QueryPerformanceCounter, QueryPerformanceFrequency};
+use winapi::{
+    um::{
+        winnt::{LARGE_INTEGER},
+        profileapi::{QueryPerformanceCounter, QueryPerformanceFrequency}
+    }
+};
 
 pub fn uptime() -> u64 {
     let (mut counter, mut frequency): (LARGE_INTEGER, LARGE_INTEGER) = unsafe { (std::mem::zeroed::<LARGE_INTEGER>(), std::mem::zeroed::<LARGE_INTEGER>()) };

@@ -27,11 +27,15 @@
  */
 
 use crate::types::{
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            year::{
-                SOLAR_YEAR_LEAP_LENGTH_INT
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    year::{
+                        SOLAR_YEAR_LEAP_LENGTH_INT
+                    }
+                },
             }
         }
     }

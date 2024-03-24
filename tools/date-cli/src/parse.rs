@@ -28,8 +28,8 @@
 
 use PHASEXave::{
     CalendarView,
-    Date, Zone, Sign,
-    Week,
+    Date, Week,
+    Zone, Sign,
     RataDie, Xavetar, Sakamoto
 };
 

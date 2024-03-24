@@ -31,21 +31,29 @@ pub use crate::types::data::date::{Date};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::types::{
-    data::zone::{Sign, Zone},
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            seconds::{SECONDS_IN_DAY},
-            days::{JULIAN_BCE_DAYS_FIRST_YEAR},
-            months::{Months},
+    data::{
+        zone::{Sign, Zone}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    seconds::{SECONDS_IN_DAY},
+                    days::{JULIAN_BCE_DAYS_FIRST_YEAR},
+                    months::{Months},
+                }
+            }
         },
     },
-    counter::unix_time::{
-        constants::{
-            days::{UNIX_TIME_START_AFTER_DAY}
-        },
-        functions::{
-            year_from_presentation_days, month_from_days,
+    counter::{
+        unix_time::{
+            constants::{
+                days::{UNIX_TIME_START_AFTER_DAY}
+            },
+            functions::{
+                year_from_presentation_days, month_from_days,
+            },
         }
     },
 };
@@ -78,7 +86,7 @@ impl Date {
                 seconds: 0
             },
             true
-            );
+        );
     }
 
     pub fn now(view: CalendarView, timezone: Zone) -> Date {

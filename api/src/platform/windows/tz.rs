@@ -27,15 +27,27 @@
  */
 
 use crate::types::{
-    data::zone::{Sign, Zone},
-    planets::earth::calendar::{
-        constants::{
-            seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR},
-        },
+    data::{
+        zone::{Sign, Zone}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                constants::{
+                    seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR},
+                },
+            }
+        }
     }
 };
 
-use winapi::um::timezoneapi::{GetTimeZoneInformation, TIME_ZONE_INFORMATION};
+use winapi::{
+    um::{
+        timezoneapi::{
+            GetTimeZoneInformation, TIME_ZONE_INFORMATION
+        }
+    }
+};
 
 pub fn local_timezone() -> Zone {
     let mut zone: Zone = Zone::default();

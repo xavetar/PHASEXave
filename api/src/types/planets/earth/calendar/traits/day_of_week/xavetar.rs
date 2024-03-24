@@ -27,20 +27,29 @@
  */
 
 use crate::types::{
-    data::date::{Date},
-    planets::earth::calendar::{
-        view::{CalendarView},
-        constants::{
-            week::{Week, REPEAT_WEAK_DAY_CYCLE},
-            months::{MONTHS_IN_YEAR},
-            shifts::{
-                JULIAN_BASE_XAVETAR, JULIAN_LEAP_XAVETAR,
-                SOLAR_BASE_XAVETAR, SOLAR_LEAP_XAVETAR,
-                GREGORIAN_BASE_XAVETAR, GREGORIAN_LEAP_XAVETAR
+    data::{
+        date::{Date}
+    },
+    planets::{
+        earth::{
+            calendar::{
+                view::{CalendarView},
+                constants::{
+                    week::{
+                        Week,
+                        REPEAT_WEAK_DAY_CYCLE
+                    },
+                    months::{MONTHS_IN_YEAR},
+                    shifts::{
+                        JULIAN_BASE_XAVETAR, JULIAN_LEAP_XAVETAR,
+                        SOLAR_BASE_XAVETAR, SOLAR_LEAP_XAVETAR,
+                        GREGORIAN_BASE_XAVETAR, GREGORIAN_LEAP_XAVETAR,
+                    },
+                },
+                functions::{
+                    is_leap_year, sum_leap_years,
+                },
             }
-        },
-        functions::{
-            is_leap_year, sum_leap_years
         }
     }
 };
