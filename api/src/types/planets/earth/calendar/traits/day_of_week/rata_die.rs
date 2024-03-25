@@ -48,7 +48,6 @@ use crate::types::{
         }
     }
 };
-use crate::types::counter::unix_time::functions::{month_from_days, year_from_presentation_days};
 
 pub trait RataDie {
     fn week_day(&self) -> Week;
@@ -93,10 +92,23 @@ mod tests {
                     year_from_presentation_days, month_from_days,
                 }
             }
+        },
+        planets::{
+            earth::{
+                calendar::{
+                    constants::{
+                        months::{Months::December}
+                    },
+                    functions::{
+                        is_leap_year,
+                        days_from_presentation_date
+                    }
+                }
+            }
         }
     };
     #[test]
-    fn test_rata_die_method() {
+    fn test_rata_die_method_from_start_era() {
         let (mut days, mut month, mut year): (u16, u8, u64);
 
         for (view, shift) in [
@@ -107,6 +119,32 @@ mod tests {
             let era_days_to_test: u128 = 10_000_000_u128;
 
             for era_day in 1_u128..=era_days_to_test {
+                (year, days) = year_from_presentation_days(view, era_day);
+
+                month = month_from_days(view, year, &mut days).index();
+
+                assert_eq!(<Date as RataDie>::from(view, year, month, days as u8).index(), Week::from(shift).next_nth(era_day).index());
+            }
+        }
+    }
+
+    #[test]
+    fn test_rata_die_method_to_end_era() {
+        let (mut days, mut month, mut year): (u16, u8, u64);
+
+        for (view, shift) in [
+            (CalendarView::Solar, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR),
+            (CalendarView::Julian, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN),
+            (CalendarView::Gregorian, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN)
+        ] {
+            let (era_days_to_test, max_type_era_day): (u128, u128)
+            =
+            (
+                10_000_000_u128,
+                days_from_presentation_date(view, u64::MAX, December.index(), December.days(is_leap_year(view, u64::MAX)))
+            );
+
+            for era_day in max_type_era_day-era_days_to_test..=max_type_era_day {
                 (year, days) = year_from_presentation_days(view, era_day);
 
                 month = month_from_days(view, year, &mut days).index();

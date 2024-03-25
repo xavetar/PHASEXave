@@ -39,11 +39,11 @@ use crate::types::{
 pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) -> (u64, u16) {
 
     let (base_div, leap_div): (u128, u128)
-    =
-    (
-        (presentation_days - (presentation_days % BASE_DAYS_YEAR as u128)) / BASE_DAYS_YEAR as u128,
-        (presentation_days - (presentation_days % LEAP_DAYS_YEAR as u128)) / LEAP_DAYS_YEAR as u128
-    );
+        =
+        (
+            (presentation_days - (presentation_days % BASE_DAYS_YEAR as u128)) / BASE_DAYS_YEAR as u128,
+            (presentation_days - (presentation_days % LEAP_DAYS_YEAR as u128)) / LEAP_DAYS_YEAR as u128
+        );
 
     let (upper_limit_year, lower_limit_year): (u128, u128);
 
@@ -69,32 +69,33 @@ pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) 
             potential_era_days = days_from_presentation_date(view, potential_year, 0, 0);
         } else {
             potential_year = 1_u64;
+            break;
         }
 
-        if potential_era_days >= presentation_days {
+        if potential_era_days > presentation_days {
             fuzzy_search_year_part /= 2_u128;
+        } else if potential_era_days == presentation_days {
+            if potential_year > 1_u64 {
+                potential_year -= 1_u64;
+                potential_era_days = days_from_presentation_date(view, potential_year, 0, 0);
+            }
+            break;
         } else {
             break;
         }
     }
 
     loop {
-        if potential_era_days < presentation_days {
-            let delta_days: u128 = presentation_days - potential_era_days;
+        let delta_days: u128 = presentation_days - potential_era_days;
 
-            // Если разница в днях составляет более миллиона дней, мы должны увеличить год
-            if delta_days > 1_000_000_u128 {
-                if LEAP_DAYS_YEAR > BASE_DAYS_YEAR {
-                    println!("HERE!");
-                    potential_year += (delta_days / LEAP_DAYS_YEAR as u128) as u64;
-                } else {
-                    potential_year += (delta_days / BASE_DAYS_YEAR as u128) as u64;
-                }
-
-                potential_era_days = days_from_presentation_date(view, potential_year, 0, 0);
+        if delta_days > 1_000_000_u128 {
+            if LEAP_DAYS_YEAR > BASE_DAYS_YEAR {
+                potential_year += (delta_days / LEAP_DAYS_YEAR as u128) as u64;
             } else {
-                break;
+                potential_year += (delta_days / BASE_DAYS_YEAR as u128) as u64;
             }
+
+            potential_era_days = days_from_presentation_date(view, potential_year, 0, 0);
         } else {
             break;
         }
