@@ -102,3 +102,58 @@ impl Julian for Date {
         self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        CalendarView, Date,
+        JULIAN_BCE_DAYS_FIRST_YEAR
+    };
+
+    use crate::{
+        Months,
+        Solar, Julian, Gregorian,
+        functions::{
+            is_leap_year
+        }
+    };
+
+    #[test]
+    fn test_between_presentation_conversion() {
+        let mut date: Date = Date::default();
+
+        let max_year_to_test: u64 = 100_000_u64;
+
+        for year in 1_u64..=max_year_to_test {
+            for month in [
+                Months::January, Months::February, Months::March, Months::April, Months::May, Months::June,
+                Months::July, Months::August, Months::September, Months::October, Months::November, Months::December
+            ] {
+                for day in 1_u8..=month.days(is_leap_year(CalendarView::Julian, year)) {
+                    if !(1_u128..=JULIAN_BCE_DAYS_FIRST_YEAR).contains(&(day as u128)) || month.index() != Months::January.index() || year != 1 {
+
+                        (date.day, date.month, date.year, date.view) = (day, month.index(), year, CalendarView::Julian);
+                        <Date as Julian>::to_presentation(&mut date, false);
+                        assert_eq!((date.day, date.month, date.year, date.view), (day, month.index(), year, CalendarView::Julian));
+
+                        let unix_time: u128 = date.unix_time;
+
+                        if day != 29 && month.index() != Months::February.index() {
+                            <Date as Solar>::to_presentation(&mut date, true);
+                            assert_eq!((date.day, date.month, date.year, date.view), (day, month.index(), year, CalendarView::Solar));
+
+                            <Date as Julian>::to_presentation(&mut date, true);
+                            assert_eq!((date.day, date.month, date.year, date.unix_time, date.view), (day, month.index(), year, unix_time, CalendarView::Julian));
+
+                            <Date as Gregorian>::to_presentation(&mut date, true);
+                            assert_eq!((date.day, date.month, date.year, date.view), (day, month.index(), year, CalendarView::Gregorian));
+
+                            <Date as Julian>::to_presentation(&mut date, true);
+                            assert_eq!((date.day, date.month, date.year, date.unix_time, date.view), (day, month.index(), year, unix_time, CalendarView::Julian));
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
