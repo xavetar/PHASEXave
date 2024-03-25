@@ -21,10 +21,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Audit dependencies
         uses: EmbarkStudios/cargo-deny-action@v1
 
-  Run-tests:
+  Run-test:
+    name: Run test and upload coverage report
     needs:
       - Dependency-audit
     strategy:
@@ -35,12 +37,29 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set minimal supported Rust version
         run: |
           rustup default ${RUST_VERSION}
-      - name: Run tests
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Remove artifacts that may affect the coverage results of packages
         run: |
-          cargo test --all
+          cargo llvm-cov clean --workspace
+
+      - name: Run tests and generate code coverage
+        run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
+
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          files: lcov.info
+          flags: unittests
+          name: PHASEXave
+          verbose: true
 
   Test-tools:
     needs:
@@ -58,18 +77,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set minimal supported Rust version
         run: |
           rustup default ${RUST_VERSION}
+
       - name: Build
         run: |
           cargo build --release --bin date-cli
           cargo build --release --bin calendar-cli
+
       - name: Date CLI
         run: |
           cargo run --release --quiet --bin date-cli -- -v 1
           cargo run --release --quiet --bin date-cli -- -v 2
           cargo run --release --quiet --bin date-cli -- -v 3
+
       - name: Calendar CLI
         run: |
           cargo run --release --quiet --bin calendar-cli -- -v 1

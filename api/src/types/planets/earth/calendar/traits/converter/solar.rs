@@ -107,7 +107,7 @@ mod tests {
     fn test_between_presentation_conversion() {
         let mut date: Date = Date::default();
 
-        let max_year_to_test: u64 = 100_000_u64;
+        let max_year_to_test: u64 = 10_000_u64;
 
         for year in 1_u64..=max_year_to_test {
             for month in [

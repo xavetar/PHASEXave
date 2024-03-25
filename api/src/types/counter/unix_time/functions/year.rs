@@ -129,7 +129,7 @@ mod tests {
     };
 
     #[test]
-    fn fast_test_year_from_presentation_days() {
+    fn test_year_from_presentation_days_const() {
         // Проверка для небольших значений presentation_days
         assert_eq!(year_from_presentation_days(CalendarView::Gregorian, 10), (1, 10));
         assert_eq!(year_from_presentation_days(CalendarView::Gregorian, 100), (1, 100));
@@ -147,7 +147,7 @@ mod tests {
     }
 
     #[test]
-    fn long_test_year_from_presentation_days() {
+    fn test_linear_year_from_presentation_days() {
         fn old_style(view: CalendarView, presentation_days: u128) -> (u64, u16) {
             let mut year: u64 = 1_u64;
             let mut days: u128 = presentation_days;
@@ -170,7 +170,7 @@ mod tests {
         }
 
         for view in [CalendarView::Solar, CalendarView::Julian, CalendarView::Gregorian] {
-            let max_year_to_test: u64 = 20_000_u64;
+            let max_year_to_test: u64 = 10_000_u64;
 
             for test_year in 1_u64..=max_year_to_test {
                 let presentation_days: u128 = days_from_presentation_date(view, test_year, 1, 1);

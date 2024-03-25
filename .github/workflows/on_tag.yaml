@@ -20,6 +20,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Audit dependencies
         uses: EmbarkStudios/cargo-deny-action@v1
 
@@ -36,21 +37,26 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set minimal supported Rust version
         run: |
           rustup default ${RUST_VERSION}
+
       - name: Run tests
         run: |
           cargo test --all
+
       - name: Build
         run: |
           cargo build --release --bin date-cli
           cargo build --release --bin calendar-cli
+
       - name: Date CLI
         run: |
           cargo run --release --quiet --bin date-cli -- -v 1
           cargo run --release --quiet --bin date-cli -- -v 2
           cargo run --release --quiet --bin date-cli -- -v 3
+
       - name: Calendar CLI
         run: |
           cargo run --release --quiet --bin calendar-cli -- -v 1
@@ -82,16 +88,21 @@ jobs:
           - riscv64gc-unknown-linux-gnu
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set minimal supported Rust version
         run: |
           rustup default ${RUST_VERSION}
+
       - name: Install cross
         run: |
           cd /tmp && curl -L https://github.com/cross-rs/cross/releases/download/v${CROSS_VERSION}/cross-x86_64-unknown-linux-musl.tar.gz | tar xzf -
+
       - name: Run Cross-build
         run: |
           /tmp/cross build --target=${{ matrix.target }} --release --locked
+
       - name: Archive binary
         run: |
           set -eu
@@ -108,7 +119,9 @@ jobs:
             tar zcf ./date-cli-${{ matrix.target }}.tar.gz ./date-cli-${{ matrix.target }}
             tar zcf ./calendar-cli-${{ matrix.target }}.tar.gz ./calendar-cli-${{ matrix.target }}
           fi
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload artifacts (Cross build)
+        uses: actions/upload-artifact@v4
         with:
           name: build_artifact_${{ matrix.target }}
           path: |
@@ -129,16 +142,21 @@ jobs:
           - aarch64-apple-darwin
     runs-on: ${{ matrix.runs-on }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set minimal supported Rust version
         run: |
           rustup default ${RUST_VERSION}
+
       - name : Add target platform
         run: |
           rustup target add ${{ matrix.target }}
+
       - name: Build
         run: |
           cargo build --target=${{ matrix.target }} --release
+
       - name: Archive binary
         run: |
           set -eu
@@ -148,7 +166,9 @@ jobs:
           cp ./target/${{ matrix.target }}/release/calendar-cli ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}
           tar zcf ./date-cli-${{ matrix.target }}_${{ matrix.runs-on }}.tar.gz ./date-cli-${{ matrix.target }}_${{ matrix.runs-on }}
           tar zcf ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}.tar.gz ./calendar-cli-${{ matrix.target }}_${{ matrix.runs-on }}
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload artifacts (Apple build)
+        uses: actions/upload-artifact@v4
         with:
           name: build_artifact_${{ matrix.target }}_${{ matrix.runs-on }}
           path: |
@@ -170,8 +190,11 @@ jobs:
           pattern: build_artifact_*
           path: ./publish_folder
           merge-multiple: true
-      - run: ls -la ./publish_folder
-      - name: Release
+
+      - name: Show download artifacts
+        run: ls -la ./publish_folder
+
+      - name: Create release with artifacts
         if: contains(github.ref, 'refs/tags/')
         run: |
           set -eux
