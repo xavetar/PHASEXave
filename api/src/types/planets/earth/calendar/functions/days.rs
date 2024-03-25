@@ -163,7 +163,7 @@ mod tests {
 
         for view in [CalendarView::Solar, CalendarView::Julian, CalendarView::Gregorian] {
             for day in [1_u8, 11_u8, 17_u8, 23_u8, 28_u8] {
-                for month in [1_u8, 3_u8, 5_u8, 8_u8, 11_u8] {
+                for month in [1_u8, 3_u8, 5_u8, 8_u8, 11_u8, 12_u8] {
                     for year in 1..=100_000_u64 {
                         assert_eq!(days_from_presentation_date(view, year, month, day), euclid_style(view, year, month, day));
                     }

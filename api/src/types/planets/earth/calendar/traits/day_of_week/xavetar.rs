@@ -81,3 +81,56 @@ impl Xavetar for Date {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        CalendarView, Week, Xavetar
+    };
+
+    use crate::types::{
+        data::{
+            date::{Date},
+        },
+        counter::{
+            unix_time::{
+                functions::{
+                    year_from_presentation_days, month_from_days,
+                }
+            }
+        },
+        planets::{
+            earth::{
+                calendar::{
+                    constants::{
+                        week::{
+                            SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR,
+                            SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN,
+                            SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN,
+                        },
+                    },
+                }
+            }
+        }
+    };
+    #[test]
+    fn test_sakamoto_method() {
+        let (mut days, mut month, mut year): (u16, u8, u64);
+
+        for (view, shift) in [
+            (CalendarView::Solar, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR),
+            (CalendarView::Julian, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN),
+            (CalendarView::Gregorian, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN)
+        ] {
+            let era_days_to_test: u128 = 10_000_000_u128;
+
+            for era_day in 1_u128..=era_days_to_test {
+                (year, days) = year_from_presentation_days(view, era_day);
+
+                month = month_from_days(view, year, &mut days).index();
+
+                assert_eq!(<Date as Xavetar>::from(view, year, month, days as u8).index(), Week::from(shift).next_nth(era_day).index());
+            }
+        }
+    }
+}

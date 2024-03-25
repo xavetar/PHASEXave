@@ -53,14 +53,12 @@ pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) 
         (upper_limit_year, lower_limit_year) = (leap_div, base_div);
     }
 
-    let (mut potential_year, mut overhead_year): (u64, u128);
+    let mut potential_year: u64;
 
     let (mut potential_era_days, mut fuzzy_search_year_part): (u128, u128) = (0_u128, upper_limit_year);
 
     loop {
-        overhead_year = lower_limit_year + (fuzzy_search_year_part / 2);
-
-        if overhead_year > u64::MAX as u128 {
+        if (lower_limit_year + (fuzzy_search_year_part / 2)) > u64::MAX as u128 {
             fuzzy_search_year_part /= 2_u128;
             continue;
         }
@@ -73,7 +71,7 @@ pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) 
             potential_year = 1_u64;
         }
 
-        if potential_era_days > presentation_days {
+        if potential_era_days >= presentation_days {
             fuzzy_search_year_part /= 2_u128;
         } else {
             break;
@@ -81,13 +79,13 @@ pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) 
     }
 
     loop {
-
         if potential_era_days < presentation_days {
             let delta_days: u128 = presentation_days - potential_era_days;
 
             // Если разница в днях составляет более миллиона дней, мы должны увеличить год
             if delta_days > 1_000_000_u128 {
                 if LEAP_DAYS_YEAR > BASE_DAYS_YEAR {
+                    println!("HERE!");
                     potential_year += (delta_days / LEAP_DAYS_YEAR as u128) as u64;
                 } else {
                     potential_year += (delta_days / BASE_DAYS_YEAR as u128) as u64;
@@ -97,6 +95,8 @@ pub fn year_from_presentation_days(view: CalendarView, presentation_days: u128) 
             } else {
                 break;
             }
+        } else {
+            break;
         }
     }
 
