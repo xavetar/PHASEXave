@@ -76,7 +76,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u64, u8, u8
                     } else {
                         panic!("[ERROR] Invalid sign in timezone: {char:?}", char = zone_str.chars().nth(0));
                     }
-                    
+
                     let zone_values: Vec<u8> = zone_str[1..]
                         .split(':')
                         .map(|x| x.parse::<u8>())

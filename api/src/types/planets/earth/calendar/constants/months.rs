@@ -156,4 +156,12 @@ impl Months {
     pub fn previous(&self) -> Months {
         return Months::from((self.index() - 1_u8) % MONTHS_IN_YEAR);
     }
+
+    pub fn next_nth(&self, nth: u128) -> Months {
+        return Months::from(((self.index() as u128 + nth) % MONTHS_IN_YEAR as u128) as u8);
+    }
+
+    pub fn previous_nth(&self, nth: u128) -> Months {
+        return Months::from(((self.index() as u128 - nth) % MONTHS_IN_YEAR as u128) as u8);
+    }
 }

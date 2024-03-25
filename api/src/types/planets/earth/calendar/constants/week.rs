@@ -89,4 +89,12 @@ impl Week {
     pub fn previous(&self) -> Week {
         return Week::from((self.index() - 1_u8) % DAYS_IN_WEEK);
     }
+
+    pub fn next_nth(&self, nth: u128) -> Week {
+        return Week::from(((self.index() as u128 + nth) % DAYS_IN_WEEK as u128) as u8);
+    }
+
+    pub fn previous_nth(&self, nth: u128) -> Week {
+        return Week::from(((self.index() as u128 - nth) % DAYS_IN_WEEK as u128) as u8);
+    }
 }
