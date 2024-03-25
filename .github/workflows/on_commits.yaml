@@ -25,7 +25,7 @@ jobs:
       - name: Audit dependencies
         uses: EmbarkStudios/cargo-deny-action@v1
 
-  Run-test:
+  Run-tests:
     name: Run test and upload coverage report
     needs:
       - Dependency-audit
