@@ -3,6 +3,7 @@
 [![Deps](https://deps.rs/repo/github/xavetar/PHASEXave/status.svg)](https://deps.rs/repo/github/xavetar/PHASEXave)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/xavetar/PHASEXave/graph/badge.svg?token=9DNJ5FW8CM)](https://codecov.io/gh/xavetar/PHASEXave)
 
 # PHASEXave
 
