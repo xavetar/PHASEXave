@@ -101,9 +101,9 @@ impl Time {
         if !timezone_in_unix_time {
             let timezone_seconds: u128 = timezone.to_seconds() as u128;
 
-            if unix_time < timezone_seconds {
+            if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
                 panic!("[OVERFLOW]: Overflow type, unix time - time zone < zero!")
-            } else if unix_time > u128::MAX - timezone_seconds {
+            } else if unix_time > u128::MAX - timezone_seconds && timezone.sign == Sign::Unsigned {
                 panic!("[OVERFLOW]: Overflow type, unix time + time zone > type!")
             }
 
@@ -135,6 +135,66 @@ impl Time {
             hours: (seconds / SECONDS_IN_HOUR),
             minutes: ((seconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE) as u8,
             seconds: (seconds % SECONDS_IN_MINUTE) as u8
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::{
+        Time,
+        Sign, Zone
+    };
+
+    use libc::{
+        time_t, tm,
+        gmtime_r
+    };
+
+    use crate::{
+        types::{
+            planets::{
+                earth::{
+                    calendar::{
+                        constants::{
+                            seconds::{SECONDS_IN_DAY}
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    #[test]
+    fn test_gmt_time_from_libc() {
+        let mut time_struct_libc: tm = unsafe { std::mem::zeroed::<tm>() };
+
+        let gmt_timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0_u8, minutes: 0_u8, seconds: 0_u8 };
+
+        let current_seconds: u64 = Time::now(gmt_timezone).unix_time as u64;
+
+        for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
+            let time_c: time_t = unix_time as time_t;
+
+            unsafe { gmtime_r(&time_c, &mut time_struct_libc); }
+
+            let time: Time = Time::from(unix_time as u128, gmt_timezone, false);
+
+            assert_eq!(
+                (
+                    (time_struct_libc.tm_hour) as u8,
+                    (time_struct_libc.tm_min) as u8,
+                    (time_struct_libc.tm_sec) as u8,
+                    (time_struct_libc.tm_gmtoff) as u64
+                ),
+                (
+                    time.hours,
+                    time.minutes,
+                    time.seconds,
+                    time.timezone.to_seconds() as u64
+                )
+            )
         }
     }
 }

@@ -118,9 +118,9 @@ impl Date {
         if !timezone_in_unix_time {
             let timezone_seconds: u128 = timezone.to_seconds() as u128;
 
-            if unix_time < timezone_seconds {
+            if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
                 panic!("[OVERFLOW]: Overflow type, unix time - time zone < zero!")
-            } else if unix_time > u128::MAX - timezone_seconds {
+            } else if unix_time > u128::MAX - timezone_seconds && timezone.sign == Sign::Unsigned {
                 panic!("[OVERFLOW]: Overflow type, unix time + time zone > type!")
             }
 
@@ -160,5 +160,67 @@ impl Date {
 
     pub fn month(&self) -> Months {
         return Months::from(self.month);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::{
+        CalendarView,
+        Date, Sign, Zone,
+    };
+
+    use libc::{
+        time_t, tm,
+        gmtime_r
+    };
+
+    use crate::{
+        types::{
+            planets::{
+                earth::{
+                    calendar::{
+                        constants::{
+                            seconds::{SECONDS_IN_DAY}
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    #[test]
+    fn test_gmt_date_from_libc() {
+        let mut date_struct_libc: tm = unsafe { std::mem::zeroed::<tm>() };
+
+        let gmt_timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0_u8, minutes: 0_u8, seconds: 0_u8 };
+
+        let current_seconds: u64 = Date::now(CalendarView::Gregorian, gmt_timezone).unix_time as u64;
+
+        for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
+            let time_c: time_t = unix_time as time_t;
+
+            if unsafe { gmtime_r(&time_c, &mut date_struct_libc) } == std::ptr::null_mut() {
+                panic!("[ERROR]: Pointer is NULL (gmtime_r)!")
+            }
+
+            let date: Date = Date::from(CalendarView::Gregorian, unix_time as u128, gmt_timezone, false);
+
+            assert_eq!(
+                (
+                    (date_struct_libc.tm_year + 1900) as u64,
+                    (date_struct_libc.tm_mon + 1) as u8,
+                    (date_struct_libc.tm_mday) as u8,
+                    (date_struct_libc.tm_gmtoff) as u64
+                ),
+                (
+                    date.year,
+                    date.month,
+                    date.day,
+                    date.timezone.to_seconds() as u64
+                )
+            )
+        }
     }
 }

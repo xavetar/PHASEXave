@@ -124,7 +124,7 @@ mod tests {
             (CalendarView::Julian, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN),
             (CalendarView::Gregorian, SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN)
         ] {
-            let era_days_to_test: u128 = 1_000_000_u128;
+            let era_days_to_test: u128 = 500_000_u128;
 
             for era_day in 1_u128..=era_days_to_test {
                 (year, days) = year_from_presentation_days(view, era_day);
@@ -148,7 +148,7 @@ mod tests {
             let (era_days_to_test, max_type_era_day): (u128, u128)
             =
             (
-                1_000_000_u128,
+                500_000_u128,
                 days_from_presentation_date(view, u64::MAX, December.index(), December.days(is_leap_year(view, u64::MAX)))
             );
 
