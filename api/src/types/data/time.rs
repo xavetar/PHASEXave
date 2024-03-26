@@ -26,8 +26,34 @@
  * THE SOFTWARE.
  */
 
+use std::{
+    time::{
+        Duration,
+        SystemTime,
+        UNIX_EPOCH
+    }
+};
+
 use super::{
-    zone::{Zone}
+    zone::{
+        Sign, Zone
+    }
+};
+
+use crate::types::{
+    planets::{
+        earth::{
+            calendar::{
+                constants::{
+                    seconds::{
+                        SECONDS_IN_DAY,
+                        SECONDS_IN_HOUR,
+                        SECONDS_IN_MINUTE
+                    }
+                },
+            }
+        }
+    }
 };
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -35,13 +61,44 @@ pub struct Time {
     pub hours: u8,
     pub minutes: u8,
     pub seconds: u8,
-    pub timezone: Zone,
+    pub time_zone: Zone,
     pub unix_time: u128
 }
 
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Uptime {
-    pub hours: u128,
-    pub minutes: u8,
-    pub seconds: u8
+impl Time {
+    pub(crate) fn unix() -> Duration {
+        return SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)");
+    }
+
+    pub(crate) fn of(mut unix_time: u128, time_zone: Zone, zone_in_unix: bool) -> Time {
+        if !zone_in_unix {
+            let time_zone_seconds: u128 = time_zone.to_seconds() as u128;
+
+            if unix_time < time_zone_seconds && time_zone.sign == Sign::Signed {
+                panic!("[OVERFLOW]: Overflow type, unix time - time zone < zero!")
+            } else if unix_time > u128::MAX - time_zone_seconds && time_zone.sign == Sign::Unsigned {
+                panic!("[OVERFLOW]: Overflow type, unix time + time zone > type!")
+            }
+
+            if time_zone.sign == Sign::Signed {
+                unix_time -= time_zone_seconds;
+            } else if time_zone.sign == Sign::Unsigned {
+                unix_time += time_zone_seconds;
+            }
+        }
+
+        return Time::from_seconds(unix_time, time_zone);
+    }
+
+    pub(crate) const fn from_seconds(unix: u128, zone: Zone) -> Time {
+        return Time {
+            hours: ((unix % SECONDS_IN_DAY) / SECONDS_IN_HOUR) as u8,
+            minutes: ((unix % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE) as u8,
+            seconds: (unix % SECONDS_IN_MINUTE) as u8,
+            time_zone: zone,
+            unix_time: unix
+        }
+    }
 }

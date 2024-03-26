@@ -44,7 +44,7 @@ use crate::types::{
 use libc::{time_t, time, tm, localtime_r};
 
 pub fn local_timezone() -> Zone {
-    let mut zone: Zone = Zone::default();
+    let mut time_zone: Zone = Zone::default();
 
     let (epoch_seconds, mut time_struct): (time_t, tm) = unsafe { (time(std::ptr::null_mut()), std::mem::zeroed::<tm>()) };
 
@@ -53,22 +53,22 @@ pub fn local_timezone() -> Zone {
     }
 
     if time_struct.tm_gmtoff < 0 {
-        zone.sign = Sign::Signed;
+        time_zone.sign = Sign::Signed;
     } else {
-        zone.sign = Sign::Unsigned;
+        time_zone.sign = Sign::Unsigned;
     }
 
     let tz_seconds: u32 = time_struct.tm_gmtoff.unsigned_abs() as u32;
 
     (
-        zone.hours,
-        zone.minutes,
-        zone.seconds
+        time_zone.hours,
+        time_zone.minutes,
+        time_zone.seconds
     ) = (
         (tz_seconds / (SECONDS_IN_HOUR as u32)) as u8,
         ((tz_seconds % (SECONDS_IN_HOUR  as u32)) / (SECONDS_IN_MINUTE as u32)) as u8,
         (tz_seconds % (SECONDS_IN_MINUTE as u32)) as u8
     );
 
-    return zone;
+    return time_zone;
 }

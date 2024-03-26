@@ -19,7 +19,7 @@
 The program accepts the following command-line options:
 
 ```
--z, --zone [ZONE]: Set the timezone. The default value is local system timezone.
+-z, --zone [ZONE]: Set the time zone. The default value is local system time zone.
 -m, --method [METHOD]: Set the method for determining the day of the week. There are three options available:
     1: Xavetar - High Precision - Fast
     2: Rata Die - High Precision - Fast (default)
@@ -32,39 +32,39 @@ The program accepts the following command-line options:
 
 ## Usage
 
-Get current date and time with local timezone for Gregorian calendar:
+Get current date and time with local time zone for Gregorian calendar:
 
 ```shell
 date-cli
 ```
 
-Get current date and time with local timezone for Julian calendar:
+Get current date and time with local time zone for Julian calendar:
 
 
 ```shell
 date-cli -v 1
 ```
 
-Get current date and time with local timezone for Solar calendar:
+Get current date and time with local time zone for Solar calendar:
 
 
 ```shell
 date-cli -v 3
 ```
 
-Get current date with your timezone for Gregorian calendar with Sakamoto method to determining the day of the week:
+Get current date with your time zone for Gregorian calendar with Sakamoto method to determining the day of the week:
 
 ```shell
 date-cli -z -06:00:00 -m 3 -v 2
 ```
 
-Get current date with your timezone for Julian calendar with Xavetar method to determining the day of the week:
+Get current date with your time zone for Julian calendar with Xavetar method to determining the day of the week:
 
 ```shell
 date-cli -z +12:00:00 -m 1 -v 1
 ```
 
-Get current date with your timezone for Solar calendar with Rata Die method to determining the day of the week:
+Get current date with your time zone for Solar calendar with Rata Die method to determining the day of the week:
 
 ```shell
 date-cli -z +03:00:00 -m 2 -v 3

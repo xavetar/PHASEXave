@@ -26,22 +26,11 @@
  * THE SOFTWARE.
  */
 
-pub use crate::types::data::time::{Time, Uptime};
-
-use std::time::{SystemTime, UNIX_EPOCH};
+pub use crate::types::data::time::{Time};
 
 use crate::types::{
     data::{
         zone::{Sign, Zone}
-    },
-    planets::{
-        earth::{
-            calendar::{
-                constants::{
-                    seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR, SECONDS_IN_DAY}
-                }
-            }
-        }
     }
 };
 
@@ -51,33 +40,24 @@ use crate::types::{
     feature = "platform_specific_functions_windows"
 ))]
 use crate::platform::{
-    time::{uptime},
     tz::{local_timezone},
 };
 
 impl Time {
     pub fn utc() -> Time {
-        let unix_time: u128 = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
-
-        return Self::to_time(
-            unix_time,
+        return Self::of(
+            Self::unix().as_secs() as u128,
             Zone {
                 sign: Sign::Unsigned,
                 hours: 0, minutes: 0,
                 seconds: 0
             },
             true
-            );
+        );
     }
 
-    pub fn now(timezone: Zone) -> Time {
-        let unix_time: u128 = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
-
-        return Self::to_time(unix_time, timezone, false);
+    pub fn now(time_zone: Zone) -> Time {
+        return Self::of(Self::unix().as_secs() as u128, time_zone, false);
     }
 
     #[cfg(any(
@@ -86,56 +66,11 @@ impl Time {
         feature = "platform_specific_functions_windows"
     ))]
     pub fn local() -> Time {
-        let unix_time: u128 = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
-
-        return Self::to_time(unix_time, local_timezone(), false);
+        return Self::of(Self::unix().as_secs() as u128, local_timezone(), false);
     }
 
-    pub fn from(unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Time {
-        return Self::to_time(unix_time, timezone, timezone_in_unix_time);
-    }
-
-    fn to_time(mut unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Time {
-        if !timezone_in_unix_time {
-            let timezone_seconds: u128 = timezone.to_seconds() as u128;
-
-            if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
-                panic!("[OVERFLOW]: Overflow type, unix time - time zone < zero!")
-            } else if unix_time > u128::MAX - timezone_seconds && timezone.sign == Sign::Unsigned {
-                panic!("[OVERFLOW]: Overflow type, unix time + time zone > type!")
-            }
-
-            if timezone.sign == Sign::Signed {
-                unix_time -= timezone_seconds;
-            } else if timezone.sign == Sign::Unsigned {
-                unix_time += timezone_seconds;
-            }
-        }
-
-        return Time {
-            hours: ((unix_time % SECONDS_IN_DAY) / SECONDS_IN_HOUR) as u8,
-            minutes: ((unix_time % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE) as u8,
-            seconds: (unix_time % SECONDS_IN_MINUTE) as u8,
-            timezone: timezone,
-            unix_time: unix_time
-        };
-    }
-
-    #[cfg(any(
-        feature = "platform_specific_functions_darwin",
-        feature = "platform_specific_functions_unix",
-        feature = "platform_specific_functions_windows"
-    ))]
-    pub fn absolute() -> Uptime {
-        let seconds: u128 = uptime() as u128;
-
-        return Uptime {
-            hours: (seconds / SECONDS_IN_HOUR),
-            minutes: ((seconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE) as u8,
-            seconds: (seconds % SECONDS_IN_MINUTE) as u8
-        }
+    pub fn from(unix: u128, time_zone: Zone, zone_in_unix: bool) -> Time {
+        return Self::of(unix, time_zone, zone_in_unix);
     }
 }
 
@@ -144,12 +79,13 @@ mod tests {
 
     use super::{
         Time,
-        Sign, Zone
+        Sign, Zone,
+        local_timezone
     };
 
     use libc::{
         time_t, tm,
-        gmtime_r
+        gmtime_r, localtime_r
     };
 
     use crate::{
@@ -170,9 +106,9 @@ mod tests {
     fn test_gmt_time_from_libc() {
         let mut time_struct_libc: tm = unsafe { std::mem::zeroed::<tm>() };
 
-        let gmt_timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0_u8, minutes: 0_u8, seconds: 0_u8 };
+        let gmt_time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 0_u8, minutes: 0_u8, seconds: 0_u8 };
 
-        let current_seconds: u64 = Time::now(gmt_timezone).unix_time as u64;
+        let current_seconds: u64 = Time::now(gmt_time_zone).unix_time as u64;
 
         for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
             let time_c: time_t = unix_time as time_t;
@@ -181,20 +117,61 @@ mod tests {
                 panic!("[ERROR]: Pointer is NULL (gmtime_r)!")
             }
 
-            let time: Time = Time::from(unix_time as u128, gmt_timezone, false);
+            let time: Time = Time::from(unix_time as u128, gmt_time_zone, false);
 
             assert_eq!(
                 (
-                    (time_struct_libc.tm_hour) as u8,
-                    (time_struct_libc.tm_min) as u8,
-                    (time_struct_libc.tm_sec) as u8,
-                    (time_struct_libc.tm_gmtoff) as u64
+                    time_struct_libc.tm_hour as u8,
+                    time_struct_libc.tm_min as u8,
+                    time_struct_libc.tm_sec as u8,
+                    time_struct_libc.tm_gmtoff.unsigned_abs() as u32
                 ),
                 (
                     time.hours,
                     time.minutes,
                     time.seconds,
-                    time.timezone.to_seconds() as u64
+                    time.time_zone.to_seconds()
+                )
+            )
+        }
+    }
+
+    #[test]
+    #[cfg(any(
+        feature = "platform_specific_functions_darwin",
+        feature = "platform_specific_functions_unix",
+        feature = "platform_specific_functions_windows"
+    ))]
+    fn test_fuzz_time_with_libc() {
+        let (mut time, mut sign): (Time, Sign);
+
+        let mut time_struct_libc: tm = unsafe { std::mem::zeroed::<tm>() };
+
+        let current_seconds: u64 = Time::now(local_timezone()).unix_time as u64;
+
+        for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
+            let time_c: time_t = unix_time as time_t;
+
+            if unsafe { localtime_r(&time_c, &mut time_struct_libc) } == std::ptr::null_mut() {
+                panic!("[ERROR]: Pointer is NULL (localtime_r)!")
+            }
+
+            if time_struct_libc.tm_gmtoff < 0 { sign = Sign::Signed } else { sign = Sign::Unsigned };
+
+            time = Time::from(unix_time as u128, Zone::from_seconds(sign, time_struct_libc.tm_gmtoff.unsigned_abs() as u32), false);
+
+            assert_eq!(
+                (
+                    time_struct_libc.tm_hour as u8,
+                    time_struct_libc.tm_min as u8,
+                    time_struct_libc.tm_sec as u8,
+                    time_struct_libc.tm_gmtoff.unsigned_abs() as u32
+                ),
+                (
+                    time.hours,
+                    time.minutes,
+                    time.seconds,
+                    time.time_zone.to_seconds()
                 )
             )
         }

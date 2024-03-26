@@ -55,12 +55,12 @@ use crate::types::{
 };
 
 pub trait Julian : Converter {
-    fn to_date(&mut self, timezone_in_unix_time: bool);
-    fn to_presentation(&mut self, timezone_in_unix_time: bool);
+    fn to_date(&mut self, zone_in_unix: bool);
+    fn to_presentation(&mut self, zone_in_unix: bool);
 }
 
 impl Julian for Date {
-    fn to_date(&mut self, timezone_in_unix_time: bool) {
+    fn to_date(&mut self, zone_in_unix: bool) {
         match self.view {
             CalendarView::Julian => {
                 if self.year == 1_u64 {
@@ -78,13 +78,13 @@ impl Julian for Date {
             },
         }
 
-        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, timezone_in_unix_time);
+        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, zone_in_unix);
         self.fill_date(CalendarView::Julian);
 
         self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
     }
 
-    fn to_presentation(&mut self, timezone_in_unix_time: bool) {
+    fn to_presentation(&mut self, zone_in_unix: bool) {
         if self.year == 1_u64 {
             if self.month == 1_u8 {
                 if (1_u8..=JULIAN_BCE_DAYS_FIRST_YEAR as u8).contains(&self.day) {
@@ -95,7 +95,7 @@ impl Julian for Date {
 
         self.era_days = days_from_presentation_date(CalendarView::Julian, self.year, self.month, self.day);
 
-        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, timezone_in_unix_time);
+        self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, zone_in_unix);
         self.fill_date(CalendarView::Julian);
 
         self.era_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
@@ -133,7 +133,7 @@ mod tests {
 
         let max_year_to_test: u64 = 2_500_u64;
 
-        for (day_seconds, timezone) in [
+        for (day_seconds, time_zone) in [
             (83599_u128, Zone { sign: Sign::Signed, hours: 5_u8, minutes: 30_u8, seconds: 0_u8 }),
             (55_u128, Zone { sign: Sign::Signed, hours: 23_u8, minutes: 59_u8, seconds: 59_u8 }),
             (45_u128, Zone { sign: Sign::Unsigned, hours: 9_u8, minutes: 30_u8, seconds: 0_u8 }),
@@ -146,8 +146,8 @@ mod tests {
                 ] {
                     for day in 1_u8..=month.days(is_leap_year(CalendarView::Julian, year)) {
                         if !(1_u128..=JULIAN_BCE_DAYS_FIRST_YEAR).contains(&(day as u128)) || month.index() != Months::January.index() || year != 1 {
-                            if timezone.sign == Sign::Signed {
-                                let tz_seconds: u128 = timezone.to_seconds() as u128;
+                            if time_zone.sign == Sign::Signed {
+                                let tz_seconds: u128 = time_zone.to_seconds() as u128;
 
                                 (date.day, date.month, date.year, date.unix_time, date.view) = (day, month.index(), year, day_seconds, CalendarView::Julian);
                                 <Date as Julian>::to_date(&mut date, true);
@@ -159,8 +159,8 @@ mod tests {
                                         }
                                     }
                                 }
-                            } else if timezone.sign == Sign::Unsigned {
-                                let tz_seconds: u128 = timezone.to_seconds() as u128;
+                            } else if time_zone.sign == Sign::Unsigned {
+                                let tz_seconds: u128 = time_zone.to_seconds() as u128;
 
                                 (date.day, date.month, date.year, date.unix_time, date.view) = (day, month.index(), year, day_seconds, CalendarView::Julian);
                                 <Date as Julian>::to_date(&mut date, true);
@@ -170,7 +170,7 @@ mod tests {
                                 }
                             }
 
-                            (date.day, date.month, date.year, date.timezone, date.unix_time, date.view) = (day, month.index(), year, timezone, day_seconds, CalendarView::Julian);
+                            (date.day, date.month, date.year, date.time_zone, date.unix_time, date.view) = (day, month.index(), year, time_zone, day_seconds, CalendarView::Julian);
                             <Date as Julian>::to_date(&mut date, false);
 
                             let (day_tz, month_tz, year_tz, unix_time): (u8, u8, u64, u128) = (date.day, date.month, date.year, date.unix_time);
@@ -178,12 +178,12 @@ mod tests {
                             <Date as Solar>::to_date(&mut date, true);
 
                             <Date as Julian>::to_date(&mut date, true);
-                            assert_eq!((date.day, date.month, date.year, date.timezone, date.unix_time, date.view), (day_tz, month_tz, year_tz, timezone, unix_time, CalendarView::Julian));
+                            assert_eq!((date.day, date.month, date.year, date.time_zone, date.unix_time, date.view), (day_tz, month_tz, year_tz, time_zone, unix_time, CalendarView::Julian));
 
                             <Date as Gregorian>::to_date(&mut date, true);
 
                             <Date as Julian>::to_date(&mut date, true);
-                            assert_eq!((date.day, date.month, date.year, date.timezone, date.unix_time, date.view), (day_tz, month_tz, year_tz, timezone, unix_time, CalendarView::Julian));
+                            assert_eq!((date.day, date.month, date.year, date.time_zone, date.unix_time, date.view), (day_tz, month_tz, year_tz, time_zone, unix_time, CalendarView::Julian));
                         }
                     }
                 }

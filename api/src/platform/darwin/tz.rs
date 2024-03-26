@@ -47,26 +47,26 @@ use core_foundation::{
 };
 
 pub fn local_timezone() -> Zone {
-    let mut zone: Zone = Zone::default();
+    let mut time_zone: Zone = Zone::default();
     let seconds: i32 = unsafe { CFTimeZoneGetSecondsFromGMT(CFTimeZoneCopySystem(), CFAbsoluteTimeGetCurrent()) } as i32;
 
     if seconds < 0 {
-        zone.sign = Sign::Signed;
+        time_zone.sign = Sign::Signed;
     } else {
-        zone.sign = Sign::Unsigned;
+        time_zone.sign = Sign::Unsigned;
     }
 
     let tz_seconds: u32 = seconds.unsigned_abs();
 
     (
-        zone.hours,
-        zone.minutes,
-        zone.seconds
+        time_zone.hours,
+        time_zone.minutes,
+        time_zone.seconds
     ) = (
         (tz_seconds / (SECONDS_IN_HOUR as u32)) as u8,
         ((tz_seconds % (SECONDS_IN_HOUR  as u32)) / (SECONDS_IN_MINUTE as u32)) as u8,
         (tz_seconds % (SECONDS_IN_MINUTE as u32)) as u8
     );
 
-    return zone;
+    return time_zone;
 }

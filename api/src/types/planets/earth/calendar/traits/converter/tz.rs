@@ -41,18 +41,18 @@ use crate::types::{
     },
 };
 
-pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_days: &mut u128) {
-    let tz_sec: u128 = timezone.to_seconds() as u128;
+pub fn zone_re_calc(time_zone: Zone, unix_time: &mut u128, day_seconds: u128, era_days: &mut u128) {
+    let tz_sec: u128 = time_zone.to_seconds() as u128;
 
-    if timezone.sign == Sign::Signed && (*unix_time + day_seconds) < tz_sec {
+    if time_zone.sign == Sign::Signed && (*unix_time + day_seconds) < tz_sec {
         panic!(
-            "[OVERFLOW]: Signed timezone will overflow unix_time type: unix time - time zone < zero.\n
+            "[OVERFLOW]: Signed time zone will overflow unix_time type: unix time - time zone < zero.\n
             Also can be that unix time in selected calendar system start from another date!"
         )
-    } else if timezone.sign == Sign::Unsigned && *unix_time > u128::MAX - (tz_sec + day_seconds) {
+    } else if time_zone.sign == Sign::Unsigned && *unix_time > u128::MAX - (tz_sec + day_seconds) {
         panic!("[OVERFLOW]: Unsigned time zone will overflow unix time type: unix time + time zone > type unix time!")
     } else {
-        if timezone.sign == Sign::Signed {
+        if time_zone.sign == Sign::Signed {
             if day_seconds >= tz_sec {
                 *unix_time += day_seconds;
                 *unix_time -= tz_sec;
@@ -62,7 +62,7 @@ pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_
                 *unix_time += day_seconds;
                 *unix_time -= tz_sec;
             }
-        } else if timezone.sign == Sign::Unsigned {
+        } else if time_zone.sign == Sign::Unsigned {
             let total_secs: u128 = tz_sec + day_seconds;
             if total_secs < SECONDS_IN_DAY {
                 *unix_time += tz_sec;

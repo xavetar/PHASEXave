@@ -28,10 +28,9 @@
 
 pub use crate::types::data::date::{Date};
 
-use std::time::{SystemTime, UNIX_EPOCH};
-
 use crate::types::{
     data::{
+        time::{Time},
         zone::{Sign, Zone}
     },
     planets::{
@@ -39,22 +38,10 @@ use crate::types::{
             calendar::{
                 view::{CalendarView},
                 constants::{
-                    seconds::{SECONDS_IN_DAY},
-                    days::{JULIAN_BCE_DAYS_FIRST_YEAR},
                     months::{Months},
                 }
             }
         },
-    },
-    counter::{
-        unix_time::{
-            constants::{
-                days::{UNIX_TIME_START_AFTER_DAY}
-            },
-            functions::{
-                year_from_presentation_days, month_from_days,
-            },
-        }
     },
 };
 
@@ -68,18 +55,12 @@ use crate::{
         tz::{local_timezone}
     }
 };
-
-type UNIX_EPOCH = (u32, u128);
  
 impl Date {
     pub fn utc(view: CalendarView) -> Date {
-        let unix_time: u128 = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
-
-        return Self::to_date(
+        return Self::of(
             view,
-            unix_time,
+            Time::unix().as_secs() as u128,
             Zone {
                 sign: Sign::Unsigned,
                 hours: 0, minutes: 0,
@@ -89,12 +70,8 @@ impl Date {
         );
     }
 
-    pub fn now(view: CalendarView, timezone: Zone) -> Date {
-        let unix_time: u128 = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
-
-        return Self::to_date(view, unix_time, timezone, false);
+    pub fn now(view: CalendarView, time_zone: Zone) -> Date {
+        return Self::of(view, Time::unix().as_secs() as u128, time_zone, false);
     }
 
     #[cfg(any(
@@ -103,59 +80,11 @@ impl Date {
         feature = "platform_specific_functions_windows"
     ))]
     pub fn local(view: CalendarView) -> Date {
-        let unix_time: u128 = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("Error calling SystemTime::now().duration_since(UNIX_EPOCH)").as_secs() as u128;
-
-        return Self::to_date(view, unix_time, local_timezone(), false);
+        return Self::of(view, Time::unix().as_secs() as u128, local_timezone(), false);
     }
 
-    pub fn from(view: CalendarView, unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Date {
-        return Self::to_date(view, unix_time, timezone, timezone_in_unix_time);
-    }
-
-    fn to_date(view: CalendarView, mut unix_time: u128, timezone: Zone, timezone_in_unix_time: bool) -> Date {
-        if !timezone_in_unix_time {
-            let timezone_seconds: u128 = timezone.to_seconds() as u128;
-
-            if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
-                panic!("[OVERFLOW]: Overflow type, unix time - time zone < zero!")
-            } else if unix_time > u128::MAX - timezone_seconds && timezone.sign == Sign::Unsigned {
-                panic!("[OVERFLOW]: Overflow type, unix time + time zone > type!")
-            }
-
-            if timezone.sign == Sign::Signed {
-                unix_time -= timezone_seconds;
-            } else if timezone.sign == Sign::Unsigned {
-                unix_time += timezone_seconds;
-            }
-        }
-
-        let mut days: u16;
-        let mut date: Date = Date::default();
-
-        let (_day_seconds, mut presentation_days, ): UNIX_EPOCH
-        =
-        ((unix_time % SECONDS_IN_DAY) as u32, (unix_time - (unix_time % SECONDS_IN_DAY)) / SECONDS_IN_DAY);
-
-        presentation_days += UNIX_TIME_START_AFTER_DAY + 1_u128;
-
-        if view == CalendarView::Julian {
-            presentation_days += JULIAN_BCE_DAYS_FIRST_YEAR;
-        }
-
-        (date.year, days) = year_from_presentation_days(view, presentation_days);
-        date.month = month_from_days(view, date.year, &mut days).index();
-
-        if view == CalendarView::Julian {
-            presentation_days -= JULIAN_BCE_DAYS_FIRST_YEAR;
-        }
-
-        (date.day, date.timezone, date.unix_time, date.era_days, date.view)
-        =
-        (days as u8, timezone, unix_time, presentation_days, view);
-
-        return date;
+    pub fn from(view: CalendarView, unix_time: u128, time_zone: Zone, zone_in_unix: bool) -> Date {
+        return Self::of(view, unix_time, time_zone, zone_in_unix);
     }
 
     pub fn month(&self) -> Months {
@@ -169,11 +98,12 @@ mod tests {
     use super::{
         CalendarView,
         Date, Sign, Zone,
+        local_timezone
     };
 
     use libc::{
         time_t, tm,
-        gmtime_r
+        gmtime_r, localtime_r
     };
 
     use crate::{
@@ -194,9 +124,9 @@ mod tests {
     fn test_gmt_date_from_libc() {
         let mut date_struct_libc: tm = unsafe { std::mem::zeroed::<tm>() };
 
-        let gmt_timezone: Zone = Zone { sign: Sign::Unsigned, hours: 0_u8, minutes: 0_u8, seconds: 0_u8 };
+        let gmt_time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 0_u8, minutes: 0_u8, seconds: 0_u8 };
 
-        let current_seconds: u64 = Date::now(CalendarView::Gregorian, gmt_timezone).unix_time as u64;
+        let current_seconds: u64 = Date::now(CalendarView::Gregorian, gmt_time_zone).unix_time as u64;
 
         for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
             let time_c: time_t = unix_time as time_t;
@@ -205,20 +135,61 @@ mod tests {
                 panic!("[ERROR]: Pointer is NULL (gmtime_r)!")
             }
 
-            let date: Date = Date::from(CalendarView::Gregorian, unix_time as u128, gmt_timezone, false);
+            let date: Date = Date::from(CalendarView::Gregorian, unix_time as u128, gmt_time_zone, false);
 
             assert_eq!(
                 (
                     (date_struct_libc.tm_year + 1900) as u64,
                     (date_struct_libc.tm_mon + 1) as u8,
                     (date_struct_libc.tm_mday) as u8,
-                    (date_struct_libc.tm_gmtoff) as u64
+                    date_struct_libc.tm_gmtoff.unsigned_abs() as u32
                 ),
                 (
                     date.year,
                     date.month,
                     date.day,
-                    date.timezone.to_seconds() as u64
+                    date.time_zone.to_seconds()
+                )
+            )
+        }
+    }
+
+    #[test]
+    #[cfg(any(
+        feature = "platform_specific_functions_darwin",
+        feature = "platform_specific_functions_unix",
+        feature = "platform_specific_functions_windows"
+    ))]
+    fn test_fuzz_date_with_libc() {
+        let (mut date, mut sign): (Date, Sign);
+
+        let mut date_struct_libc: tm = unsafe { std::mem::zeroed::<tm>() };
+
+        let current_seconds: u64 = Date::now(CalendarView::Gregorian, local_timezone()).unix_time as u64;
+
+        for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
+            let time_c: time_t = unix_time as time_t;
+
+            if unsafe { localtime_r(&time_c, &mut date_struct_libc) } == std::ptr::null_mut() {
+                panic!("[ERROR]: Pointer is NULL (localtime_r)!")
+            }
+
+            if date_struct_libc.tm_gmtoff < 0 { sign = Sign::Signed } else { sign = Sign::Unsigned };
+
+            date = Date::from(CalendarView::Gregorian, unix_time as u128, Zone::from_seconds(sign, date_struct_libc.tm_gmtoff.unsigned_abs() as u32), false);
+
+            assert_eq!(
+                (
+                    (date_struct_libc.tm_year + 1900) as u64,
+                    (date_struct_libc.tm_mon + 1) as u8,
+                    (date_struct_libc.tm_mday) as u8,
+                    (date_struct_libc.tm_gmtoff).unsigned_abs() as u32
+                ),
+                (
+                    date.year,
+                    date.month,
+                    date.day,
+                    date.time_zone.to_seconds()
                 )
             )
         }

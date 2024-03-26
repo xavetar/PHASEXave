@@ -35,7 +35,8 @@ pub(crate) mod platform;
 pub(crate) mod types;
 
 pub use interface::{Date};
-pub use interface::{Time, Uptime};
+pub use interface::{Time};
+pub use interface::{Uptime};
 
 pub use crate::types::{
     data::zone::{Sign, Zone},

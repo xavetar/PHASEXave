@@ -28,6 +28,14 @@
 
 mod time;
 mod date;
+mod uptime;
 
-pub use time::{Time, Uptime};
+pub use time::{Time};
 pub use date::{Date};
+
+#[cfg(any(
+    feature = "platform_specific_functions_darwin",
+    feature = "platform_specific_functions_unix",
+    feature = "platform_specific_functions_windows"
+))]
+pub use uptime::{Uptime};

@@ -114,7 +114,7 @@ const fn week_day(epoch_days: u128) -> &'static str {
 }
 
 fn main() {
-    let timezone: i8 = 3 as i8;
+    let timetime_zone:i8 = 3 as i8;
 
     let unix_time: u128 = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).expect("Error calling SystemTime::now()").as_secs() as u128 + (timezone as u128 * 60 * 60);
 

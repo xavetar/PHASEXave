@@ -38,16 +38,16 @@ use date_cli::{
     parse::{parse_args},
 };
 
-fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u64, u8, u8) -> Week) {
+fn make_output(view: CalendarView, time_zone: Zone, method: fn(CalendarView, u64, u8, u8) -> Week) {
     let date: Date;
 
-    if timezone.sign == Sign::Unsigned && timezone.hours == 255 && timezone.minutes == 255 && timezone.seconds == 255 {
+    if time_zone.sign == Sign::Unsigned && time_zone.hours == 255 && time_zone.minutes == 255 && time_zone.seconds == 255 {
         date = Date::local(view);
     } else {
-        date = Date::now(view, timezone);
+        date = Date::now(view, time_zone);
     }
 
-    let time: Time = Time::now(date.timezone);
+    let time: Time = Time::now(date.time_zone);
 
     print!(
         "{day_of_week} {month} {day} {hours:02}:{minutes:02}:{seconds:02}",
@@ -59,19 +59,19 @@ fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u64,
         seconds = time.seconds
     );
 
-    if date.timezone.sign == Sign::Unsigned {
+    if date.time_zone.sign == Sign::Unsigned {
         print!("+")
-    } else if date.timezone.sign == Sign::Signed {
+    } else if date.time_zone.sign == Sign::Signed {
         print!("-");
     } else {
-        panic!("[PANIC] Unknown timezone sign!");
+        panic!("[PANIC] Unknown zone sign!");
     }
 
     println!(
         "{timezone_hours:02}:{timezone_minutes:02}:{timezone_seconds:02} {year} {ce_era_days} {calendar_view:?}",
-        timezone_hours = date.timezone.hours,
-        timezone_minutes = date.timezone.minutes,
-        timezone_seconds = date.timezone.seconds,
+        timezone_hours = date.time_zone.hours,
+        timezone_minutes = date.time_zone.minutes,
+        timezone_seconds = date.time_zone.seconds,
         year = date.year,
         ce_era_days = date.era_days,
         calendar_view = view
@@ -80,7 +80,7 @@ fn make_output(view: CalendarView, timezone: Zone, method: fn(CalendarView, u64,
 
 fn main() {
     let (
-        mut timezone,
+        mut time_zone,
         mut method,
         mut view,
     )
@@ -97,6 +97,6 @@ fn main() {
         CalendarView::Gregorian,
     );
 
-    parse_args(&mut timezone, &mut method, &mut view);
-    make_output(view, timezone, method);
+    parse_args(&mut time_zone, &mut method, &mut view);
+    make_output(view, time_zone, method);
 }

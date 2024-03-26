@@ -26,57 +26,24 @@
  * THE SOFTWARE.
  */
 
-use crate::types::{
-    data::{
-        zone::{Sign, Zone}
-    },
-    planets::{
-        earth::{
-            calendar::{
-                constants::{
-                    seconds::{SECONDS_IN_MINUTE, SECONDS_IN_HOUR},
-                },
-            }
-        }
-    }
+pub use crate::types::data::uptime::{Uptime};
+
+#[cfg(any(
+    feature = "platform_specific_functions_darwin",
+    feature = "platform_specific_functions_unix",
+    feature = "platform_specific_functions_windows"
+))]
+use crate::platform::{
+    time::{uptime},
 };
 
-use winapi::{
-    um::{
-        timezoneapi::{
-            GetTimeZoneInformation, TIME_ZONE_INFORMATION
-        }
+impl Uptime {
+    #[cfg(any(
+        feature = "platform_specific_functions_darwin",
+        feature = "platform_specific_functions_unix",
+        feature = "platform_specific_functions_windows"
+    ))]
+    pub fn absolute() -> Uptime {
+        return Uptime::from_seconds(uptime() as u128);
     }
-};
-
-pub fn local_timezone() -> Zone {
-    let mut time_zone: Zone = Zone::default();
-
-    let mut tz_info: TIME_ZONE_INFORMATION = unsafe { std::mem::zeroed::<TIME_ZONE_INFORMATION>() };
-
-    let result: u32 = unsafe { GetTimeZoneInformation(&mut tz_info) };
-
-    if result > 2 {
-        panic!("[ERROR]: Could not get time zone information or this result code was not in the documentation on the compilation date!");
-    }
-
-    if tz_info.Bias > 0 {
-        time_zone.sign = Sign::Signed;
-    } else {
-        time_zone.sign = Sign::Unsigned;
-    }
-
-    let tz_seconds: u32 = tz_info.Bias.unsigned_abs() * SECONDS_IN_MINUTE as u32;
-
-    (
-        time_zone.hours,
-        time_zone.minutes,
-        time_zone.seconds
-    ) = (
-        (tz_seconds / (SECONDS_IN_HOUR as u32)) as u8,
-        ((tz_seconds % (SECONDS_IN_HOUR  as u32)) / (SECONDS_IN_MINUTE as u32)) as u8,
-        (tz_seconds % (SECONDS_IN_MINUTE as u32)) as u8
-    );
-
-    return time_zone;
 }

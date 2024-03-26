@@ -37,7 +37,7 @@ fn print_help() {
     println!(
         "Usage: {bin_name} [options]\n\nOptions:
 
-        -z, --zone [ZONE]              Set the timezone: [+/-][hours:minutes:seconds]: local timezone (default)
+        -z, --zone [ZONE]              Set the time_zone:[+/-][hours:minutes:seconds]: local zone (default)
                                                                                        [+/-][255-1:255-1:255-1] (max)
 
         -m, --method [METHOD]          Determining the day of week method: 1 - Xavetar - High Precision - Fast
@@ -56,7 +56,7 @@ fn print_help() {
     );
 }
 
-pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u64, u8, u8) -> Week, view: &mut CalendarView) {
+pub fn parse_args(time_zone: &mut Zone, method: &mut fn(CalendarView, u64, u8, u8) -> Week, view: &mut CalendarView) {
     let mut args: std::iter::Skip<std::env::Args> = std::env::args().skip(1);
 
     while let Some(arg) = args.next() {
@@ -74,7 +74,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u64, u8, u8
                     } else if zone_str.starts_with("+") {
                         sign = Sign::Unsigned
                     } else {
-                        panic!("[ERROR] Invalid sign in timezone: {char:?}", char = zone_str.chars().nth(0));
+                        panic!("[ERROR] Invalid sign in time zone: {char:?}", char = zone_str.chars().nth(0));
                     }
 
                     let zone_values: Vec<u8> = zone_str[1..]
@@ -90,7 +90,7 @@ pub fn parse_args(timezone: &mut Zone, method: &mut fn(CalendarView, u64, u8, u8
                         println!("[ERROR]: Invalid argument format: -z, --zone [+/-][hours:minutes:seconds]");
                         std::process::exit(0);
                     } else {
-                        (timezone.sign, timezone.hours, timezone.minutes, timezone.seconds)
+                        (time_zone.sign, time_zone.hours, time_zone.minutes, time_zone.seconds)
                         =
                         (sign, zone_values[0], zone_values[1], zone_values[2]);
                     }

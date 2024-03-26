@@ -59,4 +59,13 @@ impl Zone {
             ((self.minutes as u32) * SECONDS_IN_MINUTE as u32) +
             (self.seconds as u32);
     }
+
+    pub(crate) const fn from_seconds(sign: Sign, seconds: u32) -> Zone {
+        return Zone {
+            sign: sign,
+            hours: (seconds / SECONDS_IN_HOUR as u32) as u8,
+            minutes: ((seconds % SECONDS_IN_HOUR as u32) / SECONDS_IN_MINUTE as u32) as u8,
+            seconds: (seconds % SECONDS_IN_MINUTE as u32) as u8
+        }
+    }
 }

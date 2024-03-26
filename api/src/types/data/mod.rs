@@ -29,3 +29,4 @@
 pub mod date;
 pub mod time;
 pub mod zone;
+pub mod uptime;

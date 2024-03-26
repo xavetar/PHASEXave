@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  */
 
-use super::{zone_recalc};
+use super::{zone_re_calc};
 
 use crate::types::{
     data::{
@@ -53,7 +53,7 @@ use crate::types::{
 
 pub trait Converter {
     fn fill_date(&mut self, to: CalendarView);
-    fn fill_time(&mut self, day_before_timer_start: u128, timezone_in_unix_time: bool);
+    fn fill_time(&mut self, day_before_timer_start: u128, zone_in_unix: bool);
 }
 
 impl Converter for Date {
@@ -67,7 +67,7 @@ impl Converter for Date {
         (self.day, self.view) = (days as u8, to);
     }
 
-    fn fill_time(&mut self, day_before_timer_start: u128, timezone_in_unix_time: bool) {
+    fn fill_time(&mut self, day_before_timer_start: u128, zone_in_unix: bool) {
         if self.era_days > day_before_timer_start {
             let day_seconds: u128 = self.unix_time % SECONDS_IN_DAY;
 
@@ -75,8 +75,8 @@ impl Converter for Date {
 
             // Используется в случае когда временная зона не находится в unix time, позволяет указать время внутри дня,
             // с учётом секунд внутри дня ± часовой пояс.
-            if !timezone_in_unix_time {
-                zone_recalc(self.timezone, &mut self.unix_time, day_seconds, &mut self.era_days);
+            if !zone_in_unix {
+                zone_re_calc(self.time_zone, &mut self.unix_time, day_seconds, &mut self.era_days);
             } else {
                 self.unix_time += day_seconds;
             }
