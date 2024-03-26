@@ -111,15 +111,85 @@ mod tests {
     };
 
     use crate::{
-        Months,
+        Sign, Zone, Months,
         Solar, Julian, Gregorian,
         functions::{
             is_leap_year
-        }
+        },
+    };
+
+    use crate::types::{
+        counter::{
+            unix_time::{
+                constants::{
+                    year::{UNIX_EPOCH_JULIAN_START_YEAR}
+                }
+            }
+        },
     };
 
     #[test]
-    fn test_between_presentation_conversion() {
+    fn test_between_date_conversion_to_julian() {
+        let mut date: Date = Date::default();
+
+        let timezone: Zone = Zone { sign: Sign::Signed, hours: 12_u8, minutes: 30_u8, seconds: 10_u8 };
+
+        let max_year_to_test: u64 = 10_000_u64;
+
+        for year in 1_u64..=max_year_to_test {
+            for month in [
+                Months::January, Months::February, Months::March, Months::April, Months::May, Months::June,
+                Months::July, Months::August, Months::September, Months::October, Months::November, Months::December
+            ] {
+                for day in 1_u8..=month.days(is_leap_year(CalendarView::Julian, year)) {
+                    if !(1_u128..=JULIAN_BCE_DAYS_FIRST_YEAR).contains(&(day as u128)) || month.index() != Months::January.index() || year != 1 {
+
+                        if timezone.sign == Sign::Signed {
+                            let tz_seconds: u128 = timezone.to_seconds() as u128;
+
+                            (date.day, date.month, date.year, date.view) = (day, month.index(), year, CalendarView::Julian);
+                            <Date as Julian>::to_date(&mut date, true);
+
+                            if month.index() == Months::December.index() {
+                                if year == UNIX_EPOCH_JULIAN_START_YEAR as u64 {
+                                    if date.unix_time < tz_seconds {
+                                        continue;
+                                    }
+                                }
+                            }
+                        } else if timezone.sign == Sign::Unsigned {
+                            let tz_seconds: u128 = timezone.to_seconds() as u128;
+
+                            (date.day, date.month, date.year, date.view) = (day, month.index(), year, CalendarView::Julian);
+                            <Date as Julian>::to_date(&mut date, true);
+
+                            if date.unix_time > u128::MAX - tz_seconds {
+                                continue;
+                            }
+                        }
+
+                        (date.day, date.month, date.year, date.timezone, date.view) = (day, month.index(), year, timezone, CalendarView::Julian);
+                        <Date as Julian>::to_date(&mut date, false);
+
+                        let (day_tz, month_tz, year_tz, unix_time): (u8, u8, u64, u128) = (date.day, date.month, date.year, date.unix_time);
+
+                        <Date as Solar>::to_date(&mut date, true);
+
+                        <Date as Julian>::to_date(&mut date, true);
+                        assert_eq!((date.day, date.month, date.year, date.timezone, date.unix_time, date.view), (day_tz, month_tz, year_tz, timezone, unix_time, CalendarView::Julian));
+
+                        <Date as Gregorian>::to_date(&mut date, true);
+
+                        <Date as Julian>::to_date(&mut date, true);
+                        assert_eq!((date.day, date.month, date.year, date.timezone, date.unix_time, date.view), (day_tz, month_tz, year_tz, timezone, unix_time, CalendarView::Julian));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_between_presentation_conversion_to_julian() {
         let mut date: Date = Date::default();
 
         let max_year_to_test: u64 = 10_000_u64;

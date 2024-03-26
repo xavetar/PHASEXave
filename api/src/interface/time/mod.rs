@@ -101,8 +101,10 @@ impl Time {
         if !timezone_in_unix_time {
             let timezone_seconds: u128 = timezone.to_seconds() as u128;
 
-            if unix_time < timezone_seconds && timezone.sign == Sign::Signed {
-                panic!("[ERROR]: Overflow, signed timezone override unix_time!")
+            if unix_time < timezone_seconds {
+                panic!("[OVERFLOW]: Overflow type, unix time - time zone < zero!")
+            } else if unix_time > u128::MAX - timezone_seconds {
+                panic!("[OVERFLOW]: Overflow type, unix time + time zone > type!")
             }
 
             if timezone.sign == Sign::Signed {

@@ -44,7 +44,7 @@ use crate::types::{
 pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_days: &mut u128) {
     let tz_sec: u128 = timezone.to_seconds() as u128;
     if timezone.sign == Sign::Signed && *unix_time < tz_sec {
-        panic!("[ERROR]: Overflow, signed timezone override self.unix_time!!")
+        panic!("[OVERFLOW]: Signed timezone overflow unix_time or also can be that unix time in selected calendar system start from another date!")
     } else {
         if timezone.sign == Sign::Signed && tz_sec > 0 {
             if day_seconds >= tz_sec {
