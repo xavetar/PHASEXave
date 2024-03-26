@@ -114,4 +114,3 @@ impl Date {
         return date;
     }
 }
-

@@ -56,8 +56,8 @@ pub struct Zone {
 impl Zone {
     pub const fn to_seconds(&self) -> u32 {
         return ((self.hours as u32) * SECONDS_IN_HOUR as u32) +
-            ((self.minutes as u32) * SECONDS_IN_MINUTE as u32) +
-            (self.seconds as u32);
+               ((self.minutes as u32) * SECONDS_IN_MINUTE as u32) +
+               (self.seconds as u32);
     }
 
     pub(crate) const fn from_seconds(sign: Sign, seconds: u32) -> Zone {
