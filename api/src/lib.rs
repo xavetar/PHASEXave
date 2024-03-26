@@ -36,6 +36,11 @@ pub(crate) mod types;
 
 pub use interface::{Date};
 pub use interface::{Time};
+#[cfg(any(
+    feature = "platform_specific_functions_darwin",
+    feature = "platform_specific_functions_unix",
+    feature = "platform_specific_functions_windows"
+))]
 pub use interface::{Uptime};
 
 pub use crate::types::{
