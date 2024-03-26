@@ -24,7 +24,38 @@ jobs:
       - name: Audit dependencies
         uses: EmbarkStudios/cargo-deny-action@v1
 
+  Run-tests:
+    name: Run test and upload coverage report
+    needs:
+      - Dependency-audit
+    strategy:
+      matrix:
+        runs-on:
+          - ubuntu-latest
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set minimal supported Rust version
+        run: |
+          rustup default ${RUST_VERSION}
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Remove artifacts that may affect the coverage results of packages
+        run: |
+          cargo llvm-cov clean --workspace
+
+      - name: Run tests
+        run: |
+          cargo llvm-cov --all-features --workspace --no-report
+
   Test-tools:
+    needs:
+      - Dependency-audit
+      - Run-tests
     strategy:
       matrix:
         runs-on:
@@ -60,6 +91,10 @@ jobs:
           cargo run --release --quiet --bin calendar-cli -- -v 3
 
   Cross-build:
+    needs:
+      - Dependency-audit
+      - Run-tests
+      - Test-tools
     strategy:
       max-parallel: 8
       matrix:
@@ -127,6 +162,10 @@ jobs:
             calendar-cli-*.tar.gz
 
   Build-macOS:
+    needs:
+      - Dependency-audit
+      - Run-tests
+      - Test-tools
     strategy:
       matrix:
         runs-on:
@@ -175,6 +214,7 @@ jobs:
   Release-if-tag-exist:
     needs:
       - Dependency-audit
+      - Run-tests
       - Test-tools
       - Cross-build
       - Build-macOS
