@@ -135,7 +135,7 @@ mod tests {
         let max_year_to_test: u64 = 2_500_u64;
 
         for (day_seconds, timezone) in [
-            (25_u128, Zone { sign: Sign::Signed, hours: 5_u8, minutes: 30_u8, seconds: 0_u8 }),
+            (83599_u128, Zone { sign: Sign::Signed, hours: 5_u8, minutes: 30_u8, seconds: 0_u8 }),
             (55_u128, Zone { sign: Sign::Signed, hours: 23_u8, minutes: 59_u8, seconds: 59_u8 }),
             (45_u128, Zone { sign: Sign::Unsigned, hours: 9_u8, minutes: 30_u8, seconds: 0_u8 }),
             (55_u128, Zone { sign: Sign::Unsigned, hours: 23_u8, minutes: 59_u8, seconds: 59_u8 })
@@ -155,7 +155,7 @@ mod tests {
 
                                 if month.index() == Months::December.index() {
                                     if year == UNIX_EPOCH_JULIAN_START_YEAR as u64 {
-                                        if date.unix_time < tz_seconds - day_seconds {
+                                        if date.unix_time + day_seconds < tz_seconds {
                                             continue;
                                         }
                                     }

@@ -43,10 +43,16 @@ use crate::types::{
 
 pub fn zone_recalc(timezone: Zone, unix_time: &mut u128, day_seconds: u128, era_days: &mut u128) {
     let tz_sec: u128 = timezone.to_seconds() as u128;
+
     if timezone.sign == Sign::Signed && (*unix_time + day_seconds) < tz_sec {
-        panic!("[OVERFLOW]: Signed timezone overflow unix_time or also can be that unix time in selected calendar system start from another date!")
+        panic!(
+            "[OVERFLOW]: Signed timezone will overflow unix_time type: unix time - time zone < zero.\n
+            Also can be that unix time in selected calendar system start from another date!"
+        )
+    } else if timezone.sign == Sign::Unsigned && *unix_time > u128::MAX - (tz_sec + day_seconds) {
+        panic!("[OVERFLOW]: Unsigned time zone will overflow unix time type: unix time + time zone > type unix time!")
     } else {
-        if timezone.sign == Sign::Signed && tz_sec > 0 {
+        if timezone.sign == Sign::Signed {
             if day_seconds >= tz_sec {
                 *unix_time += day_seconds;
                 *unix_time -= tz_sec;
