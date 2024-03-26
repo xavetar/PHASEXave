@@ -177,7 +177,9 @@ mod tests {
         for unix_time in (0..=current_seconds).step_by(SECONDS_IN_DAY as usize) {
             let time_c: time_t = unix_time as time_t;
 
-            unsafe { gmtime_r(&time_c, &mut time_struct_libc); }
+            if unsafe { gmtime_r(&time_c, &mut time_struct_libc) } == std::ptr::null_mut() {
+                panic!("[ERROR]: Pointer is NULL (gmtime_r)!")
+            }
 
             let time: Time = Time::from(unix_time as u128, gmt_timezone, false);
 
