@@ -73,7 +73,6 @@ impl Solar for Date {
             },
             CalendarView::Gregorian => (),
             CalendarView::Solar => (),
-            _ => panic!("[ERROR]: Unknown CalendarView in Solar converter (to_date)")
         }
 
         self.fill_time(UNIX_TIME_START_AFTER_DAY, timezone_in_unix_time);

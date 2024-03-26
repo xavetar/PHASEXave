@@ -49,18 +49,7 @@ pub const fn is_leap_year(view: CalendarView, year: u64) -> bool {
         //      let leap_years_fraction: f64 = ((year - 1_u64) * SOLAR_YEAR_LEAP_LENGTH_INT).rem_euclid(100000_u64) as f64 / 100000.0_f64
         // Equivalent to (truncating division, but float point):
         //      let leap_years_fraction: f64 = ((((year - 1_u64) % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) % 100000_u64) as f64 / 100000.0_f64;
-        CalendarView::Solar => {
-            if year != 0 {
-                if sum_leap_years(view, year) > sum_leap_years(view, year - 1) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false
-            }
-        },
-        _ => panic!("[ERROR]: Unknown CalendarView (is_leap_year)!")
+        CalendarView::Solar => return sum_leap_years(view, year) > sum_leap_years(view, year - 1),
     }
 }
 
@@ -76,6 +65,5 @@ pub const fn sum_leap_years(view: CalendarView, year: u64) -> u64 {
         // Equivalent to (truncating division):
         //      return (year.div_euclid(100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) + (((year % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u64)
         CalendarView::Solar => return (((year - (year % 100000_u64)) / 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) + (((year % 100000_u64) * SOLAR_YEAR_LEAP_LENGTH_INT) / 100000_u64),
-        _ => panic!("[ERROR]: Unknown CalendarView (sum_leap_years)!")
     }
 }

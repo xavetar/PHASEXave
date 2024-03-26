@@ -64,7 +64,6 @@ impl RataDie for Date {
             CalendarView::Solar => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_SOLAR as u128,
             CalendarView::Julian => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_JULIAN as u128,
             CalendarView::Gregorian => SHIFT_BEFORE_FIRST_PRESENTATION_WEEK_DAY_GREGORIAN as u128,
-            _ => panic!("[ERROR]: Unknown CalendarView (RataDie - from).")
         };
 
         let era_days: u128 = days_from_presentation_date(view, year, month, day);

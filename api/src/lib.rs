@@ -28,7 +28,6 @@
 
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
-#![allow(unreachable_patterns)]
 #![allow(dead_code)]
 
 pub(crate) mod interface;

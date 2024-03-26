@@ -76,7 +76,6 @@ impl Julian for Date {
             CalendarView::Gregorian | CalendarView::Solar => {
                 self.era_days = days_from_presentation_date(self.view.clone(), self.year, self.month, self.day) + JULIAN_BCE_DAYS_FIRST_YEAR;
             },
-            _ => panic!("[ERROR]: Unknown CalendarView in Julian converter (to_date)")
         }
 
         self.fill_time(UNIX_TIME_START_AFTER_DAY + JULIAN_BCE_DAYS_FIRST_YEAR, timezone_in_unix_time);

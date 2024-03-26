@@ -69,7 +69,6 @@ impl Sakamoto for Date {
             CalendarView::Solar => &SOLAR_BASE_SAKAMOTO,
             CalendarView::Julian => &JULIAN_BASE_SAKAMOTO,
             CalendarView::Gregorian => &GREGORIAN_BASE_SAKAMOTO,
-            _ => panic!("[ERROR]: Unknown CalendarView (Sakamoto).")
         };
 
         let mut local_year: u64 = year;

@@ -69,7 +69,6 @@ impl Xavetar for Date {
             CalendarView::Solar => (&SOLAR_BASE_XAVETAR, &SOLAR_LEAP_XAVETAR),
             CalendarView::Julian => (&JULIAN_BASE_XAVETAR, &JULIAN_LEAP_XAVETAR),
             CalendarView::Gregorian => (&GREGORIAN_BASE_XAVETAR, &GREGORIAN_LEAP_XAVETAR),
-            _ => panic!("[ERROR]: Unknown CalendarView for Julian or Gregorian calendar (Xavetar).")
         };
 
         let last_year: u64 = year - 1_u64;
