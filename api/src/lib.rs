@@ -26,9 +26,12 @@
  * THE SOFTWARE.
  */
 
+#![allow(dead_code)]
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
-#![allow(dead_code)]
+
+#![deny(arithmetic_overflow)]
+#![deny(overflowing_literals)]
 
 pub(crate) mod interface;
 pub(crate) mod platform;

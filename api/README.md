@@ -66,7 +66,7 @@ use PHASEXave::{Time};
 
 fn main() {
     let time: Time = Time::utc();
-    println!("{hours}:{minutes}:{seconds}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
+    println!("{hours:02}:{minutes:02}:{seconds:02}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
 }
 ```
 
@@ -78,9 +78,10 @@ Get current time with any time zone:
 use PHASEXave::{Time, Sign, Zone};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Signed, hours: 4, minutes: 30, seconds: 0 };
-    let time: Time = Time::now(zone);
-    println!("{hours}:{minutes}:{seconds}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
+    let time: Time = Time::now(
+        Zone { sign: Sign::Signed, hours: 4, minutes: 30, seconds: 0 }
+    );
+    println!("{hours:02}:{minutes:02}:{seconds:02}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
 }
 ```
 
@@ -93,7 +94,7 @@ use PHASEXave::{Time};
 
 fn main() {
     let time: Time = Time::local();
-    println!("{hours}:{minutes}:{seconds}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
+    println!("{hours:02}:{minutes:02}:{seconds:02}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
 }
 ```
 
@@ -102,11 +103,16 @@ fn main() {
 ##### Get uptime (without sleep time is not a boot time) (macOS/Darwin/XNU, Unix/Linux, Windows):
 
 ```rust
-use PHASEXave::{Time, Uptime};
+use PHASEXave::{Uptime};
 
 fn main() {
-    let time: Uptime = Time::absolute();
-    println!("{hours}:{minutes}:{seconds}", hours = time.hours, minutes = time.minutes, seconds = time.seconds);
+    let uptime: Uptime = Uptime::absolute();
+    println!(
+        "Weeks: {weeks}, Days: {days}\n\
+        Hours: {hours:02}, Minutes: {minutes:02}, Seconds: {seconds:02}",
+        weeks = uptime.weeks, days = uptime.days,
+        hours = uptime.hours, minutes = uptime.minutes, seconds = uptime.seconds
+    );
 }
 ```
 
@@ -123,7 +129,7 @@ use PHASEXave::{CalendarView, Date};
 
 fn main() {
     let date: Date = Date::utc(CalendarView::Solar);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -136,7 +142,7 @@ use PHASEXave::{CalendarView, Date};
 
 fn main() {
     let date: Date = Date::utc(CalendarView::Julian);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -149,7 +155,7 @@ use PHASEXave::{CalendarView, Date};
 
 fn main() {
     let date: Date = Date::utc(CalendarView::Gregorian);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -163,9 +169,11 @@ Get current date with any time zone for Solar calendar:
 use PHASEXave::{CalendarView, Date, Zone, Sign};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
-    let date: Date = Date::now(CalendarView::Solar, time_zone);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    let date: Date = Date::now(
+        CalendarView::Solar,
+        Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 }
+    );
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -177,9 +185,11 @@ Get current date with any time zone for Julian calendar:
 use PHASEXave::{CalendarView, Date, Zone, Sign};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
-    let date: Date = Date::now(CalendarView::Julian, time_zone);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    let date: Date = Date::now(
+        CalendarView::Julian,
+        Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 }
+    );
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -191,9 +201,11 @@ Get current date with any time zone for Gregorian calendar:
 use PHASEXave::{CalendarView, Date, Zone, Sign};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
-    let date: Date = Date::now(CalendarView::Gregorian, time_zone);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    let date: Date = Date::now(
+        CalendarView::Gregorian,
+        Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 }
+    );
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -208,7 +220,7 @@ use PHASEXave::{CalendarView, Date};
 
 fn main() {
     let date: Date = Date::local(CalendarView::Solar);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -221,7 +233,7 @@ use PHASEXave::{CalendarView, Date};
 
 fn main() {
     let date: Date = Date::local(CalendarView::Julian);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -234,7 +246,7 @@ use PHASEXave::{CalendarView, Date};
 
 fn main() {
     let date: Date = Date::local(CalendarView::Gregorian);
-    println!("{yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("{yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -246,7 +258,7 @@ Convert any* date representation between different calendars:
 use PHASEXave::{CalendarView, Date, Sign, Zone, Julian, Gregorian, Solar};
 
 fn main() {
-    let mut date: Date = Date {
+    let date: Date = Date {
         day: 27,
         month: 2,
         year: 3226,
@@ -255,21 +267,32 @@ fn main() {
         era_days: 0,
         view: CalendarView::Solar
     };
-    <Date as Julian>::to_presentation(&mut date, true);
-    println!("JL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
-    <Date as Gregorian>::to_presentation(&mut date, true);
-    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
-    <Date as Solar>::to_presentation(&mut date, true);
-    println!("SL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+
+    let (mut jld, mut grd, mut sld): (Date, Date, Date)
+    =
+    (date.clone(), date.clone(), date.clone());
+
+    <Date as Julian>::to_presentation(&mut jld, true);
+    <Date as Gregorian>::to_presentation(&mut sld, true);
+    <Date as Solar>::to_presentation(&mut grd, true);
+
+    println!(
+        "JL: {jl_yyyy}/{jl_mm:02}/{jl_dd:02}:{jl_era_days}:{jl_unix_time}\n\
+        GR: {gr_yyyy}/{gr_mm:02}/{gr_dd:02}:{gr_era_days}:{gr_unix_time}\n\
+        SL: {sl_yyyy}/{sl_mm:02}/{sl_dd:02}:{sl_era_days}:{sl_unix_time}",
+        jl_yyyy = jld.year, jl_mm = jld.month, jl_dd = jld.day, jl_era_days = jld.era_days, jl_unix_time = jld.unix_time,
+        gr_yyyy = grd.year, gr_mm = grd.month, gr_dd = grd.day, gr_era_days = grd.era_days, gr_unix_time = grd.unix_time,
+        sl_yyyy = sld.year, sl_mm = sld.month, sl_dd = sld.day, sl_era_days = sld.era_days, sl_unix_time = sld.unix_time
+    );
 }
 ```
 
 Output:
 
 ```
-JL: 3226/2/27:1177987:39642393600
-GR: 3226/2/27:1177965:39640492800
-SL: 3226/2/27:1177964:39640406400
+JL: 3226/02/27:1177987:39642393600
+GR: 3226/02/27:1177964:39640406400
+SL: 3226/02/27:1177965:39640492800
 ```
 
 \* - any, but except first BCE days in Julian Calendar,
@@ -294,14 +317,17 @@ fn main() {
         view: CalendarView::Solar
     };
     <Date as Julian>::to_date(&mut date, false);
-    println!("JL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "JL: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
 Output:
 
 ```
-JL: 3226/2/4:1177964:39640406400
+JL: 3226/02/04:1177964:39640406400
 ```
 
 ##### Solar to Gregorian
@@ -322,14 +348,17 @@ fn main() {
         view: CalendarView::Solar
     };
     <Date as Gregorian>::to_date(&mut date, false);
-    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "GR: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
 Output:
 
 ```
-GR: 3226/2/28:1177966:39640579200
+GR: 3226/02/28:1177966:39640579200
 ```
 
 ##### Julian to Solar
@@ -350,14 +379,17 @@ fn main() {
         view: CalendarView::Julian
     };
     <Date as Solar>::to_date(&mut date, false);
-    println!("SL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "SL: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
 Output:
 
 ```
-SL: 3226/2/28:1177965:39640492800
+SL: 3226/02/28:1177965:39640492800
 ```
 
 ##### Julian to Gregorian
@@ -378,7 +410,10 @@ fn main() {
         view: CalendarView::Julian
     };
     <Date as Gregorian>::to_date(&mut date, false);
-    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "GR: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
@@ -408,14 +443,17 @@ fn main() {
         view: CalendarView::Gregorian
     };
     <Date as Solar>::to_date(&mut date, false);
-    println!("SL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "SL: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
 Output:
 
 ```
-SL: 3226/3/1:1177966:39640579200
+SL: 3226/03/01:1177966:39640579200
 ```
 
 ##### Gregorian to Julian
@@ -436,7 +474,10 @@ fn main() {
         view: CalendarView::Gregorian
     };
     <Date as Julian>::to_date(&mut date, false);
-    println!("JL: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "JL: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
@@ -454,19 +495,24 @@ Convert any Gregorian to Julian and Julian to Gregorian:
 use PHASEXave::{CalendarView, Date, Julian, Gregorian, Solar, Sign, Zone};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 };
-    let mut date: Date = Date::now(CalendarView::Gregorian, time_zone);
+    let mut date: Date = Date::now(
+        CalendarView::Gregorian,
+        Zone { sign: Sign::Unsigned, hours: 0, minutes: 0, seconds: 0 }
+    );
     <Date as Solar>::to_date(&mut date, true);
     <Date as Julian>::to_date(&mut date, true);
     <Date as Gregorian>::to_date(&mut date, true);
-    println!("GR: {yyyy}/{mm}/{dd}:{era_days}:{unix_time}", yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time);
+    println!(
+        "GR: {yyyy}/{mm:02}/{dd:02}:{era_days}:{unix_time}",
+        yyyy = date.year, mm = date.month, dd = date.day, era_days = date.era_days, unix_time = date.unix_time
+    );
 }
 ```
 
 Output:
 
 ```
-GR: 2024/3/4:738949:1709574752
+GR: 2024/03/04:738949:1709574752
 ```
 
 #### Day of Week
@@ -481,16 +527,17 @@ Get week day from Date:
 use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto, Sign, Zone};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 };
-
-    let date: Date = Date::now(CalendarView::Solar, time_zone);
+    let date: Date = Date::now(
+        CalendarView::Solar,
+        Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 }
+    );
     println!(
         "Solar Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
         rata_die = <Date as RataDie>::week_day(&date).name(),
         xavetar = <Date as Xavetar>::week_day(&date).name(),
         sakamoto = <Date as Sakamoto>::week_day(&date).name(),
     );
-    println!("Date: {yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("Date: {yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -503,7 +550,7 @@ Rata Die: Tuesday
 Xavetar: Tuesday
 Sakamoto: Tuesday
 
-Date: 2024/3/6
+Date: 2024/03/06
 ```
 
 Get week day from any date:
@@ -519,7 +566,7 @@ fn main() {
         xavetar = <Date as Xavetar>::from(CalendarView::Solar, yyyy, mm, dd).name(),
         sakamoto = <Date as Sakamoto>::from(CalendarView::Solar, yyyy, mm, dd).name(),
     );
-    println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
+    println!("Date: {yyyy}/{mm:02}/{dd:02}", yyyy = yyyy, mm = mm, dd = dd);
 }
 ```
 
@@ -532,7 +579,7 @@ Rata Die: Tuesday
 Xavetar: Tuesday
 Sakamoto: Tuesday
 
-Date: 1582/10/5
+Date: 1582/10/05
 ```
 
 ##### Julian
@@ -543,16 +590,17 @@ Get week day from Date:
 use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto, Sign, Zone};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 };
-
-    let date: Date = Date::now(CalendarView::Julian, time_zone);
+    let date: Date = Date::now(
+        CalendarView::Julian,
+        Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 }
+    );
     println!(
         "Julian Week day:\n\nRata Die: {rata_die}\nXavetar: {xavetar}\nSakamoto: {sakamoto}\n",
         rata_die = <Date as RataDie>::week_day(&date).name(),
         xavetar = <Date as Xavetar>::week_day(&date).name(),
         sakamoto = <Date as Sakamoto>::week_day(&date).name(),
     );
-    println!("Date: {yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("Date: {yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -565,7 +613,7 @@ Rata Die: Tuesday
 Xavetar: Tuesday
 Sakamoto: Tuesday
 
-Date: 2024/2/21
+Date: 2024/02/21
 ```
 
 Get week day from any date:
@@ -581,7 +629,7 @@ fn main() {
         xavetar = <Date as Xavetar>::from(CalendarView::Julian, yyyy, mm, dd).name(),
         sakamoto = <Date as Sakamoto>::from(CalendarView::Julian, yyyy, mm, dd).name(),
     );
-    println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
+    println!("Date: {yyyy}/{mm:02}/{dd:02}", yyyy = yyyy, mm = mm, dd = dd);
 }
 ```
 
@@ -594,7 +642,7 @@ Rata Die: Friday
 Xavetar: Friday
 Sakamoto: Friday
 
-Date: 1582/10/5
+Date: 1582/10/05
 ```
 
 ##### Gregorian
@@ -605,16 +653,17 @@ Get week day from Date:
 use PHASEXave::{CalendarView, Date, RataDie, Xavetar, Sakamoto, Sign, Zone};
 
 fn main() {
-    let time_zone: Zone = Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 };
-
-    let date: Date = Date::now(CalendarView::Gregorian, time_zone);
+    let date: Date = Date::now(
+        CalendarView::Gregorian,
+        Zone { sign: Sign::Unsigned, hours: 8, minutes: 0, seconds: 0 }
+    );
     println!(
         "Gregorian Week day:\n\nRata Die: {rata_die}\nSakamoto: {sakamoto}\nXavetar: {xavetar}\n",
         rata_die = <Date as RataDie>::week_day(&date).name(),
         xavetar = <Date as Xavetar>::week_day(&date).name(),
         sakamoto = <Date as Sakamoto>::week_day(&date).name(),
     );
-    println!("Date: {yyyy}/{mm}/{dd}", yyyy = date.year, mm = date.month, dd = date.day);
+    println!("Date: {yyyy}/{mm:02}/{dd:02}", yyyy = date.year, mm = date.month, dd = date.day);
 }
 ```
 
@@ -627,7 +676,7 @@ Rata Die: Tuesday
 Sakamoto: Tuesday
 Xavetar: Tuesday
 
-Date: 2024/3/5
+Date: 2024/03/05
 ```
 
 Get week day from any date:
@@ -643,7 +692,7 @@ fn main() {
         xavetar = <Date as Xavetar>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),
         sakamoto = <Date as Sakamoto>::from(CalendarView::Gregorian, yyyy, mm, dd).name(),
     );
-    println!("Date: {yyyy}/{mm}/{dd}", yyyy = yyyy, mm = mm, dd = dd);
+    println!("Date: {yyyy}/{mm:02}/{dd:02}", yyyy = yyyy, mm = mm, dd = dd);
 }
 ```
 
@@ -656,7 +705,7 @@ Rata Die: Tuesday
 Xavetar: Tuesday
 Sakamoto: Tuesday
 
-Date: 1582/10/5
+Date: 1582/10/05
 ```
 
 ## License

@@ -63,7 +63,7 @@ impl Uptime {
 
     pub(crate) const fn from_seconds(seconds: u128) -> Uptime {
         return Uptime {
-            weeks: (seconds / SECONDS_IN_WEEK),
+            weeks: seconds / SECONDS_IN_WEEK,
             days: ((seconds % SECONDS_IN_WEEK) / SECONDS_IN_DAY) as u8,
             hours: ((seconds % SECONDS_IN_DAY) / SECONDS_IN_HOUR) as u8,
             minutes: ((seconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE) as u8,
