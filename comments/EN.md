@@ -1,5 +1,7 @@
 # Module:
 
+- Some conclusions were made during the transition from version [1.7.9](https://github.com/xavetar/PHASEXave/tree/1.7.9) to [1.8.0](https://github.com/xavetar/PHASEXave/tree/1.8.0). A complete match after these versions is not guaranteed, so don't be surprised if you feel frustration and a complete lack of understanding as to why the text and code don't match.
+
 ## Presentation days
 
 ### [days.rs](../api/src/types/planets/earth/calendar/functions/days.rs)

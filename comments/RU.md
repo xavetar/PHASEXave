@@ -1,5 +1,9 @@
 # Module:
 
+## Attention
+
+- Некоторые умозаключения были составлены при переходе с версии [1.7.9](https://github.com/xavetar/PHASEXave/tree/1.7.9) на [1.8.0](https://github.com/xavetar/PHASEXave/tree/1.8.0). Полное совпадение после этих версий не гарантированно, поэтому не стоит удивляться, если возникнет ощущение фрустрации и полного не понимая того, почему текст и код не совпадают.
+
 ## Presentation days
 
 ### [days.rs](../api/src/types/planets/earth/calendar/functions/days.rs)
