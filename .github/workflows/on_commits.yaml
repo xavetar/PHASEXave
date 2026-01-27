@@ -69,9 +69,7 @@ jobs:
     strategy:
       matrix:
         runs-on:
-          - macOS-13
-          - macOS-12
-          - macOS-11
+          - macOS-15
           - ubuntu-latest
           - windows-latest
     runs-on: ${{ matrix.runs-on }}
